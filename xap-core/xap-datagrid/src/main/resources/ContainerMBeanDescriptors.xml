@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<MBean	type="SpaceContainer"
+		description="Exposes the management interface of the GigaSpaces Container.">
+
+	<!-- Attribute: * - Required, other is optional
+		*name - The name of the attribute.
+		*type - The type or class name of the attribute.
+		description - A human readable description of the attribute.
+		isReadable - True if the attribute has a getter method, false otherwise.
+		isWritable - True if the attribute has a setter method, false otherwise.
+		isIs - True if this attribute has an "is" getter, false otherwise.
+	-->
+	<attribute name="ContainerName" type="java.lang.String" isReadable="true" description="The name of this container"/>
+	<attribute name="ContainerHostName" type="java.lang.String" isReadable="true" description=""/>
+	<attribute name="HomeDir" type="java.lang.String" isReadable="true" description="Displays the installation directory of the GigaSpaces Platform."/>
+	<attribute name="SchemaName" type="java.lang.String" isReadable="true" description="Container schema name"/>
+	<attribute name="SpaceNames" type="[Ljava.lang.String;" isReadable="true" description="List of the spaces that belong to this container."/>
+	<attribute name="JndiRegistration" type="java.lang.Boolean" isReadable="true" isWritable="true" isIs="true" description=""/>
+	<attribute name="JndiUrl" type="java.lang.String" isReadable="true" isWritable="true" description=""/>
+	<attribute name="License" type="java.lang.String" isReadable="true" description="Displays the GigaSpaces Platform license key."/>
+	<attribute name="JiniRegistration" type="java.lang.Boolean" isReadable="true" isWritable="true" isIs="true" description=""/>
+	<attribute name="LookupGroups" type="java.lang.String" isReadable="true" isWritable="true" description="Jini lookup group"/>
+	<attribute name="UnicastURL" type="java.lang.String" isReadable="true" isWritable="true" description="Jini Locators unicast url"/>
+	<attribute name="SecurityMode" type="java.lang.String" isReadable="true" description=""/>
+	<attribute name="UnicastEnabled" type="boolean" isReadable="true" isWritable="true" isIs="true" description="Enabling Jini Locators support"/>
+
+	<!-- Operation: * - Required, other is optional
+		*name - The name of the method.
+		*type - The type of the method's return value.
+		*impact - The impact of the method, one of INFO, ACTION, ACTION_INFO, UNKNOWN.
+		description - A human readable description of the operation.
+		signature - MBeanParameterInfo objects describing the parameters(arguments) of the method.
+
+		Signature: the list of parameters info
+		Parameter: * - Required, other is optional
+		*name - The name of the data
+		*type - The type or class name of the data
+		description - A human readable description of the data.
+	-->
+	<operation name="getRuntimeConfigReport" type="java.lang.String" impact="ACTION" description="Returns Runtime configuration report."/>
+
+	<!--constructor name="JMXSpaceContainer">
+		<signature>
+			<parameter name="" type="" description=""/>
+			...
+		</signature>
+	</constructor-->
+
+	<!--notifier name="" description="">
+		<types>type1,type2,...</types>
+	</notifier-->
+</MBean>

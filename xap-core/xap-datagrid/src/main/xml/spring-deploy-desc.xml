@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE gs-deployment SYSTEM "java://gs-deploy-desc.dtd" [
+    <!ENTITY CodeServer.IP SYSTEM "java://java.net.InetAddress.getLocalHost().getHostAddress()" >
+    <!ENTITY CodeServer.Port "9010" >
+    <!ENTITY CodeServerURL "http://&CodeServer.IP;:&CodeServer.Port;/" >
+]>
+
+<gs-deployment Name="$DD_NAME">
+    <Codebase Adaptive="yes">&CodeServerURL;</Codebase>
+
+    <Groups>
+        <Group>${com.gs.jini_lus.groups}</Group>
+    </Groups>
+
+    <ServiceBean Name="$NAME" MatchOnName="yes">
+        <Interfaces>
+            <Interface>$BEAN-INTERFACE</Interface>
+            $INTERFACE_JARS
+        </Interfaces>
+
+	    <ImplementationClass>$BEAN-CLASS
+            <Resources>
+                <SharedComponent>
+                    <ClassName>org.springframework.context.ApplicationContext</ClassName>
+                    $IMPL_JARS
+                </SharedComponent>
+            </Resources>
+        </ImplementationClass>
+        
+        <ServiceLevelAgreements>
+            <SystemRequirements>
+                <SystemComponent Name="SoftwareSupport">
+                    <Attribute Name="Name" Value="Spring"/>
+                    <Attribute Name="Version" Value="1.2+"/>
+                </SystemComponent>
+            </SystemRequirements>
+        </ServiceLevelAgreements>
+
+        <Configuration>
+            <Component Name="spring">
+                <Parameter Name="config">
+                    <![CDATA[
+                    new String[]{"$codebase/$SPRING_CONFIG"}
+                    ]]> 
+                </Parameter>
+            </Component>
+            <Component Name="service.load">
+                <Parameter Name="serviceBeanFactory"
+                           Value="new com.gigaspaces.grid.bean.SpringBeanFactory()"/>
+            </Component>
+        </Configuration>          
+        
+        <Maintain>1</Maintain>
+
+    </ServiceBean>
+</gs-deployment>

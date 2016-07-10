@@ -1,0 +1,14 @@
+/.mule
+/build
+/build.properties
+/classes
+/deploy
+/logs
+/releases
+/temp_zip_dir
+/lib/jini
+/target/
+/.classpath
+/.project
+/.settings/
+/tools/build.properties

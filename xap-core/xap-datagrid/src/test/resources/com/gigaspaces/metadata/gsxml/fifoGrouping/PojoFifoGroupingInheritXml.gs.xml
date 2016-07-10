@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gigaspaces-mapping>
+	<class name="com.gigaspaces.metadata.gsxml.fifoGrouping.PojoFifoGroupingInheritXml">
+				
+		<property name="symbol" index="extended" />
+		
+		<property name="reporter" index="extended" />
+		
+		<property name="processed" index="basic" />
+		
+		<property name="info">
+			<fifo-grouping-index path="scans" />
+		</property>
+			
+	</class>
+</gigaspaces-mapping>

@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<com>
+  <j_spaces>
+	<core>
+		<container>
+			<!--  container name or default name is hostname -->
+			<name>default</name>
+			<!-- The container shutdown in response to a
+	 		 	user interrupt, or a system-wide event such as user logoff or system shutdown.
+	 		 	Default value: true  -->
+			<shutdown_hook>${com.gs.shutdown_hook}</shutdown_hook>
+			<!-- Specify the embedded services which the gigaspace container will start -->
+			<embedded-services>
+				<!-- Starts a Webster HTTP Server embedded in the container VM 
+				Default value: true -->
+				<httpd>
+					<enabled>${com.gs.embedded-services.httpd.enabled}</enabled>
+					<!-- The additional root(s) to serve code from. This is a semi-colin delimited list of directories.
+					For example dir1;dir2 Default value: null no additional roots. The system uses the predefined 
+					roots com.gs.hom/lib;com.gs.home/lib/jini -->
+					<additional-roots></additional-roots>
+					<!-- The host address the server socket HTTPD (Webster) is using is bound to. 
+					Relevant for multi NIC environment. 
+					Default value: resolved to localhost ip address. -->
+					<explicit-binding-address>${java.rmi.server.hostname}</explicit-binding-address>
+					<!-- The host port the server socket HTTPD (Webster) is using is bound to.  
+					Default value: port 9813 but if that is busy it generates an anonymous port-->
+					<explicit-binding-port>${com.gs.embedded-services.httpd.port}</explicit-binding-port>
+				</httpd>
+				<mahalo>
+					<!-- If true, will start an embedded Mahalo Jini Transaction Manager. Default value: false -->
+			        <start-embedded-mahalo>${com.gs.start-embedded-mahalo}</start-embedded-mahalo>
+				</mahalo>
+			</embedded-services>
+			<!--  specify the directory service configuration via which the gigaspace container will publish it self -->
+			<directory_services>
+				<!-- jndi is based on rmiregistry -->
+				<jndi>
+				     <!--  true if enabled, false otherwise -->
+				     <enabled>true</enabled>
+				     <!-- Default value: localhost:10098 -->
+				     <url>${com.gs.jndi.url}</url>
+				</jndi>
+				<!-- default lookup service is based on reggie -->
+				<jini_lus>
+			      	<!-- true if enabled, false otherwise. Default value: true -->
+			        <enabled>true</enabled>
+			        <!-- If true, will start an embedded LUS. Default value: true -->
+			        <start-embedded-lus>${com.gs.start-embedded-lus}</start-embedded-lus>
+					<!-- 
+						Comma separated list of groups for lookup service
+						Special groups:  
+						all  = discover all groups
+						none = don't register to any group
+						
+						For example: myGroup,group1,group2,group3
+					-->
+					<groups>${com.gs.jini_lus.groups}</groups>
+					<!-- 
+					   Use this option in case multicast discovery is not working properly
+					   in any case multicast discovery will not be disabled.
+				    -->
+					<unicast_discovery>
+						<!-- Default value: false (unless start-embedded-lus is enabled) -->
+						<enabled>${com.gs.jini_lus.unicast_discovery.enabled}</enabled>
+					    <!-- Is a list of unicast hosts separated by comma: 
+					    	 localhost:4162 (default value, unless start-embedded-lus is enabled), 
+					    	 host1:4162, host2:4162, host3:4184 -->
+						<lus_host>${com.gs.jini_lus.locators}</lus_host>	
+					</unicast_discovery>
+				</jini_lus>
+				<!-- JMS Services: if true, the JMS API supported by GS.
+				The JMS Administrated Objects, such as ConnectionFactories, Destinations etc.
+				must be bonded into a jndi registry. GS JMS is bonded by default in the internal
+				jndi rmi registry. It is possible to use and external jndi registry, such as JBoss
+				jndi reg implementation, in order to use it, the external jndi should be enabled.
+				--> 
+			   <jms_services>
+				  <!-- if true, we enable Gigaspaces jms support by registering the jms administrated objects
+				  in the directory service. Default value: false -->
+				  <enabled>${com.gs.jms.enabled}</enabled>
+				  <!-- Binding jms admin objects in the GS internal rmiReg. -->
+				  <internal-jndi>
+						<internal-jndi-enabled>true</internal-jndi-enabled>
+				  </internal-jndi>
+				  <!-- Binding jms admin objects on an external jndi registry -->
+				  <ext-jndi>
+					<ext-jndi-enabled>false</ext-jndi-enabled>
+				  </ext-jndi>
+				</jms_services>
+		       </directory_services>
+		</container>
+	</core>
+	<kernel>
+		<!-- custom implementation of ITimeProvider - Default value: none -->
+		<time-provider>${com.gs.time-provider}</time-provider>
+	</kernel>
+  </j_spaces>
+</com>

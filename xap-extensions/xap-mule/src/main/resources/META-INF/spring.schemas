@@ -1,0 +1,17 @@
+http\://www.openspaces.org/schema/9.7/mule/3.5/mule-os-eventcontainer.xsd=org/openspaces/esb/mule/eventcontainer/config/mule-os-eventcontainer.xsd
+http\://www.openspaces.org/schema/9.7/mule/3.5/mule-os-queue.xsd=org/openspaces/esb/mule/queue/config/mule-os-queue.xsd
+
+http\://www.openspaces.org/schema/10.0/mule/3.5/mule-os-eventcontainer.xsd=org/openspaces/esb/mule/eventcontainer/config/mule-os-eventcontainer.xsd
+http\://www.openspaces.org/schema/10.0/mule/3.5/mule-os-queue.xsd=org/openspaces/esb/mule/queue/config/mule-os-queue.xsd
+
+http\://www.openspaces.org/schema/10.1/mule/3.5/mule-os-eventcontainer.xsd=org/openspaces/esb/mule/eventcontainer/config/mule-os-eventcontainer.xsd
+http\://www.openspaces.org/schema/10.1/mule/3.5/mule-os-queue.xsd=org/openspaces/esb/mule/queue/config/mule-os-queue.xsd
+
+http\://www.openspaces.org/schema/10.2/mule/3.5/mule-os-eventcontainer.xsd=org/openspaces/esb/mule/eventcontainer/config/mule-os-eventcontainer.xsd
+http\://www.openspaces.org/schema/10.2/mule/3.5/mule-os-queue.xsd=org/openspaces/esb/mule/queue/config/mule-os-queue.xsd
+
+http\://www.openspaces.org/schema/11.0/mule/3.7/mule-os-eventcontainer.xsd=org/openspaces/esb/mule/eventcontainer/config/mule-os-eventcontainer.xsd
+http\://www.openspaces.org/schema/11.0/mule/3.7/mule-os-queue.xsd=org/openspaces/esb/mule/queue/config/mule-os-queue.xsd
+
+http\://www.openspaces.org/schema/12.0/mule/3.7/mule-os-eventcontainer.xsd=org/openspaces/esb/mule/eventcontainer/config/mule-os-eventcontainer.xsd
+http\://www.openspaces.org/schema/12.0/mule/3.7/mule-os-queue.xsd=org/openspaces/esb/mule/queue/config/mule-os-queue.xsd

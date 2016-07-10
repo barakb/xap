@@ -1,0 +1,23 @@
+<html>
+<body>
+<h1>Security</h1>
+
+GigaSpaces security is used to secure numerous demanding environments at different levels of security.
+GigaSpaces provides a default security implementation with some handy extension points.
+
+<h2>Custom Extensions</h2>
+
+<h3>Encoding</h3>
+The default GigaSpaces security implementation uses MD5 as the default algorithm to encrypt passwords (see <code>PasswordEncoder</code>), 
+and AES as the default algorithm to encrypt contents stored in a file (see <code>ContentEncoder</code>).
+
+<h3>File-Service</h3>
+The default GigaSpaces security implementation stores the users and roles in a local file-system. 
+The <code>FileService</code> interface defines the file access mechanism; The default implementation is the 
+<code>LocalFileService</code>. It can be replaced by <code>URLFileService</code> to read the file contents from an HTTP Server.
+
+<h2>Custom Security</h2>
+The main security interface is <code>SecurityManager</code> which is responsible for authentication and creating of the 
+<code>DirectoryManager</code>. These are the two interfaces of interest when implementing your own custom security.  
+</body>
+</html>

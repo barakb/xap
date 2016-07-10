@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited July 17, 2006 by Dennis Reedy -->
+
+<!--
+The DeploymentSchedule element provides schedule information on when to
+deploy a DeploymentDescriptor
+-->
+<!ELEMENT DeploymentSchedule (DeployDate, Duration?, Repeats?)>
+
+<!--
+The DeployDate element specifies a Month, DayOfMonth, DayOfWeek Hour and
+Minute. If a DeployDate is not provided, the DeploymentDescriptor, when deployed,
+will be deployed immediately
+-->
+<!ELEMENT DeployDate EMPTY>
+<!ATTLIST DeployDate Month (January | February | March | April | May | 
+                            June | July | August | September | 
+                            October | November | December | novalue) "novalue">
+<!ATTLIST DeployDate DayOfMonth CDATA #IMPLIED>
+<!ATTLIST DeployDate DayOfWeek (Sunday | Monday | Tuesday | Wednesday | 
+                                Thursday | Friday | Saturday | novalue) "novalue">                                
+<!ATTLIST DeployDate Hour CDATA #IMPLIED>
+<!ATTLIST DeployDate Minute CDATA #IMPLIED>
+<!ATTLIST DeployDate Format (AM | PM | 24H) "24H">
+
+<!--
+The Duration element allows the declaration of how long an
+DeploymentDescriptor should be deployed. If not provided the duration will be
+indefinite
+-->
+<!ELEMENT Duration EMPTY>
+<!ATTLIST Duration Days CDATA #IMPLIED>
+<!ATTLIST Duration Hours CDATA #IMPLIED>
+<!ATTLIST Duration Minutes CDATA #IMPLIED>
+
+<!--
+The Repeats element provides a way to declare how many times a deployment should
+repeat, and what the Interval is between repetitions. If the Interval is not
+provided the default repeat interval is used
+-->
+<!ELEMENT Repeats (Interval?)>
+<!ATTLIST Repeats Count CDATA #REQUIRED>
+
+<!--
+The Interval element specifies the amount of time to wait between repetitions
+-->
+<!ELEMENT Interval EMPTY>
+<!ATTLIST Interval Days CDATA #IMPLIED>
+<!ATTLIST Interval Hours CDATA #IMPLIED>
+<!ATTLIST Interval Minutes CDATA #IMPLIED>
+
+<!-- 
+The Codebase element specifies where service classes and resources can be
+(down)loaded from
+-->
+<!ELEMENT Codebase (#PCDATA)>
+<!ATTLIST Codebase Adaptive (yes | no) "no">
+<!-- 
+The Resources element declares one or more resources required to load a
+software component. The Resources element also provides context as to whether
+MessageDigests should be computed for enclosed JAR elements. If a MessageDigests
+are to be computed for JAR elements, the resulting protocol will be
+httpmd:// not http:// for each JAR. Care must be taken to ensure the
+java.protocol.handler.pkgs property is set to net.jini.url.
+
+If the Location attribute is specified (if it is not used the Codebase URL will
+be used to compute the MessageDigests), the Location will be used to access all
+JAR files on the local machine. The Location value is machine dependant and must
+point to the exact directory location for the JARs on the filesystem. If a JAR
+cannot be accessed at the specified Location an exception will be thrown and the
+DeploymentDescriptor will fail to load.
+-->
+<!ELEMENT Resources (JAR | SharedComponent)+>
+<!ATTLIST Resources ComputeHttpmd (yes | no) "no">
+<!ATTLIST Resources Algorithm (md5 | md2 | sha) "sha">
+<!ATTLIST Resources Location CDATA #IMPLIED>
+
+<!-- 
+The JAR element declares a JAR that will be used to load a class. 
+
+If the Location attribute is specified it will override the value declared in
+the Resources element. The value is machine dependant and must point to the
+exact location of the JAR on the filesystem. If a JAR cannot be accessed at the
+specified Location an exception will be thrown and the DeploymentDescriptor will
+fail to load.
+-->
+<!ELEMENT JAR (#PCDATA)>
+<!ATTLIST JAR Location CDATA #IMPLIED>
+
+<!--
+The ClassName element specifies the name of a class
+-->
+<!ELEMENT ClassName (#PCDATA)>
+<!-- 
+The SharedComponent element declares the name of a Class and the codebase to
+load the class from. A SharedComponent will be loaded by the common loader for
+all services making it (and the resources it uses) available to all services
+-->
+<!ELEMENT SharedComponent (ClassName, (JAR)+)>
+<!-- 
+An Include element is another Operational String this Operational String includes
+-->
+<!ELEMENT Include (#PCDATA)>
+<!ATTLIST Include id CDATA #IMPLIED>
+
+<!ENTITY % Discovery "Groups | Locators" >
+
+<!ENTITY % Common "Cluster | Configuration | Logging | Organization |
+                   Parameters | ServiceLevelAgreements |
+                   ServiceProvisionConfig | FaultDetectionHandler |
+                   Association | Associations">
+<!--
+The opstring element is the outermost tag and defines at least one
+DeploymentDescriptor
+-->
+<!ELEMENT opstring (OperationalString+)>
+<!--
+The OperationalString is an aggregating element in the document. The
+OperationalString has a Name attribute which provides the OperationalString
+with a descriptive name. There can be multiple OperationalString elements in an
+opstring.
+-->
+<!ATTLIST OperationalString Name CDATA #REQUIRED>
+<!ELEMENT OperationalString ((DeploymentSchedule?),
+                             ((%Discovery; | %Common; | Codebase)*),
+                             (ServiceBean | Service | Include)+)>
+<!--
+The gs-deployment element is the outermost tag and defines at least one
+deployment
+-->
+<!ATTLIST gs-deployment Name CDATA #REQUIRED>
+<!ELEMENT gs-deployment ((DeploymentSchedule?),
+                        ((%Discovery; | %Common; | Codebase)*),
+                         (ServiceBean | Service | Include)+)>
+<!--
+A ServiceBean element is a dynamic service that supports the Service Bean model.
+The ServiceBean element is unique in this regard because this element is
+allocated to available compute resources based in the capability to match the
+ServiceBean operational & platform requirements to available compute resource
+capabilities
+-->
+<!ELEMENT ServiceBean (Codebase?, Interfaces, (ImplementationClass |
+                       Maintain | MaxPerMachine | MaxPerPhysicalMachine | Comment |
+                       (%Discovery; | %Common; ))*)>
+<!ATTLIST ServiceBean Name CDATA #REQUIRED>
+<!ATTLIST ServiceBean MatchOnName (yes | no) "yes">
+<!ATTLIST ServiceBean ProvisionType (dynamic | fixed ) "dynamic">
+<!ATTLIST ServiceBean AutoAdvertise (yes | no) "yes">
+<!ATTLIST ServiceBean DiscoveryManagementPooling (yes | no) "yes">
+<!ATTLIST ServiceBean jmxname CDATA #IMPLIED>
+
+<!--
+A Service element is a service that gets included in the DeploymentDescriptor, but
+does not get allocated to available compute resource instances
+-->
+<!ELEMENT Service (Codebase?, Interfaces, (%Discovery; | Maintain)*)>
+<!ATTLIST Service Name CDATA #REQUIRED>
+<!ATTLIST Service MatchOnName (yes | no) "yes">
+<!--
+The Interfaces element contains one or more instances of an Interface element
+and an optional Resources element providing information on where to load the
+Interface classes from
+-->
+<!ELEMENT Interfaces (Interface+, Resources*)>
+<!--
+The Interface element specifies a string value that identifies the interface
+class(es) the Service element can be discovered with through the network. The
+value should be suitable for Class.forName() use
+-->
+<!ELEMENT Interface (#PCDATA)>
+<!--
+The Groups element provides a list of Group elements. There must be at least one
+Group element.
+-->
+<!ELEMENT Groups (Group+)>
+<!ATTLIST Groups IncludeGlobalDecl (yes | no) "no">
+
+<!--
+Each Group element documents a discovery group that the Service will use for
+discovery, and which can be used to discover the service
+-->
+<!ELEMENT Group (#PCDATA)>
+<!--
+The Associations element contains 1 or more Association elements
+-->
+<!ELEMENT Associations (Association+)>
+<!--
+Associations provide the capability to specify directed service associations
+and enforce them in runtime. Associations define a usage model for services
+in and across architectures/deployments.  Associations are created during the
+design/modeling phase and enforced during runtime, Associations can be either:
+- Uses: A  weak association relationship where if A uses B exists then, B may
+be present for A
+- Requires: A stronger association relationship where if A requires B exists
+then B must be present for A
+
+As Associations are discovered,  a service is notified allowing an
+associated service to be used. If the Association type is Requires and the
+service has not been advertised, the service will be advertised. If an
+associated service connection is broken (as determined by the associated
+service's Fault Detection Handler) and the Association type is Requires, the
+service will be unadvertised
+-->
+<!ELEMENT Association (Configuration?, FaultDetectionHandler?)>
+<!ATTLIST Association Type (uses | requires | colocated | opposed) "uses">
+<!ATTLIST Association Name CDATA #REQUIRED>
+<!ATTLIST Association refid CDATA #IMPLIED>
+<!ATTLIST Association OperationalString CDATA #IMPLIED>
+<!ATTLIST Association Property CDATA #IMPLIED>
+<!ATTLIST Association ClassName CDATA #IMPLIED>
+<!ATTLIST Association MatchOnName (yes | no) "yes">
+
+<!--
+The Organization element is an optional element which allows a a deployer to
+indicate an organization (representative owner) of the ServiceBean
+-->
+<!ELEMENT Organization (#PCDATA)>
+<!--
+The Maintain element documents the number of instances of this ServiceBean that
+should be available through the network
+-->
+<!ELEMENT Maintain (#PCDATA)>
+<!--
+The MaxPerMachine element documents the number of instances of this ServiceBean
+that should be running on any specific machine that supports the requirements
+of the ServiceBean
+-->
+<!ELEMENT MaxPerMachine (#PCDATA)>
+
+<!ELEMENT MaxPerPhysicalMachine (#PCDATA)>
+
+<!--
+The ImplementationClass element specifies the class name of the implementation
+class for the Service. The value should be valid for use with Class.forName()
+-->
+<!ELEMENT ImplementationClass (#PCDATA|Resources)*>
+<!--
+The Attribute element specifies name,value pairs that will be used to populate
+a Properties object
+-->
+<!ELEMENT Attribute EMPTY>
+<!ATTLIST Attribute Name CDATA #REQUIRED>
+<!ATTLIST Attribute Value CDATA #REQUIRED>
+<!--
+The SLA element provides the means to specify low and high limits, an acceptable
+range, for a SLA with a given ID. Additionally the SLA provides a mechanism to
+configure a SLAPolicyHandler, which can be used to process policies specific to
+SLAs as they occur, taking specific actions appropriate for the ServiceBean
+-->
+<!ELEMENT SLA ((Configuration | PolicyHandler), (Monitor | monitor)*)>
+<!ATTLIST SLA ID CDATA #REQUIRED>
+<!ATTLIST SLA Low CDATA #IMPLIED>
+<!ATTLIST SLA High CDATA #IMPLIED>
+
+<!--
+The PolicyHandler element provides an alternative towards specifying the
+policy handler that will be used to enforce the SLA.
+-->
+<!ELEMENT PolicyHandler EMPTY>
+<!ATTLIST PolicyHandler type (scaling | relocation | notify) #REQUIRED>
+<!ATTLIST PolicyHandler max CDATA #IMPLIED>
+<!ATTLIST PolicyHandler lowerDampener CDATA #IMPLIED>
+<!ATTLIST PolicyHandler upperDampener CDATA #IMPLIED>
+
+<!-- A declarative GaugeWatch -->
+<!ELEMENT Monitor EMPTY>
+<!ATTLIST Monitor name CDATA #REQUIRED>
+<!ATTLIST Monitor property CDATA "?">
+<!ATTLIST Monitor period CDATA "10000">
+
+<!-- A declarative GaugeWatch (in lower case) -->
+<!ELEMENT monitor EMPTY>
+<!ATTLIST monitor name CDATA #REQUIRED>
+<!ATTLIST monitor property CDATA "?">
+<!ATTLIST monitor period CDATA "10000">
+
+<!--
+The Utilization element provides the means to specify low and high limits, an
+acceptable range, for a specific quantititaive capability on a compute resource.
+The Utilization values are used during the allocation/provisioning of ServiceBean
+instances to compute resources appropriate for the ServiceBean
+-->
+<!ELEMENT Utilization EMPTY>
+<!ATTLIST Utilization ID CDATA #REQUIRED>
+<!ATTLIST Utilization Low CDATA #IMPLIED>
+<!ATTLIST Utilization High CDATA #REQUIRED>
+
+<!--
+The Download element provides a way to declare a downloadable unit of software
+from a source location, to a targeted installation root directory. The
+installation root directory is a relative directory, and will be appended to
+the provision root directory determined by a Cybernode. If the characters '/'
+or '\' are used in the installation root, they will converted to platform
+specific file separator characters. If the Unarchive attribute is declared as
+yes, the downloaded software will be extracted to the InstallRoot location
+-->
+<!ELEMENT Download (Location)>
+<!ATTLIST Download Source CDATA #REQUIRED >
+<!ATTLIST Download InstallRoot CDATA #REQUIRED >
+<!ATTLIST Download Unarchive (yes | no) "no" >
+
+<!--
+The Location element is used by the Download element to declare the location of
+source to download
+-->
+<!ELEMENT Location (#PCDATA)>
+
+<!--
+The ExecutionTarget element specifies a utility that will be started to
+configure a downloadedSoftwareLoad. If the ExecutionTarget ends with .jar,
+then the target will be invoked using the Java Virtual Machine as an executable
+JAR file, otherwise the ExecutionTarget will be started as separate operating
+system process
+-->
+<!ELEMENT ExecutionTarget EMPTY>
+<!ATTLIST ExecutionTarget Name CDATA #REQUIRED>
+
+<!--
+The PostInstall element provides a mechanism to declare a post-install utility
+that can be downloaded and executed to configure a downloaded SoftwareLoad
+-->
+<!ELEMENT PostInstall (Download, ExecutionTarget)>
+<!ATTLIST PostInstall RemoveOnCompletion (yes | no) "yes">
+
+<!--
+The SoftwareLoad element defines an installable software element with a post
+install helper to configure the downloaded software. The SoftwareLoad
+additionally provides a RemoveOnDestroy attribute which will cause the
+SoftwareLoad to ve removed from the compute resource when the ServiceBean has
+terminated. If the RemoveOnDestroy is declared as no, then the SoftwareLoad
+will remain on the compute resource after the ServiceBean has terminated.
+Additionally, the compute resource's PlatformCapability collection will be
+updated to reflect the addition of the SoftwareLoad
+-->
+<!ELEMENT SoftwareLoad (Download, PostInstall?)>
+<!ATTLIST SoftwareLoad RemoveOnDestroy (yes | no) "yes">
+
+<!--
+The SystemComponent defines a system component class (as an attribute) and zero
+or more name, value mappings for a specific PlatformCapability class. A
+SoftwareLoad may also be provided, indicating that the SystemComponent, if not
+found, may be dynamically provisioned to a Cybernode that supports dynamic
+provisioning
+-->
+<!ELEMENT SystemComponent (Attribute*, Resources?, SoftwareLoad?)>
+<!ATTLIST SystemComponent Name CDATA #IMPLIED>
+<!ATTLIST SystemComponent ClassName CDATA #IMPLIED>
+
+<!--
+The ServiceLevelAgreements element contains information specific to the Quality
+of Service mechanisms involved for a ServiceBean to provide SLA Management and
+specific mechanisms of the compute resource and service defined SLA mechanisms
+-->
+<!ELEMENT ServiceLevelAgreements ((SystemRequirements | SLA)*)>
+<!--
+The SystemRequirements element contains information specific to what system
+components and measures must be present on a compute resource in order for a
+ServiceBean to be provisioned. These capabilities allow better control over
+resources and better provisioning behaviour.
+-->
+<!ELEMENT SystemRequirements (Utilization | SystemComponent )*>
+<!--
+The Locators element contains one or more instances of a Locator element
+-->
+<!ELEMENT Locators (Locator+)>
+<!ATTLIST Locators IncludeGlobalDecl (yes | no) "no">
+<!--
+The Locator is a Jini LookupLocator formatted URL, in the format of
+jini://hostname[:port],and provides unicast information the service optionally
+uses for discovery
+-->
+<!ELEMENT Locator (#PCDATA)>
+<!--
+The Parameters element specifies a list of Parameter elements that can be used
+to describe operational parameters to be used by the ServiceBean. There can be
+zero or more Parameter elements in the Parameters element. The Parameters
+element is optional
+-->
+<!ELEMENT Parameters (Parameter+)>
+<!ATTLIST Parameters IncludeGlobalDecl (yes | no) "no">
+<!--
+The Parameter specifies name, value pairs identifying an operational parameter
+for the ServiceBean
+-->
+<!ELEMENT Parameter (#PCDATA)>
+<!ATTLIST Parameter Name CDATA #REQUIRED>
+<!ATTLIST Parameter Value CDATA #IMPLIED>
+
+<!--
+The Logging element provides information for Loggers
+-->
+<!ELEMENT Logging (Logger+)>
+<!ATTLIST Logging IncludeGlobalDecl (yes | no) "no">
+<!--
+The Logger element identifies a logger name and level of logging to be used, as
+wellas providing the capability to add a Handler to the Logger
+-->
+<!ELEMENT Logger (Handler*)>
+<!ATTLIST Logger Name CDATA #REQUIRED>
+<!ATTLIST Logger Level (SEVERE | WARNING | INFO | CONFIG | FINE | FINER | FINEST |
+                        ALL) "INFO">
+<!ATTLIST Logger UseParent (true | false) "true">
+<!ATTLIST Logger ResourceBundle CDATA #IMPLIED>
+<!--
+The Handler element identifies a logger name and level of logging to be used,
+as wellas providing the capability to add a Handler to the Logger
+-->
+<!ELEMENT Handler (Parameters | Formatter)*>
+<!ATTLIST Handler ClassName CDATA #REQUIRED>
+<!ATTLIST Handler Level (SEVERE | WARNING | INFO | CONFIG | FINE | FINER | FINEST |
+                         ALL) "INFO">
+<!--
+The Formatter defines a java.util.logging.Formatter class to use with a Handler
+-->
+<!ELEMENT Formatter EMPTY>
+<!ATTLIST Formatter ClassName CDATA #REQUIRED>
+
+<!--
+The Configuration element specifies a list of Component elements. The
+Configuration element is optional
+-->
+<!ELEMENT Configuration (Component+)>
+<!ATTLIST Configuration IncludeGlobalDecl (yes | no) "no">
+<!--
+The Component element contains multiple Parameter elements which document
+Configuration entries for use with net.jini.config.Configuration. There can be
+zero or more Parameter elements in the Configuration element.
+-->
+<!ELEMENT Component (Parameter+)>
+<!ATTLIST Component Name CDATA #REQUIRED>
+<!-- 
+The Comment element is an optional element. If the Comment element is supplied
+its value should provide an accurate comment for the Services role
+-->
+<!ELEMENT Comment (#PCDATA)>
+<!--
+The Cluster element contains one or more Machine elements. 
+-->
+<!ELEMENT Cluster (Machine+)>
+<!ATTLIST Cluster IncludeGlobalDecl (yes | no) "no">
+<!--
+Machine to provision a ServiceBean to. Needs to be either the hostname or the IP 
+Address. The provisioning runtime will still enforce QoS provision requirements. 
+-->
+<!ELEMENT Machine (#PCDATA)>
+<!--
+The FaultDetectionHandler is an optional (as far as being declaratively
+optional - if not specified a default handler will be used). The
+FaultDetectionHandler must periodically test to make sure service is
+reachable. Can implement custom fault detection algorithms and protocols to
+determine service reachability
+-->
+<!ELEMENT FaultDetectionHandler (Resources?, Configuration?)>
+<!ATTLIST FaultDetectionHandler ClassName CDATA #REQUIRED>
+
+<!--
+The ServiceProvisionConfig optionally declares configuration elements used
+during service provisioning
+-->
+<!ELEMENT ServiceProvisionConfig (Configuration)>
+<!-- 
+The properties element specifies a list of Property elements that can be used
+to describe operational properties to be used by the FaultDetectionHandler.
+There can be zero or more Property elements in the Properties element. The
+Properties element is optional
+-->
+<!ELEMENT Properties (Property+)>
+<!-- 
+The Property specifies name, value pairs identifying an operational property for 
+the FaultDetectionHandler 
+-->
+<!ELEMENT Property EMPTY>
+<!ATTLIST Property Name CDATA #REQUIRED>
+<!ATTLIST Property Value CDATA #REQUIRED>
+

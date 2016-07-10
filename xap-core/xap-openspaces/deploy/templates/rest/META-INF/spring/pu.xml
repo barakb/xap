@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:os-core="http://www.openspaces.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+       http://www.openspaces.org/schema/core http://www.openspaces.org/schema/11.0/core/openspaces-core.xsd">
+
+    <!--
+        Spring property configurer which allows us to use system properties (such as user.name).
+    -->
+    <bean id="propertiesConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+            <props>
+                <prop key="rest.spaceName">dataGrid</prop>
+                <prop key="rest.port">8080</prop>
+                <prop key="rest.datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--
+        A bean representing a rest service
+    -->
+    <os-core:rest id="rest" space-name="${rest.spaceName}" port="${rest.port}" lookup-groups="${rest.lookup-groups:null}" lookup-locators="${rest.lookup-locators:null}">
+        <os-core:properties>
+            <props><prop key="datetime_format">${rest.datetime_format}</prop></props>
+        </os-core:properties>
+            </os-core:rest>
+</beans>

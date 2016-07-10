@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gigaspaces-mapping>
+	<class name="com.gigaspaces.metadata.gsxml.PojoBasicStorageTypeXml">
+		
+		<id name="_id" auto-generate="false" />
+		<routing name="_routing"/>
+		
+		<property name="_explicitDefaultStorageTypeOnPrimitive" storage-type="default"/>
+		<property name="_explicitObjectStorageTypeOnPrimitive" storage-type="object"/>
+		<property name="_explicitDefaultStorageTypeObject" storage-type="default"/>
+		<property name="_objectStorageTypeObject" storage-type="object"/>
+		<property name="_binaryStorageTypeObject" storage-type="binary"/>
+		<property name="_compressedStorageTypeObject" storage-type="COMPRESSED"/>	
+	
+	</class>
+</gigaspaces-mapping>

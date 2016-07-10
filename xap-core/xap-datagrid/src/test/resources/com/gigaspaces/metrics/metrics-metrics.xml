@@ -1,0 +1,11 @@
+<metrics-configuration>
+    <samplers>
+        <sampler name="default" sample-rate="1m" />
+        <sampler name="custom1" sample-rate="1ms" />
+        <sampler name="custom2" sample-rate="1ms" />
+    </samplers>
+    <metrics>
+        <metric prefix="xap" sampler="custom1"/>
+        <metric prefix="xap_*_*_memory" sampler="custom2"/>
+    </metrics>
+</metrics-configuration>

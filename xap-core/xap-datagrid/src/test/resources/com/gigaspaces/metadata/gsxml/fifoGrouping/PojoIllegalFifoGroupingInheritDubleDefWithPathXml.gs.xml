@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gigaspaces-mapping>
+	<class name="com.gigaspaces.metadata.gsxml.fifoGrouping.PojoIllegalFifoGroupingInheritDubleDefWithPathXml">
+				
+		<fifo-grouping-property name="symbol" path="scans" />
+	
+	</class>
+</gigaspaces-mapping>

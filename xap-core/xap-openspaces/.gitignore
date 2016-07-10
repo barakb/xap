@@ -1,0 +1,17 @@
+
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+.project
+.classpath
+.settings
+target
+dist
+docs
+bin
+/lib/optional/openspaces
+/etarget
+transaction.log

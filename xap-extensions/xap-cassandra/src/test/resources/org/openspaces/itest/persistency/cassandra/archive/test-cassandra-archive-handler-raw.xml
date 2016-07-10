@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:os-sla="http://www.openspaces.org/schema/sla"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:os-core="http://www.openspaces.org/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd 
+	                    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd 
+	                    http://www.openspaces.org/schema/core http://www.openspaces.org/schema/11.0/core/openspaces-core.xsd">
+
+	<context:annotation-config />
+	
+	<os-core:space id="space" url="/./space" />
+	
+	<os-core:local-tx-manager id="transactionManager" space="space"/>
+	
+	<os-core:giga-space id="gigaSpace" space="space" tx-manager="transactionManager"/>
+
+	<bean id="cassandraArchiveHandler" class="org.openspaces.persistency.cassandra.archive.CassandraArchiveOperationHandler">
+		<property name="gigaSpace" ref="gigaSpace"/>
+		<property name="hosts" value="${cassandra.hosts}" />
+		<property name="port" value="${cassandra.port}" />
+		<property name="keyspace" value="${cassandra.keyspace}" />
+		<property name="writeConsistency" value="${cassandra.write-consistency}" />
+	</bean>
+
+</beans>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE gs-deployment SYSTEM "java://gs-deploy-desc.dtd">
+
+<gs-deployment Name="$DD_NAME">
+    <Codebase Adaptive="no">$[com.gigaspaces.system.codeserver]</Codebase>
+
+<!--
+Defines the system requirements and the parameters for a scaling
+policy handler
+-->
+<ServiceLevelAgreements>
+    <SystemRequirements>
+        <Utilization ID="CPU" High=".9"/>
+        <Utilization ID="Memory" High=".9"/>
+    </SystemRequirements>
+</ServiceLevelAgreements>
+
+<!--
+Defines the GigaSpacesFaultDetectionHandler
+-->
+<FaultDetectionHandler
+    ClassName="com.gigaspaces.grid.space.GigaSpacesFaultDetectionHandler">
+    <Configuration>
+        <Component
+            Name="com.gigaspaces.grid.space.GigaSpacesFaultDetectionHandler">
+            <Parameter Name="retryCount" Value="1"/>
+            <Parameter Name="invocationDelay" Value="5000"/>
+        </Component>
+    </Configuration>
+</FaultDetectionHandler>
+
+<!--
+Defines service provisioning configuration properties
+-->
+<ServiceProvisionConfig>
+    <Configuration>
+        <Component Name="service.provision">
+            <Parameter
+                Name="proxyPreparer"
+                Value="new com.gigaspaces.grid.space.SpaceProxyPreparer()"/>
+        </Component>
+    </Configuration>
+</ServiceProvisionConfig>
+
+<!--
+Defines middleware instantiation handler
+-->
+<Configuration>
+    <Component Name="service.load">
+        <Parameter Name="serviceBeanFactory"
+                   Value="new com.gigaspaces.grid.space.SpaceHandler()"/>
+    </Component>
+</Configuration>

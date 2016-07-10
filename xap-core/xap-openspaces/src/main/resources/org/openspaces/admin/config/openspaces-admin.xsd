@@ -1,0 +1,1190 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xsd:schema xmlns="http://www.openspaces.org/schema/admin"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openspaces.org/schema/admin"
+    xmlns:tool="http://www.springframework.org/schema/tool"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.springframework.org/schema/beans"/>
+	<xsd:import namespace="http://www.springframework.org/schema/tool"/>
+
+	<xsd:element name="depends-on">
+		<xsd:annotation>
+			<xsd:documentation>
+				Postpones the deployment of this processing unit
+				until the specified
+				processing unit is deployed.
+				By default waits
+				until the specified processing unit is in-tact (all
+				instances
+				deployed)
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						The name of the processing unit to wait for
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="min-instances-per-partition" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Wait for the specified minimum number of
+						instances deployed per
+						partition.
+						Use this if the specified
+						processing unit is a highly availably
+						space/datagrid.
+						1 instance per
+						parition, means that all partitions have at least
+						one primary
+						instance.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="min-instances" type="xsd:int" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Wait for the specified minimum number of
+						instances deployed.
+						Use this if the specified processing unit is
+						highly availably and
+						state-less.
+						1 instance means that at least one
+						instance has been started.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="context-property">
+		<xsd:annotation>
+			<xsd:documentation>
+				Sets a context deploy time property overriding
+				default values defined
+				within a processing unit configuration.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="key" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						The property key name
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="value" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						The property value
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+    <xsd:element name="discovered-machine-provisioning-config">
+        <xsd:annotation>
+            <xsd:documentation>
+                Allows to configure an Elastic Processing Unit machine provisioning that discovers existing machines.
+            </xsd:documentation>
+            <xsd:appinfo>
+                <tool:annotation>
+                    <tool:exports type="org.openspaces.admin.pu.elastic.config.DiscoveredMachineProvisioningConfig"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="grid-service-agents-zones" use="optional">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Sets the list of zones that can be discovered
+                                and started by this machine provisioning.
+                                The value should be a comma seperated list of zones
+                            </xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:pattern value="([-\w\s]+(,[-\w\s]+)*)"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:attribute>
+                    <xsd:attribute name="reserved-memory-capacity-per-machine-in-mb" type="xsd:positiveInteger"
+                                   use="optional">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Sets the expected amount of memory per machine that is
+                                reserved for processes other than grid containers.
+                                These include Grid Service Manager, Lookup Service
+                                or any other daemon running on the system.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="reserved-memory-capacity-per-management-machine-in-mb"
+                                   type="xsd:positiveInteger" use="optional">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Sets the expected amount of memory per management machine
+                                that is reserved for processes other than grid containers.
+                                These include Grid Service Manager, Lookup Service
+                                or any other daemon running on the system.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="manual-scale">
+        <xsd:annotation>
+            <xsd:documentation>
+				Defines a manual scaling strategy that consumes the specified memory capacity.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="number-of-cpu-cores" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Specifies the number of CPU cores (as reported by the operating system)
+                        This includes both real cores and hyper-threaded cores.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="memory-capacity-in-mb" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Specifies the memory capacity (RAM).
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="max-concurrent-relocations-per-machine" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Specifies the number of processing unit instance relocations each machine can handle concurrently.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+	<xsd:element name="eager-scale">
+		<xsd:annotation>
+			<xsd:documentation>
+				Eager trigger scales the EPU on all available machines and new machines joining the GigaSpaces Grid.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="max-concurrent-relocations-per-machine" type="xsd:positiveInteger" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Specifies the number of processing unit instance relocations each machine can handle concurrently.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="user-details">
+		<xsd:annotation>
+			<xsd:documentation>
+				Sets the security user details for authentication
+				and authorization of
+				the processing unit.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="username" type="xsd:string" use="required" />
+			<xsd:attribute name="password" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="max-instances-per-zone">
+		<xsd:annotation>
+			<xsd:documentation>
+				Sets the maximum number of instances per zone.
+				On
+				partitioned topology with backups topology, controls that a primary
+				and a backup won't run
+				on the same zone if set to 1. Note, for each
+				zone this will have to be
+				set.
+				On a non partitioned with backups
+				topology, controls the maximum
+				number of instances running on
+				the same
+				zone.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="zone" type="xsd:string" use="required" />
+			<xsd:attribute name="max-instances" type="xsd:int" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="space">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="depends-on">
+					<xsd:annotation>
+						<xsd:documentation>Postpones deployment of processing unit
+							instances until the specified dependency is met.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="context-property">
+					<xsd:annotation>
+						<xsd:documentation>Sets a context deploy time property overriding
+							default values defined within a processing unit configuration.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="user-details">
+					<xsd:annotation>
+						<xsd:documentation>Sets the security user details for
+							authentication and authorization of the processing unit.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="max-instances-per-zone">
+					<xsd:annotation>
+						<xsd:documentation>Sets the maximum number of instances per zone.
+							On partitioned topology with backups topology, controls that a
+							primary and a backup won't run
+							on the same zone if set to 1. Note,
+							for each zone this will have to
+							be set.
+							On a non partitioned with
+							backups topology, controls the maximum
+							number of instances running
+							on
+							the same zone.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="name" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation>The space name (required)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="cluster-schema" type="xsd:string"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Controls the cluster schema of the deployment.
+						When there is an embedded space defined within the processing unit
+						set this value to partitioned
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="number-of-instances" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets the number of instances that will be
+						deployed as part of this processing unit instance. In case of
+						partitioned, defines the number of partitions.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="number-of-backups" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets the number of backups that will be deployed
+						as part of this processing unit. Only applicable when the
+						processing unit has an embedded space.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="max-instances-per-vm" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation> Sets the maximum number of instances per
+						virtual machine.
+						On partitioned topology with backups topology,
+						controls that a
+						primary and a backup won't run on the same java
+						virtual machine if
+						set to 1.
+						On a non partitioned with backups
+						topology, controls the maximum
+						number of instances running on the
+						same java virtual machine.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="max-instances-per-machine" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets the maximum number of instances per
+						machine. On partitioned topology with backups topology, controls
+						that a primary and a backup won't run on the same machine if set
+						to 1.
+						On a non partitioned with backups topology, controls the
+						maximum
+						number of instances running on the same machine.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="zones" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Zone that define which Container the processing
+						unit is allowed to be deployed on.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="primary-zone" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Defines the zone where primary space instances should eb allocated.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="secured" type="xsd:boolean" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Will deploy a secured processing unit. Note, by
+						setting user details the processing unit will be secured
+						automatically.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="sla-location" type="xsd:string"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets an external SLA definition location to be
+						loaded.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="pu">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="depends-on">
+					<xsd:annotation>
+						<xsd:documentation>
+							Postpones the deployment of this processing
+							unit until the specified processing unit is deployed.
+							By default
+							waits until the specified processing unit is in-tact (all
+							instances deployed)
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="name" type="xsd:string" use="required">
+							<xsd:annotation>
+								<xsd:documentation>
+									The name of the processing unit to wait for
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="min-instances-per-partition"
+							type="xsd:int" use="optional">
+							<xsd:annotation>
+								<xsd:documentation>
+									Wait for the specified minimum number of
+									instances deployed per
+									partition.
+									Use this if the specified
+									processing unit is a highly availably
+									space/datagrid.
+									1 instance
+									per parition, means that all partitions have at least
+									one
+									primary instance.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="min-instances" type="xsd:int"
+							use="optional">
+							<xsd:annotation>
+								<xsd:documentation>
+									Wait for the specified minimum number of
+									instances deployed.
+									Use this if the specified processing unit is
+									highly availably and
+									state-less.
+									1 instance means that at least
+									one instance has been started.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="context-property">
+					<xsd:annotation>
+						<xsd:documentation>
+							Sets a context deploy time property overriding
+							default values defined
+							within a processing unit configuration.
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="key" type="xsd:string" use="required">
+							<xsd:annotation>
+								<xsd:documentation>
+									The property key name
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="value" type="xsd:string" use="required">
+							<xsd:annotation>
+								<xsd:documentation>
+									The property value
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+
+				<xsd:element name="user-details">
+					<xsd:annotation>
+						<xsd:documentation>
+							Sets the security user details for
+							authentication and authorization
+							of the processing unit.
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="username" type="xsd:string"
+							use="required" />
+						<xsd:attribute name="password" type="xsd:string"
+							use="required" />
+					</xsd:complexType>
+				</xsd:element>
+
+				<xsd:element name="max-instances-per-zone">
+					<xsd:annotation>
+						<xsd:documentation>
+							Sets the maximum number of instances per zone.
+							On partitioned topology with backups topology, controls that a
+							primary and a backup won't run on the same zone if set to 1.
+							Note, for each zone this will have to be set.
+							On a non partitioned
+							with backups topology, controls the maximum number of instances
+							running on the same zone.
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="zone" type="xsd:string" use="required" />
+						<xsd:attribute name="max-instances" type="xsd:int"
+							use="required" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="processing-unit" type="xsd:string"
+				use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						Constructs a processing unit deployment based on
+						the specified processing unit file path (points either
+						to a
+						processing unit jar/zip file or a directory
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="name" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Sets the processing unit name that will be
+						deployed. By default it will be based on the
+						processing-unit
+						folder/jar filename.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="cluster-schema" type="xsd:string"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Controls the cluster schema of the deployment.
+						When there is an embedded space defined within the processing unit
+						set this value to partitioned
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="number-of-instances" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets the number of instances that will be
+						deployed as part of this processing unit instance. In case of
+						partitioned, defines the number of partitions.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="number-of-backups" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets the number of backups that will be deployed
+						as part of this processing unit. Only applicable when the
+						processing unit has an embedded space.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="max-instances-per-vm" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation> Sets the maximum number of instances per
+						virtual machine.
+						On partitioned topology with backups topology,
+						controls that a
+						primary and a backup won't run on the same java
+						virtual machine if
+						set to 1.
+						On a non partitioned with backups
+						topology, controls the maximum
+						number of instances running on the
+						same java virtual machine.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="max-instances-per-machine" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets the maximum number of instances per
+						machine. On partitioned topology with backups topology, controls
+						that a primary and a backup won't run on the same machine if set
+						to 1.
+						On a non partitioned with backups topology, controls the
+						maximum
+						number of instances running on the same machine.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="zones" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Zone that define which Container the processing
+						unit is allowed to be deployed on.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="primary-zone" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Defines the zone where primary space instances should eb allocated.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="secured" type="xsd:boolean" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Will deploy a secured processing unit. Note, by
+						setting user details the processing unit will be secured
+						automatically.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="sla-location" type="xsd:string"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets an external SLA definition location to be
+						loaded.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="memcached">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="depends-on" />
+				<xsd:element ref="context-property" />
+				<xsd:element ref="user-details" />
+				<xsd:element ref="max-instances-per-zone" />
+			</xsd:choice>
+			<xsd:attribute name="space-url" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation>The url to the space that holds the memcached
+						key/value pairs.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="name" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Sets the processing unit name that will be deployed. By default it is
+						the
+						space name extracted from the space-url with the -memcached postfix.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="cluster-schema" type="xsd:string"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Controls the cluster schema of the deployment.
+						When there is an embedded space defined within the processing
+						unit set this value to partitioned
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="number-of-instances" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets the number of instances that will be
+						deployed as part of this processing unit instance. In case of
+						partitioned, defines the number of partitions.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="number-of-backups" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets the number of backups that will be
+						deployed
+						as part of this processing unit. Only applicable when the
+						processing unit has an embedded space.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="max-instances-per-vm" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation> Sets the maximum number of instances per
+						virtual machine.
+						On partitioned topology with backups topology,
+						controls that a
+						primary and a backup won't run on the same java
+						virtual machine if
+						set to 1.
+						On a non partitioned with backups
+						topology, controls the maximum
+						number of instances running on the
+						same java virtual machine.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="max-instances-per-machine" type="xsd:int"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets the maximum number of instances per
+						machine. On partitioned topology with backups topology, controls
+						that a primary and a backup won't run on the same machine if set
+						to 1.
+						On a non partitioned with backups topology, controls the
+						maximum
+						number of instances running on the same machine.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="zones" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Zone that define which Container the processing
+						unit is allowed to be deployed on.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="primary-zone" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Defines the zone where primary space instances should eb allocated.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="secured" type="xsd:boolean" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Will deploy a secured processing unit. Note, by
+						setting user details the processing unit will be secured
+						automatically.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="sla-location" type="xsd:string"
+				use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Sets an external SLA definition location to be
+						loaded.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+
+	<xsd:element name="application">
+		<xsd:annotation>
+			<xsd:documentation>
+				Creates a new application with the specified
+				processing units.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice minOccurs="1" maxOccurs="unbounded">
+				<xsd:element ref="pu">
+					<xsd:annotation>
+						<xsd:documentation>
+							Adds a new processing unit to the application.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="space">
+					<xsd:annotation>
+						<xsd:documentation>
+							Adds a new space to the application.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="memcached">
+					<xsd:annotation>
+						<xsd:documentation>
+							Adds a new memcached to the applicaiton.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="elastic-stateful-pu">
+					<xsd:annotation>
+						<xsd:documentation>
+							Adds a new elastic stateful processing unit to the application.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="elastic-stateless-pu">
+					<xsd:annotation>
+						<xsd:documentation>
+							Adds a new elastic stateless processing unit to the application.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="elastic-space">
+					<xsd:annotation>
+						<xsd:documentation>
+							Adds a new elastic space to the application.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="name" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						Sets the application name
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+
+    <xsd:simpleType name="elasticMachineProvisioningConfigType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <xsd:documentation>
+                    Allows to configure an Elastic Processing Unit machine provisioning that discovers existing machines.
+                </xsd:documentation>
+                <tool:annotation kind="ref">
+                    <tool:expected-type type="org.openspaces.admin.pu.elastic.ElasticMachineProvisioningConfig"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:union memberTypes="xsd:string"/>
+    </xsd:simpleType>
+
+	<xsd:element name="shared-machine-provisioning">
+        <xsd:annotation>
+            <xsd:documentation>
+                Configure the server side bean that starts and stops machines automatically.
+                For example, the bean could delegate the request to a cloud provider.
+
+                The machines returned by the 'machine provisioner' will be shared
+                by other processing unit instances with the same sharingId.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="elastic-machine-provisioning-config"  type="elasticMachineProvisioningConfigType" use="required">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <tool:annotation kind="ref">
+                            <tool:expected-type type="org.openspaces.admin.pu.elastic.ElasticMachineProvisioningConfig"/>
+                        </tool:annotation>
+                    </xsd:appinfo>
+					<xsd:documentation>
+                        Allows to configure an Elastic Processing Unit machine provisioning that discovers existing machines.
+                        This is a ref to a discovered-machine-provisioning bean.
+					</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="sharing-id" use="required" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        For sharing a machine between processing units, you would need to specify a sharing ID - a simple string identifying your sharing policy.
+                        This sharing ID is later used to match against other processing unit’s sharing ID - to allow or deny sharing the same machine resource.
+                    </xsd:documentation>
+                </xsd:annotation>
+                    </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="dedicated-machine-provisioning">
+        <xsd:annotation>
+            <xsd:documentation>
+                Configure the server side bean that starts and stops machines automatically.
+                For example, the bean could delegate the request to a cloud provider.
+
+                The machines returned by the 'machine provisioner' will be dedicated to the instances of this processing unit.
+                In other words, this processing unit will not share the machines with other processing units.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="elastic-machine-provisioning-config" type="elasticMachineProvisioningConfigType" use="required">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <tool:annotation kind="ref">
+                            <tool:expected-type type="org.openspaces.admin.pu.elastic.ElasticMachineProvisioningConfig"/>
+                        </tool:annotation>
+                    </xsd:appinfo>
+                    <xsd:documentation>
+                        Allows to configure an Elastic Processing Unit machine provisioning that discovers existing machines.
+                        This is a ref to a discovered-machine-provisioning bean.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="elastic-space">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                    <xsd:element ref="depends-on">
+                        <xsd:annotation>
+                            <xsd:documentation>Postpones deployment of processing unit
+                                instances until the specified dependency is met.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:choice>
+                <xsd:choice minOccurs="0" maxOccurs="1">
+                    <xsd:element ref="user-details">
+                        <xsd:annotation>
+                            <xsd:documentation>Sets the security user details for
+                                authentication and authorization of the processing unit.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:choice>
+                <xsd:choice minOccurs="0" maxOccurs="1">
+                    <xsd:element ref="shared-machine-provisioning">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Configure the server side bean that starts and stops machines automatically.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+					<xsd:element ref="dedicated-machine-provisioning">
+						<xsd:annotation>
+							<xsd:documentation>
+								Configure the server side bean that starts and stops machines automatically.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+                </xsd:choice>
+				<xsd:choice minOccurs="0" maxOccurs="1">
+					<xsd:element ref="manual-scale">
+						<xsd:annotation>
+							<xsd:documentation>
+								Defines a manual scaling strategy that consumes the specified memory capacity.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element ref="eager-scale">
+						<xsd:annotation>
+							<xsd:documentation>
+								Eager trigger scales the EPU on all available machines and new machines joining the GigaSpaces Grid.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+            </xsd:sequence>
+            <xsd:attribute name="name" type="xsd:string" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The space name (required)
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="memory-capacity-per-container-in-mb" type="xsd:positiveInteger"
+                           use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Specifies the the heap size per container (operating system process).
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="max-memory-capacity-in-mb" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>
+						Specifies an estimate of the maximum memory capacity for this processing unit.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+			<xsd:attribute name="number-of-partitions" type="xsd:positiveInteger" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Defines the number of processing unit partitions
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="number-of-backups-per-partitions" type="xsd:positiveInteger" use="optional" default="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Specifies the number of backup processing unit instances per partition.
+						Default is 1, this is an advanced property.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+            <xsd:attribute name="max-number-of-cpu-cores" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Specifies an estimate for the maximum total number
+                        of cpu cores used by this processing unit.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="highly-available" type="xsd:boolean" use="optional" default="true">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Specifies if the space should duplicate each information on two different machines.
+						Default is true.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="single-machine-deployment" type="xsd:boolean" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Allows deployment of the processing unit on a single machine,
+                        by lifting the limitation for primary and backup processing unit instances
+                        from the same partition to be deployed on different machines.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="secured" type="xsd:boolean" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Will deploy a secured processing unit. Note, by
+                        setting user details the processing unit will be secured
+                        automatically.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="elastic-stateful-pu">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                    <xsd:element ref="depends-on">
+                        <xsd:annotation>
+                            <xsd:documentation>Postpones deployment of processing unit
+                                instances until the specified dependency is met.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:choice>
+                <xsd:choice minOccurs="0" maxOccurs="1">
+                    <xsd:element ref="user-details">
+                        <xsd:annotation>
+                            <xsd:documentation>Sets the security user details for
+                                authentication and authorization of the processing unit.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:choice>
+                <xsd:choice minOccurs="0" maxOccurs="1">
+                    <xsd:element ref="shared-machine-provisioning">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Configure the server side bean that starts and stops machines automatically.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+					<xsd:element ref="dedicated-machine-provisioning">
+						<xsd:annotation>
+							<xsd:documentation>
+								Configure the server side bean that starts and stops machines automatically.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+                </xsd:choice>
+                <xsd:choice minOccurs="0" maxOccurs="1">
+					<xsd:element ref="manual-scale">
+						<xsd:annotation>
+							<xsd:documentation>
+								Defines a manual scaling strategy that consumes the specified memory capacity.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element ref="eager-scale">
+						<xsd:annotation>
+							<xsd:documentation>
+								Eager trigger scales the EPU on all available machines and new machines joining the GigaSpaces Grid.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+                </xsd:choice>
+            </xsd:sequence>
+			<xsd:attribute name="file" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Processing unit file path (processing unit jar/zip file or a directory).
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="puname" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Processing unit name (should exists under the [GS ROOT]/deploy directory).
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+            <xsd:attribute name="memory-capacity-per-container-in-mb" type="xsd:positiveInteger"
+                           use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Specifies the the heap size per container (operating system process).
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="max-memory-capacity-in-mb" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>
+						Specifies an estimate of the maximum memory capacity for this processing unit.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+			<xsd:attribute name="number-of-partitions" type="xsd:positiveInteger" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Defines the number of processing unit partitions
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="number-of-backups-per-partitions" type="xsd:positiveInteger" use="optional" default="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Specifies the number of backup processing unit instances per partition.
+						Default is 1, this is an advanced property.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+            <xsd:attribute name="max-number-of-cpu-cores" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Specifies an estimate for the maximum total number
+                        of cpu cores used by this processing unit.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="highly-available" type="xsd:boolean" use="optional" default="true">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Specifies if the space should duplicate each information on two different machines.
+						Default is true.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="single-machine-deployment" type="xsd:boolean" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Allows deployment of the processing unit on a single machine,
+                        by lifting the limitation for primary and backup processing unit instances
+                        from the same partition to be deployed on different machines.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="secured" type="xsd:boolean" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Will deploy a secured processing unit. Note, by
+                        setting user details the processing unit will be secured
+                        automatically.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+	<xsd:element name="elastic-stateless-pu">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:choice minOccurs="0" maxOccurs="unbounded">
+					<xsd:element ref="depends-on">
+						<xsd:annotation>
+							<xsd:documentation>Postpones deployment of processing unit
+								instances until the specified dependency is met.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+				<xsd:choice minOccurs="0" maxOccurs="1">
+					<xsd:element ref="user-details">
+						<xsd:annotation>
+							<xsd:documentation>Sets the security user details for
+								authentication and authorization of the processing unit.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+				<xsd:choice minOccurs="0" maxOccurs="1">
+					<xsd:element ref="shared-machine-provisioning">
+						<xsd:annotation>
+							<xsd:documentation>
+								Configure the server side bean that starts and stops machines automatically.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element ref="dedicated-machine-provisioning">
+						<xsd:annotation>
+							<xsd:documentation>
+								Configure the server side bean that starts and stops machines automatically.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+				<xsd:choice minOccurs="0" maxOccurs="1">
+					<xsd:element ref="manual-scale">
+						<xsd:annotation>
+							<xsd:documentation>
+								Defines a manual scaling strategy that consumes the specified memory capacity.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element ref="eager-scale">
+						<xsd:annotation>
+							<xsd:documentation>
+								Eager trigger scales the EPU on all available machines and new machines joining the GigaSpaces Grid.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:attribute name="file" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Processing unit file path (processing unit jar/zip file or a directory).
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="puname" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>
+						Processing unit name (should exists under the [GS ROOT]/deploy directory).
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="memory-capacity-per-container-in-mb" type="xsd:positiveInteger"
+						   use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						Specifies the the heap size per container (operating system process).
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="secured" type="xsd:boolean" use="optional">
+				<xsd:annotation>
+					<xsd:documentation>Will deploy a secured processing unit. Note, by
+						setting user details the processing unit will be secured
+						automatically.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

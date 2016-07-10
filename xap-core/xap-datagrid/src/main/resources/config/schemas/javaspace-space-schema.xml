@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<space-config>
+           <!-- if set to true, this space is not published in any directory service 
+           and therefore is not accessible for applications. Default value is false -->
+           <isPrivate>false</isPrivate>
+           <schema>javaspace</schema>
+           <!--distributed cache config name-->
+           <dist-cache>
+                <config-name>DefaultConfig</config-name>
+           </dist-cache>
+           <!--cluster configuration-->
+           <cluster>
+                <enabled>${com.gs.cluster.cluster_enabled}</enabled>
+                <config-url>${com.gs.cluster.config-url}</config-url>
+                <multicast>
+                    <!--Machine network card interface. Relevant when having multiple networks cards.-->
+                    <discovery-interface>localhost</discovery-interface>
+                </multicast>
+           </cluster>
+           <!-- all the persistent space relevant details -->
+           <persistent>
+           	   <enabled>false</enabled>             
+           </persistent>
+           <QueryProcessor>
+              <!--Space read timeout Default Value: -->
+              <space_read_lease_time>0</space_read_lease_time>
+              <!--Entry lease period Default Value: -->
+              <space_write_lease>9223372036854775807</space_write_lease>
+              <!--Transaction timeout Default Value: -->
+              <transaction_timeout>30000</transaction_timeout>
+              <!--Do we initialise JMX in QP ? Default Value: -->
+              <init_jmx>false</init_jmx>
+              <!-- Default Value: -->
+              <trace_exec_time>false</trace_exec_time>
+              <!-- Default Value: -->
+              <debug_mode>false</debug_mode>
+              <!-- Default Value: -->
+              <parser_case_sensetivity>true</parser_case_sensetivity>
+              <!-- Default Value: -->
+              <auto_commit>true</auto_commit>
+               <!-- Default Value: -->
+			  <date_format>yyyy-MM-dd</date_format>
+			   <!-- Default Value: -->
+			  <datetime_format>yyyy-MM-dd hh:mm:ss</datetime_format>
+			   <!-- Default Value: -->
+			  <time_format>hh:mm:ss</time_format>
+           </QueryProcessor>
+           <!--	Description: Lets you control whether or not entries undergo serialization. 
+			Setting this parameter to 0 (Object Serialization) specifies that neither the engine nor the proxy 
+			should perform any serialization. Entry meta data is transferred to and stored on the space as is.
+			When using the Object Serialization mode, user-defined classes must be part of the server CLASSPATH or
+			its java.rmi.server.codebase. User-defined classes must also implement the hashCode and equals methods, 
+			or the user may supply a codebase of user-defined class fields. 
+			Setting this parameter to 1 (Binary Serialization) specifies that 
+			all space entry attributes are transferred to the server as MarshalledObjects (mode 1) 
+			and stored as marshalled objects. 
+			Setting this parameter to 3 (Compressed Serialization) specifies that all space entry attributes are transferred 
+			to the server as compressed marshaled objects and stored as compressed marshalled objects.
+
+			Default fallback value in the code is 0 - (Object Serialization)
+			One can define ${com.gs.serialization} and set it using -Dcom.gs.serialization system property.
+			-->
+           <serialization-type>${com.gs.serialization}</serialization-type>
+           <!--number of retries to server-->
+           <retries>10</retries>
+           <!--number of notify retries-->
+           <notifier-retries>3</notifier-retries>           
+           <!-- Please refer to the com.gigaspaces.transport section under
+           /config/services/services.config file for the location of all the LRMI configuration settings. -->           
+           <engine>
+                <!-- An entry's attribute can be indexed using explicit or implicit indexing. 
+           		By default, when class attributes are indexed, a hash-based index is maintained. 
+           		The hash-based index is used for the regular JavaSpaces matching (i.e., "equals") 
+           		and accelerates the read () and take () operations. In order to accelerate the read () and take () 
+           		operations that use SQLQuery with greater than/less than operations, turn on the btree index.
+           		By default the btree index is NOT maintained for indexed class attributes (no value in <enabled-classes> )
+           		Leaving the btree index turned on impacts the write performance.
+  				To turn on the btree index, modify the space configuration file as follows (note the asterisk):
+  				<enabled-classes>*</enabled-classes> or <enabled-classes>classA,classB</enabled-classes>
+           		-->
+                <extended-match>
+                     <enabled-classes></enabled-classes>
+                     <!-- This parameter is the threshold where index is maintained  i.e. whenever 
+                     there are more than <min_ext_index_activation_size> amount of entries stored within the space 
+                     an extended index will be maintained. 
+                     Default value: 1 -->
+                     <min_ext_index_activation_size>1</min_ext_index_activation_size>
+                     <!-- Default value: 300 -->
+                     <regular-expressions-cache-size>300</regular-expressions-cache-size>
+                </extended-match>
+                <!--minimum threads in engine at starting GigaSpace Server-->
+                <min_threads>1</min_threads>
+                <!--maximum threads in engine-->
+                <max_threads>64</max_threads>
+                <!--minimum number of threads dedicated to the notify channel-->
+                <notify_min_threads>1</notify_min_threads>
+                <!--maximum number of threads dedicated to the notify channel-->
+                <notify_max_threads>64</notify_max_threads>
+                <!--if true, give to GS Engine threads higher priority-->
+                <threads_higher_priority>false</threads_higher_priority>
+                <!--default cache size of Cache Manager-->
+                <cache_size>50000</cache_size>
+                <!--0 - LRU POLICY, 1 - ALL IN CACHE , default value: 1 -->
+                <cache_policy>${com.gs.engine.cache_policy}</cache_policy>
+                <!--full visibility of the entries under transaction read/readIfExists-->
+                <dirty_read>false</dirty_read>
+                <!--VM heap size threshold usage percentage-->
+                <memory_usage>
+                	 <!--default value: true -->
+                     <enabled>${com.gs.memory_usage_enabled}</enabled>
+                     <!--VM heap size max threshold usage percentage-->
+                     <high_watermark_percentage>95</high_watermark_percentage>
+                     <!--VM heap size lower threshold percentage for blocking write-type operations-->
+                     <write_only_block_percentage>85</write_only_block_percentage>
+                     <!--VM heap size upper threshold percentage for checking only write-type operations-->
+                     <write_only_check_percentage>76</write_only_check_percentage>
+                     <!--VM heap size min threshold usage percentage-->
+                     <low_watermark_percentage>75</low_watermark_percentage>
+                     <!--Amount of entries to be evicted each time we are above the high_watermark_percentage-->
+                     <eviction_batch_size>500</eviction_batch_size>
+                     <!--Number of retries to lower the memory level below the low_watermark_percentage-->
+                     <retry_count>5</retry_count>
+                     <!--yield time between retries, allows GC to clean evicted entries, Default Value:50 (ms)-->
+					 <retry_yield_time>50</retry_yield_time>
+					 <!--If true GC will be called explicitly before trying to evict. Default Value:false-->
+					 <explicit-gc>false</explicit-gc>
+                </memory_usage>
+           </engine>
+           <!--interval in milliseconds between cleaning lease manager-->
+           <lease_manager>
+                <expiration_time_interval>10000</expiration_time_interval>
+                <expiration_time_recent_deletes>180000</expiration_time_recent_deletes>
+                <expiration_time_recent_updates>180000</expiration_time_recent_updates>
+           </lease_manager>
+           <!--RDBMS configuration-->
+           <init_sa_connections>10</init_sa_connections>
+           <max_sa_connections>20</max_sa_connections>
+           <!--if true all data will be lost, if WARM INIT FAILED-->
+           <sa_reset_on_failure>false</sa_reset_on_failure>
+           <!--if true all entries under transaction will be aborted, if the space failed to connect to Transaction Manager on WARM_INIT-->
+           <rollback_on_tm_failed>false</rollback_on_tm_failed>
+           <filters>
+                <!-- List of the available filters -->
+                <filter-names>Statistics</filter-names>
+                <!-- List of available filter operation codes: -->
+                	 <!--The operation codes defines the operations in which this filter will be called.-->
+                     <!-- 0 - Before write;-->
+                     <!-- 1 - After write;-->
+                     <!-- 2 - Before read;-->
+                     <!-- 3 - Before take;-->
+                     <!-- 4 - Before notify;-->
+                     <!-- 5 - Before getadmin;-->
+                     <!-- 6 - Before authentication;-->
+                     <!-- 7 - Before get collection;-->
+                     <!-- 8 - Before Clean space;-->
+                     <!-- 9 - Before update;-->
+                     <!-- 10 - After update;-->
+                     <!-- 11 - Before read multiple;-->
+                     <!-- 12 - After read multiple;-->
+                     <!-- 13 - Before take multiple;-->
+                     <!-- 14 - After take multiple;-->
+                     <!-- 15 - Before notify trigger operation;-->
+                     <!-- 16 - After notify trigger operation;-->
+                     <!-- 17 - Before all notify trigger operation;-->
+                     <!-- 18 - After all notify trigger operation;-->                                              
+                     <!-- 52 - Before remove;-->
+                     <!-- 53 - After remove;-->
+                <!-- Statistics module filter -->
+                <Statistics>
+                	 <!-- Default value: true -->
+                     <enabled>${com.gs.filters.statistics.enabled}</enabled>
+                     <class>com.j_spaces.core.filters.JSpaceStatistics</class>
+                     <active-when-backup>true</active-when-backup>
+				     <shutdown-space-on-init-failure>false</shutdown-space-on-init-failure>
+                     <url>none</url>
+                     <priority>1</priority>
+                     <operation-code>0, 2, 3, 4, 7, 8, 9, 12, 14, 15, 16, 20, 52, 25</operation-code>
+                     <pass-filter-entry>false</pass-filter-entry>
+                </Statistics>
+           </filters>
+           <!--GigaSpaces JMS API: this section lists all the Destinations bonded names-->
+           <jms>
+                <!--The JMS Admin Connection Factories details:
+                 The container and space names which are associated to this JMS Connection Factory-->
+                <connections>
+                     <!--the rmi port which is used for the spaceURL of the
+                    JMS connection factory. Default 10098 port is used.-->
+                     <rmi-port>10098</rmi-port>
+                </connections>
+                <!--Coma separated list of the JMS Admin objects.-->
+                <!--MyTopic/MyQueue are default destinations 
+				while TempTopic/TempQueue are default temporary destinations.-->
+                <administrated-destinations>
+                     <topics>
+                          <topic-names>MyTopic,TempTopic</topic-names>
+                     </topics>
+                     <queues>
+                          <queue-names>MyQueue,TempQueue</queue-names>
+                     </queues>
+                </administrated-destinations>
+           </jms>
+           <workers>
+                <worker-names>DurableServiceWorker</worker-names>
+                <!--interrupt the worker on shutdown-->
+                <interrupt>false</interrupt>
+                <DurableServiceWorker>
+                     <enabled>false</enabled>
+                     <class-name>com.j_spaces.jms.DurableServiceWorkerImpl</class-name>
+                     <arg>
+                     </arg>
+                     <description>Provides JMS Durable Subscriber capabilitiesfor jms clients</description>
+                     <!-- default is true -->
+					<active-when-backup>true</active-when-backup>
+					<!-- default is false -->
+					<shutdown-space-on-init-failure>false</shutdown-space-on-init-failure>
+					<!-- default is 1 -->					
+					<instances>1</instances>
+                </DurableServiceWorker>               
+           </workers>
+</space-config>

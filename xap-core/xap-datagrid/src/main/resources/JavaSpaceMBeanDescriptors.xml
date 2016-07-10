@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<MBean	type="JavaSpace" description="Provides a management interface for JavaSpace.">
+
+	<!-- Attribute: * - Required, other is optional
+		*name - The name of the attribute.
+		*type - The type or class name of the attribute.
+		description - A human readable description of the attribute.
+		isReadable - True if the attribute has a getter method, false otherwise.
+		isWritable - True if the attribute has a setter method, false otherwise.
+		isIs - True if this attribute has an "is" getter, false otherwise.
+	-->
+
+		<attribute name="spaceName" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="schema" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="isPrivate" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="embedded" type="java.lang.Boolean" isReadable="true" isIs="true" description=""/>
+		<attribute name="mirror-service.enabled" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="cluster.config-url" type="java.lang.String" isReadable="true" isWritable="true" description=""/>
+		<attribute name="cluster.enabled" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="cluster.multicast.discovery-interface" type="java.lang.String" isReadable="true" description=""/>
+		
+		<attribute name="persistent.enabled" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="persistent.StorageAdapterClass" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="persistent.AdapterType" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="persistent.DataBaseName" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="persistent.userName" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="persistent.password" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="persistent.Number_Sync_Objects" type="java.lang.Integer" isReadable="true" description=""/>
+		<attribute name="persistent.Check_Point_Period" type="java.lang.Integer" isReadable="true" description=""/>
+		<attribute name="persistent.Page_Pool_Size" type="java.lang.Integer" isReadable="true" description=""/>
+		<attribute name="persistent.Sync_On_Commit" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="persistent.StorageAdapterURL" type="java.lang.String" isReadable="true" description=""/>		
+		<attribute name="persistent.force-cold-init" type="java.lang.Boolean" isReadable="true" description=""/>
+
+		<attribute name="external-data-source.data-source-class" type="java.lang.String" isReadable="true" description=""/>		
+		<attribute name="external-data-source.data-class" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="external-data-source.supports-inheritance" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="external-data-source.supports-version" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="external-data-source.usage" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="external-data-source.init-properties-file" type="java.lang.String" isReadable="true" description=""/>
+		
+		<attribute name="filters.filter-names" type="java.lang.String" isReadable="true" description=""/>		
+		<attribute name="filters.userAccountDriver" type="java.lang.String" isReadable="true" description=""/>
+		
+		<attribute name="filters.DefaultSecurityFilter.enabled" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="filters.DefaultSecurityFilter.class" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="filters.DefaultSecurityFilter.active-when-backup" type="java.lang.Boolean" isReadable="true" description=""/>		
+		<attribute name="filters.DefaultSecurityFilter.shutdown-space-on-init-failure" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="filters.DefaultSecurityFilter.operation-code" type="java.lang.String" isReadable="true" description=""/>
+		
+		<attribute name="filters.Statistics.enabled" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="filters.Statistics.class" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="filters.Statistics.active-when-backup" type="java.lang.Boolean" isReadable="true" description=""/>		
+		<attribute name="filters.Statistics.shutdown-space-on-init-failure" type="java.lang.Boolean" isReadable="true" description=""/>
+		<attribute name="filters.Statistics.operation-code" type="java.lang.String" isReadable="true" description=""/>
+		
+		<attribute name="workers.worker-names" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="workers.interrupt" type="java.lang.Boolean" isReadable="true" description=""/>
+
+		<attribute name="dist-cache.config-name" type="java.lang.String" isReadable="true" isWritable="true" description=""/>
+		<attribute name="engine.cache_policy" type="java.lang.String" isReadable="true" isWritable="true" description=""/>
+		<attribute name="engine.cache_size" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+		<attribute name="engine.max_threads" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+		<attribute name="engine.min_threads" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+		<attribute name="engine.notify_max_threads" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+		<attribute name="engine.notify_min_threads" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+		<attribute name="engine.threads_higher_priority" type="java.lang.Boolean" isReadable="true" isWritable="true" description=""/>
+
+		<attribute name="init_sa_connections" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+		<attribute name="lease_manager.expiration_time_interval" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+		<attribute name="notifier-retries" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+		<attribute name="retries" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+		<attribute name="rollback_on_tm_failed" type="java.lang.Boolean" isReadable="true" isWritable="true" description=""/>
+		<attribute name="serialization-type" type="java.lang.String" isReadable="true" isWritable="true" description=""/>
+		<attribute name="statisticsStringArray" type="[Ljava.lang.String;" isReadable="true" description=""/>
+		<attribute name="statisticsSamplingRate" type="java.lang.Long" isReadable="true" isWritable="true" description=""/>
+		<attribute name="state" type="java.lang.Integer" isReadable="true" description=""/>
+		<attribute name="stateString" type="java.lang.String" isReadable="true" description=""/>
+		<attribute name="replicationStatus" type="[Ljava.lang.Object;" isReadable="true" description="Returns the replication member-status relation of all the replication groups."/>
+
+		
+
+
+	<!-- Operation: * - Required, other is optional
+		*name - The name of the method.
+		*type - The type of the method's return value.
+		*impact - The impact of the method, one of INFO, ACTION, ACTION_INFO, UNKNOWN.
+		description - A human readable description of the operation.
+		signature - MBeanParameterInfo objects describing the parameters(arguments) of the method.
+
+		Signature: the list of parameters info
+		Parameter: * - Required, other is optional
+		*name - The name of the data
+		*type - The type or class name of the data
+		description - A human readable description of the data.
+	-->
+	<operation name="getSpace" type="com.j_spaces.core.IJSpace" impact="ACTION" description="Returns the space proxy that this manageable bean governs."/>
+	<operation name="getStatistics" type="com.j_spaces.core.filters.StatisticsContext" impact="ACTION" description="Returns a StatisticsContext for specific filter operation code">
+		<signature>
+			<parameter name="operationCode" type="java.lang.Integer" description="Filter operation code"/>
+		</signature>
+	</operation>
+	<!-- operation name="clean" type="void" impact="ACTION" description="Cleans this space."/-->
+	<operation name="count" type="int" impact="ACTION" description="Returns the number of entries.">
+		<signature>
+			<parameter name="className" type="java.lang.String" description=""/>
+		</signature>
+	</operation>
+	<!--operation name="clear" type="void" impact="ACTION" description="Removes the entries that match the specified template.">
+		<signature>
+			<parameter name="className" type="java.lang.String" description=""/>
+		</signature>
+	</operation-->
+	<operation name="ping" type="void" impact="ACTION" description="Checks whether the space is alive and accessible."/>
+
+	<!-- operation name="spaceCopy" type="void" impact="ACTION" description="Copies all entries/notify templates from the space.">
+		<signature>
+			<parameter name="remoteUrl" type="java.lang.String" description="Space url of the remote space to copy from."/>
+			<parameter name="template" type="net.jini.core.entry.Entry" description="Entry template or null."/>
+			<parameter name="includeNotifyTemplates" type="java.lang.Boolean" description="If true ALL notify templates will be copied too."/>
+			<parameter name="chunkSize" type="java.lang.Integer" description="Chunk size (batch) for this copy operation."/>
+		</signature>
+	</operation -->
+
+	<operation name="getClusterPolicy" type="com.j_spaces.core.cluster.ClusterPolicy" impact="ACTION" description="Returns Cluster Policy instance."/>
+
+	<operation name="getRuntimeInfo" type="com.j_spaces.core.admin.SpaceRuntimeInfo" impact="ACTION" description="Returns RuntimeInfo instance."/>
+	
+	<operation name="getTemplatesInfo" type="java.util.List" impact="ACTION" description="Returns List of templates info.">
+		<signature>
+			<parameter name="className" type="java.lang.String" description="Class name."/>
+		</signature>
+	</operation>
+
+	<operation name="getURL" type="com.j_spaces.core.client.SpaceURL" impact="ACTION" description="SpaceURL instance which was used to initialize the space."/>
+
+	<!--constructor name="JMXSpace">
+		<signature>
+			<parameter name="" type="" description=""/>
+			...
+		</signature>
+	</constructor-->
+
+	<!--notifier name="" description="">
+		<types>type1,type2,...</types>
+	</notifier-->
+</MBean>

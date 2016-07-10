@@ -1,0 +1,1670 @@
+options {
+STATIC = false;
+UNICODE_INPUT=true;
+}
+PARSER_BEGIN(SqlParser)
+
+package com.j_spaces.jdbc.parser.grammar;
+
+import com.j_spaces.jdbc.parser.*;
+import com.j_spaces.jdbc.driver.*;
+import com.j_spaces.jdbc.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.text.ParsePosition;
+import java.util.Iterator;
+import java.math.BigDecimal;
+import java.io.Reader;
+import com.j_spaces.core.client.TemplateMatchCodes;
+
+public class SqlParser {
+	
+    private int conditionIndex = 0;
+   
+	// TOKEN_EXTENDS=com.j_spaces.jdbc.parser.SerializableToken
+    public static void main(String[] args) throws ParseException {
+        SqlParser parser = new SqlParser(System.in);
+        while(true) {
+            try {
+            	
+                Query query = parser.parseStatement();
+                System.out.println("Query received and parsed: " );
+                System.out.println(query);
+            }catch (Exception e) 
+            { 
+                System.err.println("Caught Exception - error in query"); 
+                e.printStackTrace();
+                parser.ReInit(System.in);
+                System.exit(-1);
+            }
+        }
+    }
+
+    public void reset(Reader reader)
+	{
+  		conditionIndex=0;
+		ReInit(reader);
+	}
+
+}
+
+PARSER_END(SqlParser)
+
+
+SKIP:
+{
+    " "
+  | "\n"
+  | "\r"
+  | "\t"
+}
+
+TOKEN [IGNORE_CASE]:  /* Keywords */
+{
+   < ALTER: "alter" >
+  | < ADD: "add" > 
+  | < ALL: "all" >
+  | < AND: "and" >
+  | < ASC: "asc" >
+  | < AVG: "avg" >
+  | < BETWEEN: "between" >
+  | < BY: "by" >
+  | < CREATE: "create" >
+  | < CALL: "call" >
+  | < DROP: "drop" >
+  | < DEFAULT_NULL: "default null" >
+  | < DESC: "desc" >
+  | < DISTINCT: "distinct" >
+  | < END: "end" >
+  | < FROM: "from" >
+  | < GROUP: "group" >
+  | < IN: "in" >
+  | < IS: "is" >
+  | < LIKE: "like" >
+  | < RLIKE: "rlike" >
+  | < MAX: "max" >
+  | < MIN: "min" >
+  | < NOT: "not" >
+  | < NULL: "null" >
+  | < OR: "or" >
+  | < ORDER: "order" >
+  | < SELECT: "select" >
+  | < SUBSTR: "substr" >
+  | < SUM: "sum" >
+  | < SYSDATE: "sysdate" >
+  | < WHERE: "where" >
+  | < COUNT: "count" >
+  | < DELETE: "delete" >
+  | < EXCEPTION: "exception" >
+  | < ROWNUM: "rownum" >
+  | < INDEX: "index" >
+  | < INSERT: "insert" >
+  | < INTO: "into" >
+  | < SET: "set" >
+  | < TABLE: "table" >
+  | < FOR_UPDATE: "for update" >
+  | < UPDATE: "update" >
+  | < UNION: "union" >
+  | < VALUES: "values" >
+  | < COMMIT: "commit" >
+  | < ROLLBACK: "rollback" >
+  | < PRIMARY_KEY: "primary key" >
+  | < PARTITION_BY: "partition by" >
+  | < UID: "uid" >
+  | < USING: "using">
+  | < AS: "as" >
+  | < NULLS_LAST: "nulls last" >
+  | < NULLS_FIRST: "nulls first" >
+
+	  // Data types,
+	
+	| <DATE:        "date">
+	| <DATETIME:    "datetime">
+	| <TIME:        "time">
+	| <FLOAT:       "float">
+	| <REAL:		"real">
+	| <DOUBLE:      "double">
+	| <NUMBER:      "number">
+	| <DECIMAL:     "decimal">
+	| <NUMERIC:     "numeric">
+	| <BOOLEAN:     "boolean">
+	| <INTEGER:     "integer">
+	| <VARCHAR:     "varchar">
+	| <VARCHAR2:    "varchar2">
+	| <CHAR:		"char">
+	| <LONG: 		"long">
+	| <CLOB:		"clob">
+	| <BLOB:		"blob">
+	| <EMPTY_CLOB:	"empty_clob()">
+	| <EMPTY_BLOB:	"empty_blob()">
+	| <LOB:			"lob">
+    | <TRUE:        "true">
+    | <FALSE:       "false">
+    | <INT:			"int">
+    | <TIMESTAMP:   "timestamp">
+    | <LONGVARCHAR: "longvarchar">
+    | <TINYINT: 	"tinyint">
+    | <SMALLINT:	"smallint">
+    | <BIGINT:		"bigint">
+	| <BIT:			"bit">
+    
+}
+
+TOKEN:  /* Identifiers */
+{
+    <IDENTIFIER: <LETTER> ( "." | "*" | "_" | "`" |<LETTER> | <DIGIT> )* >
+  | <ESC_IDENTIFIER: "`" <IDENTIFIER> "`" >
+  | < #LETTER: ["_","A"-"Z", "a"-"z"] >
+  | < #DIGIT: ["0"-"9"] >
+  | <RELATION: <LETTER> (<LETTER> | <DIGIT>)* ":" (<LETTER> | <DIGIT>)+ >
+}
+
+TOKEN:  /* Literals */
+{
+  	< INTEGER_LITERAL: (["0"-"9"])+ >
+  |	< LONG_LITERAL: (["0"-"9"])+"L" >
+  | < FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])+ (<EXPONENT>)?
+        | "." (["0"-"9"])+ (<EXPONENT>)?
+        | (["0"-"9"])+ <EXPONENT>
+        | (["0"-"9"])+ (<EXPONENT>)?
+    >
+  | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+  | < STRING_LITERAL: "'" (~["'"])* ( "''" (~["'"])* )* "'" >
+  | < DATE_LITERAL: "'" (["0"-"3"]["0"-"9"])"/"(["0"-"1"]["0"-"9"])"/"(["0"-"9"]["0"-"9"]["0"-"9"]["0"-"9"]) "'">
+}
+
+TOKEN:  /* Separators and operators */
+{
+    < ASSIGN: ":=" >
+  | < CONCAT: "||" >
+  | < SEMICOLON: ";" >
+  | < DOT: "." >
+  | < ROWTYPE: "%ROWTYPE" >
+  | < TILDE: "~" >
+  | < LESS: "<" >
+  | < LESSEQUAL: "<=" >
+  | < GREATER: ">" >
+  | < GREATEREQUAL: ">=" >
+  | < EQUAL: "=" >
+  | < NOTEQUAL: "!=" >
+  | < NOTEQUAL2: "<>" >
+  | < JOINPLUS: "(+)" >
+  | < OPENPAREN: "(" >
+  | < CLOSEPAREN: ")" >
+  | < OPENBRACKET: "[" >
+  | < CLOSEBRACKET: "]" >
+  | < ASTERISK: "*" >
+  | < SLASH: "/" >
+  | < PLUS: "+" >
+  | < MINUS: "-" >
+  | < QUESTIONMARK: "?" >
+  | < OPENBRAKET: "{" >
+  | < CLOSEBRAKET: "}" >
+  | < COLLECTION_CONTAINS: "[*]" >
+ 
+}
+
+// start statement methods
+Query parseStatement():
+{ Query query;
+}
+{
+    (
+        (     query = selectSql()
+            | query = deleteSql()
+            | query = insertSql()
+            | query = updateSql()
+            | query = createTable()
+            | query = dropTable()
+            | query = alterTable()
+            | query = commit()
+            | query = executeProcedure())
+    )  (<SEMICOLON>|<EOF>)
+  { return query; }
+}
+
+
+/* statement methods */
+
+Query selectSql():
+{ SelectQuery query;
+  ExpNode exp = null;
+}
+{
+    ( <SELECT> {query = new SelectQuery();}
+        [setQuantifier(query) ]
+		[<OPENPAREN>]
+        selectColumnList(query)
+        [<CLOSEPAREN>]
+         <FROM>
+         selectTableList(query)
+         [<WHERE> exp = SqlExpression(query)]
+         [ groupBy(query)]
+         [orderBy(query)]
+         [<FOR_UPDATE> { query.setForUpdate(true); }]
+    )
+    {
+    	query.setExpTree(exp);
+    	return query;
+    }
+
+}
+
+// handle SQLQuery syntax (no from clause)
+AbstractDMLQuery readMultipleQuery():
+ {
+   AbstractDMLQuery query;
+}
+{
+   
+        ( query = executeProcedure()
+   		 | query = selectSqlQuery()
+        
+           )
+      (<SEMICOLON>|<EOF>)
+  { return query; }
+}
+
+// handle SQLQuery syntax (no from clause)
+SelectQuery selectSqlQuery():
+{
+    SelectQuery query = new SelectQuery();
+	
+    ExpNode exp = null;	
+}
+{
+    (
+         [ exp = SqlExpression(query)]
+       	 [ groupBy(query)]
+         [orderBy(query)]
+         [<FOR_UPDATE> { query.setForUpdate(true); }]
+    ) 
+    {
+     	SelectColumn selectC = new SelectColumn("*");
+     	query.addColumn(selectC);
+     	
+    	query.setExpTree(exp);
+    	return query;
+    }
+
+}
+
+// handle SQLQuery syntax (no from clause)
+DeleteQuery deleteSqlQuery():
+{ 
+	DeleteQuery query = new DeleteQuery();
+	ExpNode exp = null;	
+}
+{
+    ( [exp = SqlExpression(query)]
+    ) (<SEMICOLON>|<EOF>)
+    {
+    	query.setExpTree(exp);
+    	return query;
+    }
+}
+
+// handle SQLQuery syntax (no from clause)
+SelectQuery countSqlQuery():
+{
+    SelectQuery query = new SelectQuery();
+    ExpNode exp = null;	
+}
+{
+    (
+         [ exp = SqlExpression(query)]
+       	 [ groupBy(query)]
+         [orderBy(query)]
+         [<FOR_UPDATE> { query.setForUpdate(true); }]
+    )  (<SEMICOLON>|<EOF>)
+    {
+     	SelectColumn selectC = new SelectColumn("*");
+     	selectC.setCount(true);
+     	selectC.setFunctionName(SqlConstants.COUNT);
+        query.setAggFunction(true);
+     	query.addColumn(selectC);
+     	
+    	query.setExpTree(exp);
+    	return query;
+    }
+
+}
+
+Query deleteSql():
+{ 
+	DeleteQuery query;
+	ExpNode exp = null;	
+}
+{
+    ( <DELETE> {query = new DeleteQuery();} <FROM>
+        tableNameWithOptionalAlias(query)
+        [<WHERE> exp = SqlExpression(query)]
+    )
+    {
+    	query.setExpTree(exp);
+    	return query;
+    }
+}
+
+Query updateSql():
+{ 
+	UpdateQuery query;
+	ExpNode exp = null;	
+}
+{
+    ( <UPDATE> {query = new UpdateQuery();}
+        ((<BY> <UID>) {query.setByUid(true);} | tableNameWithOptionalAlias(query))
+     <SET>
+        columnListWithValues(query)
+     [<WHERE> exp = SqlExpression(query)]
+    )
+    {
+    	query.setExpTree(exp);
+    	return query;
+    }
+    
+}
+
+Query insertSql():
+{ InsertQuery query; 
+  Query innerQuery = null;}
+{
+    ( <INSERT> {query = new InsertQuery();} <INTO>
+        tableName(query) 
+         [ LOOKAHEAD(2) <OPENPAREN> columnList(query) <CLOSEPAREN>]
+        (<VALUES> <OPENPAREN> insertValuesList(query) <CLOSEPAREN>
+         | [<OPENPAREN>] innerQuery = selectSql() {query.setQuery((SelectQuery)innerQuery);} [<CLOSEPAREN>]
+        )
+    )
+    {return query;}
+}
+
+Query createTable():
+{ CreateTableQuery query; 
+  Token column, PKName;
+  String table,type;
+  ArrayList columns;
+  ArrayList types;
+  ArrayList indices;
+  int index = 0;
+  }
+{
+	<CREATE> <TABLE> {query = new CreateTableQuery();}
+	(table = className() {query.setTableName(table);
+						  columns = new ArrayList();
+						  types = new ArrayList();
+						  indices = new ArrayList();})
+	<OPENPAREN> column = id() {
+								String columnName = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? column.image :
+     	     													  column.image.toUpperCase();
+								columns.add(columnName);
+							}
+				type = sqlType()  {types.add(type);} [( (<PRIMARY_KEY> [<NOT> <NULL>]) | (<INDEX>)) {indices.add(new Integer(index));}] [<DEFAULT_NULL>]
+		("," 
+		  ((<PRIMARY_KEY> <OPENPAREN> 
+				 PKName = id() {for (int i=0; i<columns.size(); i++) {
+				 							if (PKName.image.equalsIgnoreCase((String)(columns.get(i)))) {
+				 								indices.add(new Integer(i));
+				 								break;
+				 							}
+				 						}}
+			("," PKName = id() {for (int i=0; i<columns.size(); i++) {
+				 							if (PKName.image.equalsIgnoreCase((String)(columns.get(i)))) {
+				 								indices.add(new Integer(i));
+				 								break;
+				 							}
+				 						}})*
+						 <CLOSEPAREN>
+		  )
+		 | (<PARTITION_BY> <OPENPAREN> column = id()
+		 				{
+		   					if (query.getRoutingFieldName() != null)
+		   						throw new ParseException("PARTITION BY can only be set for one column!");
+	 						columnName = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? column.image :
+								  column.image.toUpperCase();									   						
+		   					query.setRoutingFieldName(columnName);
+		 				} <CLOSEPAREN>)	 
+		 |(column = id() { 
+		 						columnName = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? column.image :
+     	     													  column.image.toUpperCase();
+		 						columns.add(columnName);
+		 					}
+				type = sqlType()  {types.add(type); index++;} [( (<PRIMARY_KEY> [<NOT> <NULL>]) | (<INDEX>)) {indices.add(new Integer(index));}] [<DEFAULT_NULL>])
+		))*
+	<CLOSEPAREN>
+	{String[] namesArray = new String[columns.size()];
+	 String[] typesArray = new String[types.size()];
+	 boolean[] indicesArray = new boolean[types.size()];
+     Iterator it = indices.iterator();
+     while (it.hasNext()) {
+     	indicesArray[((Integer)it.next()).intValue()] = true;
+     }
+	 query.setColumnNames((String[])columns.toArray(namesArray));
+	 query.setColumnTypes((String[])types.toArray(typesArray));
+	 query.setIndices(indicesArray);
+	 return query;
+	}
+}
+
+Query dropTable():
+{ DropTableQuery query;
+  String table;
+}
+{
+	<DROP> <TABLE> {query = new DropTableQuery();} 
+	table = className() {
+		query.setTableName(table);
+		return query;
+	}
+}
+
+Query alterTable():
+{ AlterTableQuery query;
+  Token index;
+  String table;
+  ArrayList columns;
+}
+{
+	<ALTER> <TABLE> {query = new AlterTableQuery();}
+	table = className() {query.setTableName(table);}
+	<ADD> <PRIMARY_KEY> <OPENPAREN> {columns = new ArrayList(); }
+	index = id() { String columnName = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? index.image :
+     	     													  index.image.toUpperCase();
+							columns.add(columnName);
+						}
+	("," index = id() { columnName = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? index.image :
+     	     													  index.image.toUpperCase();
+								columns.add(columnName);
+							})*
+	<CLOSEPAREN> <USING> <INDEX>
+	{ String[] names = new String[columns.size()];
+	  query.setIndices((String[])columns.toArray(names));
+	  return query;
+	}
+}
+
+  
+Query commit():
+{ CommitQuery query; }
+{
+	(<COMMIT> { query = new CommitQuery(true); }
+	| <ROLLBACK> { query = new CommitQuery(false); })
+	{return query;}
+	
+}
+
+ProcedureQuery executeProcedure() :
+{ ProcedureQuery query=null;
+  Token  procedure, parameter;
+  String negative = "";
+  ArrayList parmList =  new ArrayList();;
+}
+{
+
+    <CALL>    {query = new ProcedureQuery();}
+    procedure = id() {String procName = procedure.image;
+                             query.setProcName(procName);}
+    <OPENPAREN>
+    [(parameter = <STRING_LITERAL> {String parameterName = parameter.image;
+                                   query.addParamList(parameterName);}
+    | parameter = <INTEGER_LITERAL> { query.addParamList(new Integer(parameter.image)); } 
+    | parameter = <LONG_LITERAL> { query.addParamList(new Long(parameter.image.substring(0,parameter.image.length()-1))); } 
+    | parameter = <FLOATING_POINT_LITERAL> { query.addParamList(new Float(parameter.image)); } {negative="";}
+    | parameter = id(){query.addParamList(procedure.image);}
+    | parameter = <QUESTIONMARK> { query.setPrepared(true); query.addParamList(null); ++conditionIndex;} )
+                                       
+    ("," (parameter = <STRING_LITERAL> { String parameterName = parameter.image;
+                                   query.addParamList(parameterName);}
+    | parameter = <INTEGER_LITERAL> { query.addParamList(new Integer(parameter.image)); negative="";} 
+     | parameter = <LONG_LITERAL> { query.addParamList(new Long(parameter.image.substring(0,parameter.image.length()-1))); } 
+    | parameter = <FLOATING_POINT_LITERAL> { query.addParamList(new Float(parameter.image)); negative="";}
+    | parameter = id(){query.addParamList(procedure.image);}
+     | parameter = <QUESTIONMARK> { query.setPrepared(true); query.addParamList(null); ++conditionIndex;}
+     ))*]
+    <CLOSEPAREN>
+ 
+    {
+      return query;
+      }
+}
+
+
+/* specific clause methods */
+
+//check for the distinct
+void setQuantifier(SelectQuery query) :
+{}
+{  ( <DISTINCT>) { query.setDistinct(true); }
+   | (<ALL>)     { query.setDistinct(false); }
+}
+//retrieve a list of columns that are seperated by a comma
+void columnList(AbstractDMLQuery query):
+{ Token column = null;}
+{ 
+     (column = id()) { String columnName = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? column.image :
+     	     													  column.image.toUpperCase();
+     							query.addColumn(columnName);
+     						}
+     ("," (column = id()) { columnName = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? column.image :
+     	     													  column.image.toUpperCase();
+     								query.addColumn(columnName);
+     							})*
+}
+
+//retrieve a list of columns that are seperated by a comma for a select Query
+void selectColumnList(SelectQuery query):
+{
+  Token column = null;
+  Token value = null;
+  SelectColumn selectC = null;}
+{ 
+	 [LOOKAHEAD(2) id() "."]
+     (
+       (selectC = getSelectColumn(query)    	
+     	|<ASTERISK>  { selectC = new SelectColumn("*");  }
+     	| <UID> { selectC = new SelectColumn("UID");   } 
+ 	    | value = <STRING_LITERAL> selectC = getSelectColumn(query) { selectC.setValue(value.image); }
+ 	    )
+     	{  if ( selectC != null) {
+  	   	     query.addColumn(selectC);
+  	   	  }
+  	 	}
+       | LOOKAHEAD(2) function((SelectQuery)query))
+     ("," [LOOKAHEAD(2) id() "."]
+	    ( ( selectC = getSelectColumn(query)
+	     |<ASTERISK>  { selectC = new SelectColumn("*");  }
+	     | <UID> { selectC = new SelectColumn("UID");  }
+ 	    
+ 	    | value = <STRING_LITERAL> selectC = getSelectColumn(query) { selectC.setValue(value.image); }
+	     
+	      ) 
+	     { if ( selectC != null) {
+  	   	     query.addColumn(selectC);
+  	   	   }
+	  	 }
+	  	| LOOKAHEAD(2) function((SelectQuery)query))
+	  )*
+	  
+	   {query.addAbsentCol();}
+}
+
+void columnListWithValues(UpdateQuery query) :
+{ 
+  ArrayList<LiteralNode> newValues = new ArrayList<LiteralNode>();
+}
+{
+	setColumnValue(query, newValues)
+    ("," setColumnValue(query, newValues))*
+    
+    {
+    	query.setUpdatedValues(newValues);
+    }
+}
+
+
+void setColumnValue(UpdateQuery updateQuery, ArrayList<LiteralNode> newValues) :
+{ Token column, newValue ; 
+  String negative = "";
+  UpdateColumn updateColumn = null;
+  Token selfIncrementedColumn;
+  }
+{
+	(column = id() 
+		{
+			String columnName = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? column.image : column.image.toUpperCase();
+			updateColumn = new UpdateColumn(columnName);
+			updateQuery.addUpdateColumn(updateColumn);
+		}
+	) "=" [<MINUS> { negative="-";}]
+    (newValue = <QUESTIONMARK> { updateQuery.setPrepared(true); newValues.add(new PreparedNode(null)); ++conditionIndex;} 
+    | newValue = <STRING_LITERAL> { newValues.add(new LiteralNode(newValue.image.substring(1,newValue.image.length()-1))); } //clear the first and last "'"
+    | newValue = <INTEGER_LITERAL> { newValues.add(new LiteralNode(negative + newValue.image)); } 
+    | newValue = <LONG_LITERAL> { newValues.add(new LiteralNode(negative + newValue.image.substring(0,newValue.image.length()-1))); } 
+    | newValue = <FLOATING_POINT_LITERAL> { newValues.add(new LiteralNode(negative + newValue.image)); }
+    | <TRUE>                     {newValues.add(new LiteralNode(Boolean.TRUE));}
+    | <FALSE>                    {newValues.add(new LiteralNode(Boolean.FALSE));}
+    | <EMPTY_CLOB>		   { newValues.add(new LiteralNode(new Clob("")));}
+	| <EMPTY_BLOB>		   { newValues.add(new LiteralNode(new Blob(new byte[0])));}
+	| <NULL>		   	  { newValues.add(new LiteralNode(null));}
+	// Handle: SET column = column + 1
+	|	selfIncrementedColumn =id(){
+		    columnName = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ?
+		    	selfIncrementedColumn.image : selfIncrementedColumn.image.toUpperCase();
+	   		updateColumn.setSelfIncrementedColumnName(columnName);
+	   		updateQuery.setSelfIncrementedUpdateColumn(true);	}
+		<PLUS> newValue = <INTEGER_LITERAL> { newValues.add(new LiteralNode(negative + newValue.image)); }		
+	) 
+    
+}
+
+
+void function(SelectQuery query):
+{Token token = null;
+ SelectColumn selectC = null;
+ String alias = null;}
+{
+	(<SUM> { selectC = new SelectColumn(); selectC.setSum(true);selectC.setFunctionName(SqlConstants.SUM); query.setAggFunction(true); }
+	|<COUNT> { selectC = new SelectColumn(); selectC.setCount(true);selectC.setFunctionName(SqlConstants.COUNT); query.setAggFunction(true); }  
+	|<MAX> { selectC = new SelectColumn(); selectC.setFunctionName(SqlConstants.MAX); query.setAggFunction(true); }
+	|<MIN> { selectC = new SelectColumn(); selectC.setFunctionName(SqlConstants.MIN); query.setAggFunction(true);}
+	|<AVG> { selectC = new SelectColumn(); selectC.setFunctionName(SqlConstants.AVG); query.setAggFunction(true); }) 
+	
+	<OPENPAREN>
+		(<ASTERISK> {selectC.setName("*"); query.addColumn(selectC);}
+		| (token = id()) { 
+			
+    	    String id = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? token.image : token.image.toUpperCase();
+
+			selectC.setName(id);
+			query.addColumn(selectC); })	
+	<CLOSEPAREN>
+
+	// Optional Column-Alias
+	([< AS >] token = id() { selectC.setAlias(token.image); }	)?
+			
+}
+/*
+
+ColumnNode createColumnNode(AbstractDMLQuery query,String columnFunc):
+{
+ String table = null;
+ String columnName = null;
+ ColumnNode columnNode = null;
+ Token t, function = null;
+ }
+ {
+    LOOKAHEAD(2) function = <IDENTIFIER> <OPENPAREN> t = id()  <CLOSEPAREN> {
+        String id =  (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? t.image : t.image.toUpperCase();
+        columnNode = new ColumnNode(id);
+        columnNode.setFunctionName(function.image);
+        return columnNode;
+    }
+ 	|(t = id() {
+    	 String id =  (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? t.image : t.image.toUpperCase();
+    	 columnNode = new ColumnNode(id);
+    })
+
+    {return columnNode;}
+}
+
+*/
+
+ColumnNode createColumnNode(AbstractDMLQuery query,String columnFunc):
+{
+ String table = null;
+ String columnName = null;
+ ColumnNode columnNode = null;
+ Token t, function = null;
+ java.util.List params;
+ }
+ {
+    LOOKAHEAD(2) function = <IDENTIFIER> <OPENPAREN> params = createFunctionParams()  <CLOSEPAREN> {
+        java.util.List args = new java.util.ArrayList();
+        int pos = 0;
+        int columnIndex = 0;
+        for(Object p : params){
+            if(p instanceof ColumnNode){
+               if(columnNode == null){
+                   args.add(null);
+                   columnNode = (ColumnNode)p;
+                   columnIndex = pos;
+               }else{
+                   throw new ParseException("More then one column in function call " + function.image + " call " + columnNode + " " + p);
+               }
+            }else{
+                args.add(p);
+            }
+            pos += 1;
+        }
+        if(columnNode == null){
+            throw new ParseException("Missing column in function call " + function.image);
+        }
+        columnNode.setFunctionCallDescription(new com.j_spaces.jdbc.builder.range.FunctionCallDescription(function.image, columnIndex, args));
+        return columnNode;
+    }
+ 	|(t = id() {
+    	 String id =  (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? t.image : t.image.toUpperCase();
+    	 columnNode = new ColumnNode(id);
+    })
+
+    {return columnNode;}
+}
+
+java.util.List createFunctionParams():
+{
+    java.util.List params = new java.util.ArrayList();
+    Object param;
+}
+{
+    param = param() {
+        params.add(param);
+    }
+    ("," param = param() {
+        params.add(param);
+     })*
+     { return params; }
+}
+
+
+Object param():
+{
+  Token parameter;
+}
+{
+     parameter = <STRING_LITERAL> {return new String(parameter.image.substring(1, parameter.image.length() - 1)); }
+     | parameter = <INTEGER_LITERAL> { return new Integer(parameter.image); }
+     | parameter = <LONG_LITERAL> { return new Long(parameter.image.substring(0, parameter.image.length() - 1)); }
+     | parameter = <FLOATING_POINT_LITERAL> { return (new Float(parameter.image)); }
+     | parameter = id()
+                        {
+                          String id =  (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? parameter.image : parameter.image.toUpperCase();
+                          return new ColumnNode(id);
+                        }
+}
+
+
+//retrieve a list of tables in a select query
+void selectTableList(SelectQuery query):
+{ String table = null; 
+  Token alias = null;}
+{
+    (table = className()) [ alias = id() ]
+    {query.addTableWithAlias(table, ((alias == null) ? null : alias.image)); alias = null; }
+    ("," (table = className()) [ alias = id() ]
+    {query.addTableWithAlias(table, ((alias == null) ? null : alias.image)); alias = null; })*
+}
+
+void tableNameWithOptionalAlias(AbstractDMLQuery query):
+{ String tableName = null; Token tableAlias = null; }
+{
+	(tableName = className()) [ tableAlias = id() ]
+	{ query.addTableWithAlias(tableName, ((tableAlias == null)? null : tableAlias.image)); }		   
+}
+
+void tableName(AbstractDMLQuery query):
+{ String table = null; }
+{
+    //the table is a java class identifier name
+    (table = className())
+    {query.setTableName(table);}
+}
+
+void insertValuesList(InsertQuery insertQuery):
+{ Token t = null; 
+String negative = "";
+ArrayList<LiteralNode> list = new ArrayList<LiteralNode>();}
+{
+	(t = <QUESTIONMARK> { insertQuery.setPrepared(true); list.add(new PreparedNode(null));}
+      | <TRUE>                     {list.add(new LiteralNode(Boolean.TRUE));}
+      | <FALSE>                    {list.add(new LiteralNode(Boolean.FALSE));}
+      | <NULL>					   {list.add(new LiteralNode(null));}
+	| <EMPTY_CLOB>		   { list.add(new LiteralNode(new Clob("")));}
+	| <EMPTY_BLOB>		   { list.add(new LiteralNode(new Blob(new byte[0])));}
+    | t = <STRING_LITERAL> { list.add(new LiteralNode(new String(t.image.substring(1,t.image.length()-1)))); } //clear the first and last "'"
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <INTEGER_LITERAL> { list.add(new LiteralNode(negative + t.image)); }
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <LONG_LITERAL> { list.add(new LiteralNode(negative + t.image.substring(0,t.image.length()-1))); }     
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <FLOATING_POINT_LITERAL> { list.add(new LiteralNode(negative + t.image)); }) {negative="";}
+    ("," (t = <QUESTIONMARK> { insertQuery.setPrepared(true); list.add(new PreparedNode(null));}
+    | <TRUE>                     {list.add(new LiteralNode(Boolean.TRUE));}
+    | <FALSE>                    {list.add(new LiteralNode(Boolean.FALSE));}
+    | <NULL>					 {list.add(new LiteralNode(null));}
+    | <EMPTY_CLOB>		   { list.add(new LiteralNode(new Clob("")));}
+	| <EMPTY_BLOB>		   { list.add(new LiteralNode(new Blob(new byte[0])));}
+    | t = <STRING_LITERAL> { list.add(new LiteralNode(new String(t.image.substring(1,t.image.length()-1)))); } //clear the first and last "'"
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <INTEGER_LITERAL> { list.add(new LiteralNode(negative + t.image)); } 
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <LONG_LITERAL> { list.add(new LiteralNode(negative + t.image.substring(0,t.image.length()-1))); } 
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <FLOATING_POINT_LITERAL> { list.add(new LiteralNode(negative + t.image)); }
+    ) {negative="";} )*
+    {insertQuery.setValues(list);}
+}
+
+void groupBy(SelectQuery query):
+{
+ SelectColumn groupColumn = null;
+ ArrayList list = new ArrayList();}
+{
+  <GROUP> <BY>
+	groupColumn = getSelectColumn(query){ 
+							list.add(groupColumn);
+						  }
+  ("," 
+	groupColumn = getSelectColumn(query){ 
+							list.add(groupColumn);
+						  }
+  )*
+  {query.setGroupColumn(list);}
+}
+
+void orderBy(SelectQuery query):
+{Token column = null;
+ OrderColumn orderColumn = null;
+ ArrayList list = new ArrayList();}
+{
+	<ORDER> <BY> 
+	   (
+	      orderColumn = createOrderColumn(query)
+	    )
+	    {
+			list.add(orderColumn);
+	    }
+	   [ (<ASC> {orderColumn.setDesc(false);} | <DESC> {orderColumn.setDesc(true);} ) ]
+	 [ (<NULLS_LAST> {orderColumn.setNullsLast(true);} | <NULLS_FIRST> {orderColumn.setNullsLast(false);} ) ]
+
+	((","
+	   (
+	      orderColumn = createOrderColumn(query)
+	    )
+	    {
+			list.add(orderColumn);
+	    }
+			
+	)
+	[ (<ASC> {orderColumn.setDesc(false);} | <DESC> {orderColumn.setDesc(true);} ) ]
+	 [ (<NULLS_LAST> {orderColumn.setNullsLast(true);} | <NULLS_FIRST> {orderColumn.setNullsLast(false);} ) ]
+	
+	)*
+	{query.setOrderColumns(list);}
+}
+
+
+OrderColumn createOrderColumn(AbstractDMLQuery query):
+{
+  String id = null;
+  SelectColumn col = null;
+  Token t = null;
+  String alias = null;
+}
+{    
+    t = id() 
+    {
+    	id = QueryProcessor.getDefaultConfig().isParserCaseSensitivity()? t.image : t.image.toUpperCase();         
+    }
+
+	// Optional Column-Alias
+	([< AS >] t = id() { alias = t.image; })?
+	
+    {
+       	return new OrderColumn(id, alias);       	
+    } 
+}
+SelectColumn getSelectColumn(AbstractDMLQuery query):
+{
+  String id = null;
+  SelectColumn col = null;
+  Token t = null;
+  String alias = null;
+}
+{    
+    t = id() 
+    {
+    	id = QueryProcessor.getDefaultConfig().isParserCaseSensitivity()? t.image : t.image.toUpperCase();         
+    }
+
+	// Optional Column-Alias
+	([< AS >] t = id() { alias = t.image; })?
+	
+    {
+       	col = new SelectColumn(id, alias);       	
+        return col;
+    } 
+}
+
+ExpNode SqlExpression(AbstractDMLQuery query):
+{
+ExpNode exp1;
+ExpNode exp2;
+}
+{
+	exp1 = SqlAndExpression(query) 
+     (<OR>  exp2 = SqlAndExpression(query)
+     {
+     	exp1 = new OrNode(exp1,exp2); 
+     }
+     )*
+
+    {
+    	return exp1;		
+    }
+}
+
+ExpNode SqlAndExpression(AbstractDMLQuery query):
+{
+ExpNode exp1;
+ExpNode exp2;
+}
+{
+    exp1 = SqlSimpleExpression(query) 
+    ( <AND> exp2 = SqlSimpleExpression(query)
+    {
+    	exp1 =  new AndNode(exp1,exp2); 
+    }
+    )*
+    {
+    	return exp1;
+    }
+}
+
+
+ExpNode SqlSimpleExpression(AbstractDMLQuery query):
+{
+	ExpNode exp;
+}
+{
+	(exp =  condition(query)
+	|
+    <OPENPAREN> exp = SqlExpression(query) <CLOSEPAREN>)
+    {
+    	return exp;
+    }
+}
+
+ExpNode SqlContainsItemExpression(AbstractDMLQuery query):
+{
+ExpNode exp1;
+ExpNode exp2;
+}
+{
+    exp1 = SqlContainsItemSimpleExpression(query) 
+    ( <AND> exp2 = SqlContainsItemSimpleExpression(query)
+    {
+    	exp1 =  new AndNode(exp1,exp2); 
+    }
+    )*
+    {
+    	return exp1;
+    }
+}
+
+ExpNode SqlContainsItemSimpleExpression(AbstractDMLQuery query):
+{
+	ExpNode exp;
+}
+{
+	(exp =  containtsItemSimpleCondition(query)
+	|
+    <OPENPAREN> exp = SqlContainsItemSimpleExpression(query) <CLOSEPAREN>)
+    {
+    	return exp;
+    }
+    
+}
+
+//handle one condition insinde contains, NOTE-currently no nested contains
+ExpNode containtsItemSimpleCondition(AbstractDMLQuery query) : 
+{ Token t, table1 = null, table2 = null, addup = null, operator = null ;
+	ColumnNode columnNode1 = null, columnNode2 = null;
+	
+	ValueNode valueNode = null;
+	String negative = "";
+	ExpNode expNode = null;
+	Token startIndex,endIndex;
+	short templateMatchCode = TemplateMatchCodes.EQ;
+	StringBuilder columnPath = null;
+	}
+{
+	<ROWNUM> 
+	(
+	  {
+			throw new ParseException("ROWNUM not supported inside contains");			
+	  } 
+	)
+	| columnNode1 = createColumnNode(query,null) { }
+	(
+		(
+		  (
+			// CONTAINS nested contains
+          	<COLLECTION_CONTAINS> {
+          		query.setContainsQuery(true);
+          		columnPath = new StringBuilder(columnNode1.toString());
+          		columnPath.append("[*]");
+          	}
+
+	   		( < COLLECTION_CONTAINS > { columnPath.append("[*]"); } )*
+			(
+	          	(<DOT> t = id() {
+	          	  	String columnNameSuffix = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? t.image : t.image.toUpperCase();          	  	
+	          	  	columnPath.append(".");
+	          	  	columnPath.append(columnNameSuffix);
+	          	 }
+	          	)
+				( < COLLECTION_CONTAINS > { columnPath.append("[*]"); } )*				  
+			)*	
+		 )
+		 {
+			expNode = containtsItemSimpleConditionImpl(query, columnPath, columnNode1, true);
+		 } 
+		)
+			|  expNode = containtsItemSimpleConditionImpl(query, columnPath, columnNode1, false)
+     )
+
+     {
+       return expNode;
+     }
+     
+}
+
+//handle one condition inside contains
+ExpNode containtsItemSimpleConditionImpl(AbstractDMLQuery query, StringBuilder columnPath, ColumnNode columnNode1, boolean insideInternalContains) : 
+{
+  ExpNode expNode = null;
+}
+{
+	(
+         LOOKAHEAD(2) expNode = containsInItemNode(query,columnNode1,columnPath)
+       | LOOKAHEAD(2) expNode = containsBetweenItemNode(query,columnNode1,columnPath)
+	   | expNode = containsSimpleItemNode(query,columnNode1,columnPath,insideInternalContains) )
+     {
+       return expNode;
+     }
+     
+}
+
+
+
+ExpNode SqlInClause(AbstractDMLQuery query):
+{
+	ExpNode exp;
+	boolean notIn = false;
+}
+{
+    //[<NOT>] <IN> <OPENPAREN> (SQLExpressionList() | SubQuery()) <CLOSEPAREN>
+    [<NOT> {notIn = true;}] <IN> <OPENPAREN> exp = inExprOrList(query,notIn)<CLOSEPAREN>
+    {
+    	return exp;
+    }
+}
+
+
+
+String className() :
+{ StringBuffer buffer = new StringBuffer();
+  Token name = null;
+}
+{
+	name = id() {buffer.append(name.image);}
+	( ("." {buffer.append(".");}|"$" {buffer.append("$");}) 
+		name=id() {buffer.append(name.image);})*
+		
+	{String classname = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? buffer.toString() : buffer.toString().toUpperCase();  
+  	 return classname;}
+}
+
+String sqlType() :
+{ Token param, param2=null;}
+{
+	try {
+		(<VARCHAR> | <VARCHAR2>) [<OPENPAREN> <INTEGER_LITERAL> <CLOSEPAREN>]{ return String.class.getName(); }
+		| <CHAR> [<OPENPAREN> <INTEGER_LITERAL> <CLOSEPAREN>]{ return String.class.getName(); }
+		| <DATE> { return Date.class.getName(); }
+		| <DATETIME> { return Timestamp.class.getName(); }
+		| <NUMBER> <OPENPAREN> param = <INTEGER_LITERAL> ["," param2 = <INTEGER_LITERAL>] <CLOSEPAREN> 
+			{ if (param2 != null && !param2.image.equals("0"))
+				return Double.class.getName();
+			  int p = Integer.parseInt(param.image); 
+			  if (p < 10) 
+			  	return Integer.class.getName();
+			  else
+			  	return Long.class.getName();
+			}
+		| <TIME> { return Time.class.getName(); }
+		| <FLOAT> [<OPENPAREN> <INTEGER_LITERAL> <CLOSEPAREN>]{ return Float.class.getName(); }
+		| <REAL> [<OPENPAREN> <INTEGER_LITERAL> <CLOSEPAREN>]{ return Float.class.getName(); }
+		| <DOUBLE> { return Double.class.getName(); }
+		| <BOOLEAN> { return Boolean.class.getName();}
+		| (<INTEGER> | <INT>) { return Integer.class.getName(); }
+		| <LONG> { return Long.class.getName(); }
+		| <BLOB> { return Blob.class.getName(); }
+		| <CLOB> { return Clob.class.getName(); }
+	    | <TIMESTAMP> { return Timestamp.class.getName(); }
+	    | <DECIMAL> { return BigDecimal.class.getName(); }
+	    | <NUMERIC> { return BigDecimal.class.getName(); }
+	    | <LONGVARCHAR> { return String.class.getName(); }
+	    | <TINYINT> { return Byte.class.getName(); }
+	    | <SMALLINT> { return Short.class.getName(); }
+	    | <BIGINT> { return Long.class.getName(); }
+		| <BIT> [<OPENPAREN> <INTEGER_LITERAL> <CLOSEPAREN>]{ return String.class.getName(); }
+	} catch (ParseException p) {
+		throw new ParseException("unknown sql data type");
+	}
+}
+
+Token id() :
+{ Token id = null;
+}
+{
+ 	(id= <IDENTIFIER> ) { return id; }
+	| (id = <ESC_IDENTIFIER>)
+	{
+	  	String idStr = id.image.substring(1,id.image.length()-1);
+     	id.image=idStr;
+     	return id;
+	}
+
+  
+      
+}
+
+
+
+//handle one condition, and add it to the Query object
+ExpNode condition(AbstractDMLQuery query) : 
+{ Token t, table1 = null, table2 = null, addup = null, operator = null ;
+	ColumnNode columnNode1 = null, columnNode2 = null;
+	
+	ValueNode valueNode = null;
+	String negative = "";
+	ExpNode expNode = null;
+	Query innerQuery = null;
+	RowNumNode rowNum;
+	Token startIndex,endIndex;
+	}
+{
+	<ROWNUM> 
+	( 
+		<EQUAL> t = <INTEGER_LITERAL>  { int temp = Integer.parseInt(t.image);
+										 rowNum= new RowNumNode(temp,temp);
+									   }
+       | <LESS>	t = <INTEGER_LITERAL>  { temp = Integer.parseInt(t.image);
+										 rowNum= new RowNumNode(1, temp-1);
+									   }
+       | <LESSEQUAL> t = <INTEGER_LITERAL>  { temp = Integer.parseInt(t.image);
+										 	  rowNum= new RowNumNode(1, temp);
+									   		}
+       | <GREATER>  t = <INTEGER_LITERAL>   { temp = Integer.parseInt(t.image);
+										 	  rowNum= new RowNumNode(temp+1,Integer.MAX_VALUE);
+									        }
+       | <GREATEREQUAL> t = <INTEGER_LITERAL> { temp = Integer.parseInt(t.image);
+										 	    rowNum= new RowNumNode(temp,Integer.MAX_VALUE);
+									          }
+	   |<OPENPAREN>  startIndex = <INTEGER_LITERAL> "," endIndex = <INTEGER_LITERAL> <CLOSEPAREN> 
+	     { 
+	        rowNum= new RowNumNode(Integer.parseInt(startIndex.image),Integer.parseInt(endIndex.image));
+	     }
+	)
+	{   if( query.getRownum() != null)
+			throw new ParseException("Can't define more than a single condition for rownum. To specify range use rownum(from,to)");			
+		query.setRownum(rowNum);
+		return null;}
+	|
+	columnNode1 = createColumnNode(query,null) {} 
+      (
+      	expNode = containsNode(query,columnNode1)          	          	 
+      | expNode = isNullNode(query,columnNode1)
+	  | expNode = betweenNode(query,columnNode1)
+      | expNode = conditionNode(query,columnNode1)
+      | expNode = relationNode(query, columnNode1)
+
+     ) {return expNode;}
+}
+
+ExpNode relationNode(AbstractDMLQuery query,ColumnNode columnNode) :
+{
+	ValueNode valueNode = null;
+	ExpNode res = null;
+	Token rel = null;
+	Token t;
+}
+{
+  rel = <RELATION> t = <QUESTIONMARK> { query.setPrepared(true);
+                                        valueNode = new PreparedNode(null,++conditionIndex);
+                                        res = new RelationNode(columnNode, rel.image, valueNode);
+			                          }
+  { return res; }
+}
+
+
+ExpNode conditionNode(AbstractDMLQuery query,ColumnNode columnNode1) :
+{
+	Token t, addup = null, operator = null ;
+	ValueNode valueNode = null;
+	ExpNode expNode = null;
+	String negative = "";
+	Query innerQuery = null;
+	ColumnNode columnNode2 = null;
+}
+{
+    (
+      LOOKAHEAD(2)(
+            (
+                 <EQUAL>        { expNode = new EqualNode(); 	}
+                | <LESS>		{ expNode = new LTNode(); 		}
+                | <LESSEQUAL>   { expNode = new LTENode(); 		}
+                | <GREATER>     { expNode = new GTNode();	 	}
+                | <GREATEREQUAL>{ expNode = new GTENode(); 		}
+                | <NOTEQUAL>    { expNode = new NotEqualNode(); } 
+                | <NOTEQUAL2>   { expNode = new NotEqualNode();	} 
+                | <LIKE>        { expNode = new LikeNode();}
+                | <NOT> <LIKE>  { expNode = new NotLikeNode(); }
+                | <RLIKE>       { expNode = new RLikeNode();}
+            ) 
+            ( 
+            	t = <QUESTIONMARK> { query.setPrepared(true); valueNode = new PreparedNode(null,++conditionIndex); } 
+                | t = <STRING_LITERAL> { valueNode = new LiteralNode(new String(t.image.substring(1,t.image.length()-1))); } //clear the first and last "'"
+                | t = <TRUE>  {valueNode = new LiteralNode(Boolean.TRUE);}
+                | t = <FALSE> {valueNode = new LiteralNode(Boolean.FALSE);}
+                | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <INTEGER_LITERAL> { valueNode = new LiteralNode(negative + t.image); } 
+                | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <LONG_LITERAL> { valueNode = new LiteralNode(negative + t.image.substring(0,t.image.length()-1)); } 
+                | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <FLOATING_POINT_LITERAL> { valueNode = new LiteralNode(negative + t.image); }
+                | t = <DATE_LITERAL> {valueNode = new LiteralNode(t.image); }
+               	| <SYSDATE> [ (operator = <PLUS> | operator = <MINUS>) addup = <INTEGER_LITERAL>] { 
+               		Calendar cal = Calendar.getInstance();
+               		if (addup != null) {
+               			if (operator.image.equals("+"))
+               				cal.add(Calendar.DATE,Integer.parseInt(addup.image));
+               			else if (operator.image.equals("-"))
+               				cal.add(Calendar.DATE,-(Integer.parseInt(addup.image)));	
+               		}
+               		valueNode = new LiteralNode(new java.sql.Timestamp(cal.getTime().getTime()));
+               	  }
+               	// Inner query
+               	| (<OPENPAREN> innerQuery = selectSql()
+               	{ valueNode = new InnerQueryNode((SelectQuery)innerQuery); query.setContainsSubQueries(true); }              
+               	  <CLOSEPAREN>) 				
+				| columnNode2 = createColumnNode(query,null) {
+			
+			    } 
+    	   )
+        )
+        | LOOKAHEAD(2) (expNode = SqlInClause(query))
+		        {
+		          expNode.setLeftChild(columnNode1);
+		          return expNode;
+		        }           
+    )
+    {
+      expNode.setLeftChild(columnNode1);
+     if ( columnNode2 == null )
+     	expNode.setRightChild(valueNode);
+     else {     	
+     	expNode.setRightChild(columnNode2);
+     }
+     return expNode;}
+}
+
+ExpNode isNullNode(AbstractDMLQuery query,ColumnNode columnNode1) :
+{
+	IsNullNode expNode = null;
+}
+{
+   (
+       LOOKAHEAD(2) <IS> <NULL> { expNode = new IsNullNode(columnNode1, new LiteralNode(null)); } 
+  	 | LOOKAHEAD(2) <IS> <NOT> <NULL>
+   		{
+   		  expNode = new IsNullNode(columnNode1, new LiteralNode(null));
+          expNode.setNot(true);
+        }
+    )
+    {return expNode;}
+}
+
+AndNode betweenNode(AbstractDMLQuery query,ColumnNode columnNode1) :
+{
+	ValueNode valueNode = null;
+	ExpNode expNode = null;
+}
+{
+  <BETWEEN> {
+				ExpNode gteNode = new GTENode(columnNode1, null);
+				ExpNode lteNode = new LTENode(columnNode1, null);
+			}
+			( valueNode = getBetweenValueNode(query) { gteNode.setRightChild(valueNode); } )
+			<AND>
+			( valueNode = getBetweenValueNode(query) { lteNode.setRightChild(valueNode); } )
+			{ return new AndNode(gteNode, lteNode);	}
+}
+
+
+ExpNode containsSimpleItemNode(AbstractDMLQuery query,ColumnNode columnNode1,StringBuilder columnPath, boolean insideInternalContains) :
+{
+Token t, table1 = null, table2 = null, addup = null, operator = null ;
+	ColumnNode columnNode2 = null;
+	
+	ValueNode valueNode = null;
+	String negative = "";
+	ExpNode expNode = null;
+	Token startIndex,endIndex;
+	short templateMatchCode = TemplateMatchCodes.EQ;
+	ContainsItemNode containsItems =null;
+}
+{
+	(
+  
+      	<EQUAL> { templateMatchCode = TemplateMatchCodes.EQ; }
+     	| <LESS> { templateMatchCode = TemplateMatchCodes.LT; }
+      	| <LESSEQUAL> { templateMatchCode = TemplateMatchCodes.LE; }
+      	| <GREATER> { templateMatchCode = TemplateMatchCodes.GT; }
+      	| <GREATEREQUAL> { templateMatchCode = TemplateMatchCodes.GE; }
+      	| <NOTEQUAL> { templateMatchCode = TemplateMatchCodes.NE; }
+      	| <NOTEQUAL2> { templateMatchCode = TemplateMatchCodes.NE; }	         
+        | <LIKE>        { templateMatchCode = TemplateMatchCodes.REGEX; }
+        | <NOT> <LIKE>  { templateMatchCode = TemplateMatchCodes.NOT_REGEX; }
+       	| (<OPENPAREN>
+       		{
+       		  columnNode1.setName(columnPath.toString());
+       		  valueNode = new ContainsItemsRootNode(SqlContainsItemExpression(query),columnPath.toString(),columnNode1);
+       		}
+       		<CLOSEPAREN> )
+       		{
+				if ( insideInternalContains)
+       		 	 return new ContainsItemNode(columnNode1,valueNode,templateMatchCode);
+
+				 throw new ParseException("invalid token inside contains conditions");	
+       		}				
+       )
+	  	(
+	    	t = <QUESTIONMARK> { query.setPrepared(true); valueNode = new PreparedNode(null,++conditionIndex); } 
+	        | t = <STRING_LITERAL> { valueNode = new LiteralNode(new String(t.image.substring(1,t.image.length()-1))); } //clear the first and last "'"
+	        | t = <TRUE>  {valueNode = new LiteralNode(Boolean.TRUE);}
+	        | t = <FALSE> {valueNode = new LiteralNode(Boolean.FALSE);}
+	        | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <INTEGER_LITERAL> { valueNode = new LiteralNode(new Integer(negative + t.image)); } 
+	        | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <LONG_LITERAL> { valueNode = new LiteralNode(negative + t.image.substring(0,t.image.length()-1)); } 
+	        | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <FLOATING_POINT_LITERAL> { valueNode = new LiteralNode(negative + t.image); }
+	        | t = <DATE_LITERAL> {valueNode = new LiteralNode(t.image); }
+	    )
+	    {
+	      	if (columnPath != null)
+	    		 columnNode1.setName(columnPath.toString());
+	   		return new ContainsItemNode(columnNode1, valueNode, templateMatchCode);
+	    }
+}
+AndNode containsBetweenItemNode(AbstractDMLQuery query,ColumnNode columnNode1,StringBuilder columnPath) :
+{
+	       ValueNode gteValue ,lteValue ;
+}
+{
+	 <BETWEEN>
+		(  gteValue = getBetweenValueNode(query)  )
+		<AND>
+		( lteValue = getBetweenValueNode(query)  )
+		{
+			if (columnPath != null)
+		 		columnNode1.setName(columnPath.toString());
+			ExpNode gteNode = new ContainsItemNode(columnNode1, gteValue, TemplateMatchCodes.GE);
+			ExpNode lteNode = new ContainsItemNode(columnNode1, lteValue,TemplateMatchCodes.LE);
+		  
+		    return new AndNode(gteNode, lteNode);
+		 }
+}
+
+ExpNode containsInItemNode(AbstractDMLQuery query,ColumnNode columnNode1,StringBuilder columnPath) :
+{
+    ExpNode inNode;
+	boolean notIn = false;
+}
+{
+     [ <NOT> {notIn = true;}] <IN> <OPENPAREN> inNode = inExprOrList(query,notIn)<CLOSEPAREN>
+    {
+			if (columnPath != null)
+		 		columnNode1.setName(columnPath.toString());
+			inNode.setLeftChild(columnNode1);
+
+			return new ContainsItemNode(columnNode1, inNode, TemplateMatchCodes.IN);
+    }
+}
+
+
+AndNode containsBetweenNode(AbstractDMLQuery query,ColumnNode columnNode1,String column) :
+{
+	       ValueNode gteValue ,lteValue ;
+}
+{
+<BETWEEN>
+		(  gteValue = getBetweenValueNode(query)  )
+		<AND>
+		( lteValue = getBetweenValueNode(query)  )
+		{
+			columnNode1.setName(column);
+			ExpNode gteNode = new ContainsNode(columnNode1, gteValue, TemplateMatchCodes.GE);
+			ExpNode lteNode = new ContainsNode(columnNode1, lteValue,TemplateMatchCodes.LE);
+		  
+		   return new AndNode(gteNode, lteNode);
+		 }
+}
+
+ExpNode containsSimpleNode(AbstractDMLQuery query,ColumnNode columnNode1,String column) :
+{
+	ValueNode valueNode = null;
+	short templateMatchCode;
+}
+{
+	(
+	  	<EQUAL> { templateMatchCode = TemplateMatchCodes.EQ; }
+	 	| <LESS> { templateMatchCode = TemplateMatchCodes.LT; }
+	  	| <LESSEQUAL> { templateMatchCode = TemplateMatchCodes.LE; }
+	  	| <GREATER> { templateMatchCode = TemplateMatchCodes.GT; }
+	  	| <GREATEREQUAL> { templateMatchCode = TemplateMatchCodes.GE; }
+	  	| <NOTEQUAL> { templateMatchCode = TemplateMatchCodes.NE; }
+	  	| <NOTEQUAL2> { templateMatchCode = TemplateMatchCodes.NE; }	         
+	    | <LIKE>        { templateMatchCode = TemplateMatchCodes.REGEX; }
+	    | <NOT> <LIKE>  { templateMatchCode = TemplateMatchCodes.NOT_REGEX; }
+   	  )
+     valueNode = valueNode(query)
+     {
+		columnNode1.setName(column);
+		return new ContainsNode(columnNode1, valueNode, templateMatchCode);
+     }
+}
+ExpNode containsInNode(AbstractDMLQuery query,ColumnNode columnNode1,String column) :
+{
+    ExpNode inNode;
+	boolean notIn = false;
+}
+{
+     [ <NOT> {notIn = true;}] <IN> <OPENPAREN> inNode = inExprOrList(query,notIn)<CLOSEPAREN>
+    {
+        columnNode1.setName(column);
+		inNode.setLeftChild(columnNode1);
+        
+		return new ContainsNode(columnNode1, inNode, TemplateMatchCodes.IN);
+    }
+}
+
+ExpNode containsNode(AbstractDMLQuery query,ColumnNode columnNode1) :
+{
+	Token t;
+	ValueNode valueNode = null;
+	String negative = "";
+	ExpNode expNode = null;
+	ContainsItemNode containsItems =null;
+}
+{
+	(
+	       (
+	       <COLLECTION_CONTAINS> {
+          		query.setContainsQuery(true);
+          		StringBuilder columnPath = new StringBuilder(columnNode1.toString());
+          		columnPath.append("[*]");
+          		short templateMatchCode = TemplateMatchCodes.EQ;
+          	}
+
+	   		( < COLLECTION_CONTAINS > { columnPath.append("[*]"); } )*
+			(
+	          	(<DOT> t = id() {
+	          	  	String columnNameSuffix = (QueryProcessor.getDefaultConfig().isParserCaseSensitivity()) ? t.image : t.image.toUpperCase();          	  	
+	          	  	columnPath.append(".");
+	          	  	columnPath.append(columnNameSuffix);
+	          	 }
+	          	)
+				( < COLLECTION_CONTAINS > { columnPath.append("[*]"); } )*				  
+			)*
+			)
+          	(
+          	  	expNode = containsSingleNode(query,columnNode1,columnPath.toString())
+          		|expNode = containsMultipleNode(query,columnNode1,columnPath.toString())
+          		
+	         )
+	       )
+   {
+		return expNode;
+   }				
+}
+
+ExpNode containsMultipleNode(AbstractDMLQuery query,ColumnNode columnNode1,String columnPath) :
+{
+	ValueNode valueNode = null;
+}
+{
+  ( <OPENPAREN>
+  		{
+      	  columnNode1.setName(columnPath);
+      	  valueNode = new ContainsItemsRootNode(SqlContainsItemExpression(query),columnPath,columnNode1);
+      	 }
+	<CLOSEPAREN> 				
+  )
+ {
+	 return new ContainsItemNode(columnNode1,valueNode,TemplateMatchCodes.EQ);
+ }
+}
+
+ExpNode containsSingleNode(AbstractDMLQuery query,ColumnNode columnNode1,String column) :
+{
+	ExpNode expNode = null;
+}
+{
+   (
+     LOOKAHEAD(2)  expNode = containsInNode(query,columnNode1,column)
+    | LOOKAHEAD(2) expNode = containsBetweenNode(query,columnNode1,column)
+    | expNode = containsSimpleNode(query,columnNode1,column)
+   )
+   {
+		return expNode;
+   }
+   
+}
+
+
+ValueNode valueNode(AbstractDMLQuery query) :
+{
+	Token t;
+	ValueNode valueNode = null;
+	String negative = "";
+}
+{
+(
+ 	 t = <QUESTIONMARK> { query.setPrepared(true); valueNode = new PreparedNode(null,++conditionIndex); } 
+                | t = <STRING_LITERAL> { valueNode = new LiteralNode(new String(t.image.substring(1,t.image.length()-1))); } //clear the first and last "'"
+                | t = <TRUE>  {valueNode = new LiteralNode(Boolean.TRUE);}
+                | t = <FALSE> {valueNode = new LiteralNode(Boolean.FALSE);}
+                | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <INTEGER_LITERAL> { valueNode = new LiteralNode(new Integer(negative + t.image)); } 
+                | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <LONG_LITERAL> { valueNode = new LiteralNode(negative + t.image.substring(0,t.image.length()-1)); } 
+                | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <FLOATING_POINT_LITERAL> { valueNode = new LiteralNode(negative + t.image); }
+                | t = <DATE_LITERAL> {valueNode = new LiteralNode(t.image); })
+
+     {
+		return valueNode;
+     }
+}
+
+ExpNode inExprOrList(AbstractDMLQuery query,boolean isNot) : 
+{
+Query innerQuery = null;
+ExpNode expNode = null;
+HashSet<LiteralNode> valuelist;
+}
+{
+       (innerQuery = selectSql()
+       	{  
+       	    if (isNot) {
+       	      	expNode = new NotInNode();
+       	    } else {       	      
+        	 	expNode = new InNode();
+        	}
+        	query.setContainsSubQueries(true); 
+       	 	expNode.setRightChild(new InnerQueryNode((SelectQuery)innerQuery));
+        	return expNode;
+       	})
+     | ( valuelist = inValueList(query)
+       {
+            if (isNot)
+            {
+       	      expNode = new NotInNode();
+       	      ((NotInNode)expNode).setValuesList(valuelist);
+       	    }
+       	    else 
+       	    { 
+        	  expNode = new InNode();
+        	((InNode)expNode).setValuesList(valuelist);
+        	} 
+        	return expNode;
+       })
+}
+
+
+LiteralNode parseInValue(AbstractDMLQuery query) : 
+{
+  Token t = null;
+  LiteralNode value = null;
+  String negative = "";
+}
+{	
+	(t = <TRUE>            {value = new LiteralNode(Boolean.TRUE);}
+    | <FALSE>              {value = new LiteralNode(Boolean.FALSE);}
+    | <NULL>			   {value = new LiteralNode(null);}
+	| <EMPTY_CLOB>		   { value = new LiteralNode(new Clob(""));}
+	| <EMPTY_BLOB>		   { value = new LiteralNode(new Blob(new byte[0]));}
+	| <QUESTIONMARK>       { query.setPrepared(true); value =  new PreparedNode(null, ++conditionIndex); } 
+    | t = <STRING_LITERAL> { value = new LiteralNode(new String(t.image.substring(1,t.image.length()-1))); } //clear the first and last "'"
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <INTEGER_LITERAL> { value = new LiteralNode(negative + t.image); } 
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <LONG_LITERAL> { value = new LiteralNode(negative + t.image.substring(0,t.image.length()-1)); }     
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <FLOATING_POINT_LITERAL> { value = new LiteralNode(negative + t.image); })
+    {
+      return value;
+    }
+}
+ 
+HashSet<LiteralNode> inValueList(AbstractDMLQuery query) : 
+{
+  LiteralNode value = null;
+  HashSet<LiteralNode> list = new HashSet<LiteralNode>();
+}
+{	
+	(value = parseInValue(query) { list.add(value);})
+    (","   value = parseInValue(query)  {list.add(value) ;} ) *  
+	{
+	  return list;
+	}
+}
+
+ValueNode getBetweenValueNode(AbstractDMLQuery query) :
+{
+	ValueNode valueNode = null;
+	Token t = null, operator = null, addup = null;
+	String negative = "";
+}
+{
+  (
+    
+   	t = <QUESTIONMARK> { query.setPrepared(true); valueNode = new PreparedNode(null,++conditionIndex); } 
+    | t = <STRING_LITERAL> { valueNode = new LiteralNode(new String(t.image.substring(1,t.image.length()-1))); } //clear the first and last "'"
+    | t = <TRUE>  {valueNode = new LiteralNode(Boolean.TRUE);}
+    | t = <FALSE> {valueNode = new LiteralNode(Boolean.FALSE);}
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <INTEGER_LITERAL> { valueNode = new LiteralNode(negative + t.image); } 
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <LONG_LITERAL> { valueNode = new LiteralNode(negative + t.image.substring(0,t.image.length()-1)); } 
+    | LOOKAHEAD(2)[<MINUS> { negative = "-";}] t = <FLOATING_POINT_LITERAL> { valueNode = new LiteralNode(negative + t.image); }
+    | t = <DATE_LITERAL> {valueNode = new LiteralNode(t.image); }
+   	| <SYSDATE> [ (operator = <PLUS> | operator = <MINUS>) addup = <INTEGER_LITERAL>] { 
+   		Calendar cal = Calendar.getInstance();
+   		if (addup != null) {
+			if (operator.image.equals("+"))
+   				cal.add(Calendar.DATE,Integer.parseInt(addup.image));
+   			else if (operator.image.equals("-"))
+   				cal.add(Calendar.DATE,-(Integer.parseInt(addup.image)));	
+   		}
+   		valueNode = new LiteralNode(new java.sql.Timestamp(cal.getTime().getTime()));
+   	  }
+	)
+	
+	{ return valueNode; }
+}
+
+
+
+
+    

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xsd:schema xmlns="http://www.openspaces.org/schema/archive-cassandra"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            xmlns:tool="http://www.springframework.org/schema/tool"
+            xmlns:os-core="http://www.openspaces.org/schema/core"
+            targetNamespace="http://www.openspaces.org/schema/archive-cassandra"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool"/>
+    <xsd:import namespace="http://www.openspaces.org/schema/core"/>
+
+    <xsd:element name="cassandra-archive-handler">
+        <xsd:annotation>
+            <xsd:documentation source="java:org.openspaces.persistency.cassandra.archive.CassandraArchiveOperationHandler">
+                An archive handler that writes space objects to Cassandra.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="giga-space" type="os-core:gigaSpaceRefType" use="required">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <tool:annotation kind="ref">
+                                    <tool:expected-type type="org.openspaces.core.GigaSpace"/>
+                                </tool:annotation>
+                            </xsd:appinfo>
+                            <xsd:documentation>
+                                The GigaSpace which controls which Space this archive handler will read entry type metadata from. Required.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="keyspace" type="xsd:string" use="required">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Specify the cassandra keyspace name. Required.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="hosts" type="xsd:string" use="required">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Specify comma delimited list of cassandra host names or ip addresses.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="port" type="xsd:string" use="optional">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Specify the cassandra port. Assumes same port for all cassandra hosts. If not specified uses default cassandra port.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="write-consistency" type="xsd:string" use="optional">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Specify the cassandra write consistency level.
+                                Supported values are ONE, QUORUM, ALL, ANY, EACH_QUORUM, LOCAL_QUORUM
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

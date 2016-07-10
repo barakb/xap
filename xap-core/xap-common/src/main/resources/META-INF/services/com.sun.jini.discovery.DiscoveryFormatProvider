@@ -1,0 +1,2 @@
+com.sun.jini.discovery.plaintext.Client
+com.sun.jini.discovery.plaintext.Server

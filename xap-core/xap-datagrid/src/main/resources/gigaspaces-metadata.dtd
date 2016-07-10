@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT gigaspaces-mapping (class+)>
+<!ELEMENT class (property*, id?, routing?, version?, persist?, lease-expiration?, dynamic-properties?, fifo-grouping-property?, exclude*)>
+<!ATTLIST class
+	name CDATA #REQUIRED
+	persist CDATA #IMPLIED
+	replicate CDATA #IMPLIED
+	fifo-support CDATA #IMPLIED
+	inherit-indexes CDATA #IMPLIED
+	include-properties CDATA #IMPLIED
+	storage-type CDATA #IMPLIED
+	blobstore-enabled CDATA #IMPLIED
+>
+<!ELEMENT property (index*)>
+<!ATTLIST property
+	name CDATA #REQUIRED
+	index CDATA #IMPLIED
+	null-value CDATA #IMPLIED
+	storage-type CDATA #IMPLIED
+	document-support CDATA #IMPLIED
+	fifo-grouping-index CDATA #IMPLIED
+>
+
+<!ELEMENT index EMPTY>
+<!ATTLIST index 
+	path CDATA #IMPLIED
+	type CDATA #IMPLIED
+	unique CDATA #IMPLIED
+>
+ 
+<!ELEMENT id EMPTY>
+<!ATTLIST id
+	name CDATA #REQUIRED
+	auto-generate CDATA #IMPLIED
+>
+
+<!ELEMENT routing EMPTY>
+<!ATTLIST routing
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT version EMPTY>
+<!ATTLIST version
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT persist EMPTY>
+<!ATTLIST persist
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT lease-expiration EMPTY>
+<!ATTLIST lease-expiration
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT dynamic-properties EMPTY>
+<!ATTLIST dynamic-properties
+	name CDATA #REQUIRED
+>
+ 
+<!ELEMENT fifo-grouping-property EMPTY>
+<!ATTLIST fifo-grouping-property 
+	name CDATA #REQUIRED
+	path CDATA #IMPLIED
+>
+
+<!ELEMENT sequence-number EMPTY>
+<!ATTLIST sequence-number
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT exclude EMPTY>
+<!ATTLIST exclude
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT compound-index EMPTY>
+<!ATTLIST compound-index
+	paths CDATA #REQUIRED
+	unique CDATA #IMPLIED
+>

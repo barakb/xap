@@ -1,0 +1,114 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>bin</id>
+	<formats>
+		<format>dir</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<dependencySets>
+		<dependencySet>
+			<useProjectArtifact>false</useProjectArtifact>
+			<outputDirectory>product/lib/optional/jdbc</outputDirectory>
+			<includes>
+				<include>com.h2database:h2</include>
+				<include>org.hsqldb:hsqldb</include>
+			</includes>
+		</dependencySet>
+	</dependencySets>
+
+	<fileSets>
+
+		<!-- bin folder Scripts -->
+		<fileSet>
+			<directory>${project.basedir}/../xap-core/xap-datagrid/bin</directory>
+			<outputDirectory>product/bin</outputDirectory>
+			<useDefaultExcludes>true</useDefaultExcludes>
+		</fileSet>
+
+		<!--runtime files copy-->
+
+			<!--create empty folders-->
+		<fileSet>
+			<directory>./</directory>
+			<outputDirectory>product/logs</outputDirectory>
+			<excludes>
+				<exclude>*/**</exclude>
+			</excludes>
+		</fileSet>
+
+		<fileSet>
+			<directory>./</directory>
+			<outputDirectory>product/lib/platform/ext</outputDirectory>
+			<excludes>
+				<exclude>*/**</exclude>
+			</excludes>
+		</fileSet>
+
+		<fileSet>
+			<directory>./</directory>
+			<outputDirectory>product/lib/optional/security</outputDirectory>
+			<excludes>
+				<exclude>*/**</exclude>
+			</excludes>
+		</fileSet>
+
+		<fileSet>
+			<directory>./</directory>
+			<outputDirectory>product/lib/optional/pu-common</outputDirectory>
+			<excludes>
+				<exclude>*/**</exclude>
+			</excludes>
+		</fileSet>
+
+		<fileSet>
+			<directory>./</directory>
+			<outputDirectory>product/config/mapping</outputDirectory>
+			<excludes>
+				<exclude>*/**</exclude>
+			</excludes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${project.basedir}/../xap-core/xap-datagrid/config</directory>
+			<outputDirectory>product/config</outputDirectory>
+			<includes>
+				<include>cache.properties</include>
+				<include>mirror.properties</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${project.basedir}/../xap-core/xap-datagrid/policy</directory>
+			<outputDirectory>product/policy</outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>${project.basedir}/../xap-core/xap-datagrid/src/main/resources/config/services</directory>
+			<includes>
+				<include>services.config*</include>
+			</includes>
+			<outputDirectory>product/config/services</outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>${project.basedir}/../xap-core/xap-datagrid/src/main/resources/config</directory>
+			<includes>
+				<include>*.properties</include>
+				<include>*.config</include>
+			</includes>
+			<outputDirectory>product/config</outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>${project.basedir}/../xap-core/xap-datagrid</directory>
+			<includes>
+				<include>notice.txt</include>
+				<include>START_HERE.htm</include>
+			</includes>
+			<outputDirectory>product</outputDirectory>
+		</fileSet>
+		<!--end runtime files copy -->
+
+    </fileSets>
+</assembly>

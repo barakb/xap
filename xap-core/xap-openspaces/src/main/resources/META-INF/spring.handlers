@@ -1,0 +1,12 @@
+http\://www.openspaces.org/schema/core=org.openspaces.core.config.CoreNamespaceHandler
+http\://www.openspaces.org/schema/events=org.openspaces.events.config.EventsNamespaceHandler
+http\://www.openspaces.org/schema/archive=org.openspaces.archive.config.ArchiveNamespaceHandler
+http\://www.openspaces.org/schema/remoting=org.openspaces.remoting.config.RemotingNamespaceHandler
+http\://www.openspaces.org/schema/jdbc=org.openspaces.jdbc.config.JdbcNamespaceHandler
+http\://www.openspaces.org/schema/jms=org.openspaces.jms.config.JmsNamespaceHandler
+http\://www.openspaces.org/schema/sla=org.openspaces.pu.sla.config.SLANamespaceHandler
+http\://www.openspaces.org/schema/core/gateway=org.openspaces.core.gateway.config.GatewayNamespaceHandler
+http\://www.openspaces.org/schema/admin=org.openspaces.admin.config.AdminNamespaceHandler
+http\://www.openspaces.org/schema/zookeeper=org.openspaces.leader_selector.zookeeper.config.ZooKeeperNameSpaceHandler
+
+

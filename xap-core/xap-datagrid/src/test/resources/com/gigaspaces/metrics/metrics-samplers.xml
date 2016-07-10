@@ -1,0 +1,7 @@
+<metrics-configuration>
+    <samplers>
+        <sampler name="default" sample-rate="2m" />
+        <sampler name="foo1" sample-rate="1ms" />
+        <sampler name="foo2" sample-rate="1s" />
+    </samplers>
+</metrics-configuration>

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xsd:schema xmlns="http://www.openspaces.org/schema/archive"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            xmlns:tool="http://www.springframework.org/schema/tool"
+            xmlns:os-core="http://www.openspaces.org/schema/core"
+            xmlns:os-events="http://www.openspaces.org/schema/events"
+
+            targetNamespace="http://www.openspaces.org/schema/archive"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool"/>
+    <xsd:import namespace="http://www.openspaces.org/schema/core" schemaLocation="http://www.openspaces.org/schema/10.0/core/openspaces-core.xsd"/>
+    <xsd:import namespace="http://www.openspaces.org/schema/events" schemaLocation="http://www.openspaces.org/schema/10.0/events/openspaces-events.xsd"/>
+
+    <xsd:element name="annotation-support">
+        <xsd:annotation>
+            <xsd:documentation>
+                Allows to use different annotation based injection and configuration associated with archive container.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+	<xsd:simpleType name="archiveHandlerRefType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <tool:annotation kind="ref">
+                    <tool:expected-type type="org.openspaces.archive.ArchiveOperationHandler"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:union memberTypes="xsd:string"/>
+    </xsd:simpleType>
+
+  	<xsd:element name="archive-container">
+        <xsd:annotation>
+            <xsd:documentation source="java:org.openspaces.events.polling.SimplePollingEventListenerContainer">
+                An event container that performs polling take operation at a constant
+                interval based on a given template and invokes an archive handler which writes these objects
+                to an external system.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="os-events:baseEventContainer">
+                    <xsd:choice minOccurs="1" maxOccurs="unbounded">
+                    	<xsd:element name="tx-support" type="os-events:txEventSupport" minOccurs="0" maxOccurs="1">
+                            <xsd:annotation>
+                                <xsd:documentation>
+                                    Configures the archive container to work under a transaction. The transaction
+                                    manager will be used to start and commit (on success) or rollback (on failure) a
+                                    transaction.
+
+                                    The scope of the started transaction is the receive operation and the even listener
+                                    invocation. The trigger receive operation is executed before the transaction is
+                                    started.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="exception-handler" type="os-events:eventExceptionHandlerType" minOccurs="0"
+                                     maxOccurs="1">
+                            <xsd:annotation>
+                                <xsd:documentation
+                                        source="java:org.openspaces.events.EventExceptionHandler">
+                                    A handler for exceptions raised by the listener.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:choice>
+                            <xsd:element ref="os-core:template" minOccurs="0" maxOccurs="1">
+                                <xsd:annotation>
+                                    <xsd:documentation>
+                                        The template that will be used by the receive operation handler to take/read/...
+                                        event data from the Space.
+                                    </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element ref="os-core:sql-query" minOccurs="0" maxOccurs="1">
+                                <xsd:annotation>
+                                    <xsd:documentation>
+                                        A sql query that will be used by the receive operation handler to take/read/...
+                                        event data from the Space.
+                                    </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element name="dynamic-template" type="os-events:dynamicEventTemplateProviderType" minOccurs="0" maxOccurs="1">
+	                            <xsd:annotation>
+	                                <xsd:documentation source="java:org.openspaces.events.DynamicEventTemplateProvider">
+	                                    The template provider that will be called before each receive operation handler to take/read/... event data from the Space.
+	                                </xsd:documentation>
+	                            </xsd:annotation>
+	                        </xsd:element>                        
+                        </xsd:choice>
+                    </xsd:choice>
+                    <xsd:attribute name="archive-handler" type="archiveHandlerRefType" use="required">
+                    <xsd:annotation>
+                        <xsd:appinfo>
+                            <tool:annotation kind="ref">
+                                <tool:expected-type type="org.openspaces.archive.ArchiveOperationHandler"/>
+                            </tool:annotation>
+                        </xsd:appinfo>
+                        <xsd:documentation>
+                            The archive handler that will archive objects taken from the Space.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                    <xsd:attribute name="receive-timeout" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Set the timeout to use for receive calls, in milliseconds. The default is 60000 ms, that
+                                is, 1 minute.
+
+                                NOTE: This value needs to be smaller than the transaction timeout used by the
+                                transaction manager (in the appropriate unit, of course).
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="recovery-interval" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Specify the interval between recovery attempts, in milliseconds. The default is 5000 ms,
+                                that is, 5 seconds.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="concurrent-consumers" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Specify the number of concurrent consumers to create. Default is 1.
+
+                                Specifying a higher value for this setting will increase the standard level of scheduled
+                                concurrent consumers at runtime: This is effectively the minimum number of concurrent
+                                consumers which will be scheduled at any given time. This is a static setting; for
+                                dynamic scaling, consider specifying the "maxConcurrentConsumers" setting instead.
+
+                                Raising the number of concurrent consumers is recommendable in order to scale the
+                                consumption of events. However, note that any ordering guarantees are lost once multiple
+                                consumers are registered. In general, stick with 1 consumer for low-volume events.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="max-concurrent-consumers" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Specify the maximum number of concurrent consumers to create. Default is 1.
+
+                                If this setting is higher than "concurrentConsumers", the listener container will
+                                dynamically schedule new consumers at runtime, provided that enough incoming messages
+                                are encountered. Once the load goes down again, the number of consumers will be reduced
+                                to the standard level ("concurrentConsumers") again.
+
+                                Raising the number of concurrent consumers is recommendable in order to scale the
+                                consumption of events. However, note that any ordering guarantees are lost once multiple
+                                consumers are registered. In general, stick with 1 consumer for low-volume events.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="max-events-per-task" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Specify the maximum number of events to process in one task. More concretely, this
+                                limits the number of event reception attempts per task, which includes receive
+                                iterations that did not actually pick up a event until they hit their timeout (see
+                                "receiveTimeout" property).
+
+                                Default is unlimited (-1) in case of a standard TaskExecutor, and 1 in case of a
+                                SchedulingTaskExecutor that indicates a preference for short-lived tasks. Specify a
+                                number of 10 to 100 messages to balance between extremely long-lived and extremely
+                                short-lived tasks here.
+
+                                Long-lived tasks avoid frequent thread context switches through sticking with the same
+                                thread all the way through, while short-lived tasks allow thread pools to control the
+                                scheduling. Hence, thread pools will usually prefer short-lived tasks.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="idle-task-execution-limit" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Specify the limit for idle executions of a receive task, not having received any event
+                                within its execution. If this limit is reached, the task will shut down and leave
+                                receiving to other executing tasks (in case of dynamic scheduling; see the
+                                "maxConcurrentConsumers" setting). Default is 1.
+
+                                Within each task execution, a number of event reception attempts (according to the
+                                "maxEventsPerTask" setting) will each wait for an incoming event (according to the
+                                "receiveTimeout" setting). If all of those receive attempts in a given task return
+                                without an event, the task is considered idle with respect to received events. Such a
+                                task may still be rescheduled; however, once it reached the specified
+                                "idleTaskExecutionLimit", it will shut down (in case of dynamic scaling).
+
+                                Raise this limit if you encounter too frequent scaling up and down. With this limit
+                                being higher, an idle consumer will be kept around longer, avoiding the restart of a
+                                consumer once a new load of messages comes in. Alternatively, specify a higher
+                                "maxMessagePerTask" and/or "receiveTimeout" value, which will also lead to idle
+                                consumers being kept around for a longer time (while also increasing the average
+                                execution time of each scheduled task).
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="perform-snapshot" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                If set to true will perform snapshot operation on the provided template before invoking
+                                the receive operation. Defaults to true.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="batch-size" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Sets the maximum number of objects to hand over to the archiver in one method call.
+     							This parameter has affect only if the archive handler supports atomic batch archiving.
+     							Default is 50
+     							See also {@link ArchiveOperationHandler#supportsAtomicBatchArchiving()}
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="use-fifo-grouping" type="xsd:boolean">
+                      <xsd:annotation>
+                          <xsd:documentation>
+                              Configures the archive container to work with FIFO grouping enabled.
+                          </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gigaspaces-mapping>
+	<class name="com.gigaspaces.metadata.gsxml.PojoDuplicateSpaceIndexXml">
+		<id name="id" auto-generate="false" />
+		<property name="personalInfo" index="basic">
+			<index path="id" type = "extended"/>			
+			<index path="address.zipCode" type = "basic"/>			
+			<index path="gender" type = "basic"/>
+			<index type = "basic"/>
+						
+		</property>
+	</class>
+</gigaspaces-mapping>

@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<space-config>
+             <!--0 - OBJECT Serialization, 1 BINARY SERIALIZATION, 3 COMPRESSED SERIALIZATION
+            default value is 0 -->
+            <serialization-type>0</serialization-type>
+			<engine>
+                <extended-match>
+                     <enabled-classes>
+                     </enabled-classes>
+                     <regular-expressions-cache-size>300</regular-expressions-cache-size>
+                </extended-match>
+                <!--minimum threads in engine at starting GigaSpace Server-->
+                <min_threads>4</min_threads>
+                <!--maximum threads in engine-->
+                <max_threads>64</max_threads>
+                <!--minimum number of threads dedicated to the notify channel-->
+                <notify_min_threads>4</notify_min_threads>
+                <!--maximum number of threads dedicated to the notify channel-->
+                <notify_max_threads>64</notify_max_threads>
+                <!--if true, give to GS Engine threads higher priority-->
+                <threads_higher_priority>false</threads_higher_priority>
+				<!--  default cache size of Cache Manager -->
+				<cache_size>5000000</cache_size>
+				<!--0 - LRU POLICY, 1 - ALL IN CACHE , default value: 0 -->
+				<cache_policy>0</cache_policy>
+			    <!-- full visibility of the entries under transaction read/readIfExists -->
+                <dirty_read>false</dirty_read>
+				<!-- if true, DCache behavior -->
+				<local_cache_mode>true</local_cache_mode>
+				<!-- VM heap size threshold usage percentage -->
+				<memory_usage> 
+			        <enabled>true</enabled> 
+			        <!--VM heap size max threshold usage percentage--> 
+			        <high_watermark_percentage>95</high_watermark_percentage> 
+			        <!--VM heap size lower threshold percentage for blocking write-type operations--> 
+			        <write_only_block_percentage>85</write_only_block_percentage> 
+			        <!--VM heap size upper threshold percentage for checking only write-type operations --> 
+			        <write_only_check_percentage>76</write_only_check_percentage> 
+			        <!--VM heap size min threshold usage percentage--> 
+			        <low_watermark_percentage>75</low_watermark_percentage> 
+			        <!--Amount of entries to be evicted each time we are above the high_watermark_percentage--> 
+			        <eviction_batch_size>500</eviction_batch_size> 
+			        <!--Number of retries to lower the memory level below the low_watermark_percentage--> 
+			        <retry_count>5</retry_count> 
+			         <!--If true GC will be called explicitly before trying to evict. Default Value:false-->
+					 <explicit-gc>false</explicit-gc>
+				</memory_usage> 
+			</engine>
+			<!-- interval in milliseconds between cleaning lease manager-->
+			<lease_manager>
+				<expiration_time_interval>60000</expiration_time_interval>
+				<disable_entries_leases>true</disable_entries_leases>
+			</lease_manager>
+			<!--number of retries to server-->
+            <retries>10</retries>
+            <!--number of notify retries-->
+            <notifier-retries>3</notifier-retries>
+			<filters>
+                <!-- List of the available filters -->
+                <filter-names>Statistics</filter-names>
+                <!-- List of available filetr operation codes: -->
+                	 <!--The operation codes defines the operations in which this filter will be called.-->
+                     <!-- 0 - Before write;-->
+                     <!-- 1 - After write;-->
+                     <!-- 2 - Before read;-->
+                     <!-- 3 - Before take;-->
+                     <!-- 4 - Before notify;-->
+                     <!-- 5 - Before getadmin;-->
+                     <!-- 6 - Before authentication;-->
+                     <!-- 7 - Before get collection;-->
+                     <!-- 8 - Before Clean space;-->
+                     <!-- 9 - Before update;-->
+                     <!-- 10 - After update;-->
+                     <!-- 11 - Before read multiple;-->
+                     <!-- 12 - After read multiple;-->
+                     <!-- 13 - Before take multiple;-->
+                     <!-- 14 - After take multiple;-->
+                     <!-- 51 - On init;-->
+                     <!-- 52 - Before remove;-->
+                     <!-- 53 - After remove;-->
+                <!-- Statistics module filter -->
+                <Statistics>
+                	 <!-- Default value: true -->
+                     <enabled>false</enabled>
+                     <class>com.j_spaces.core.filters.JSpaceStatistics</class>
+                     <url>none</url>
+                     <priority>1</priority>
+                     <operation-code>0, 2, 3, 4, 7, 8, 9, 12, 14, 20, 52</operation-code>
+                </Statistics>
+           </filters>
+	       <dist-cache>
+	           <!--PULL = 1, PUSH = 2-->
+	           <update-mode>1</update-mode>
+	           <!-- reference | shallowCopy -->
+	           <storage-type>reference</storage-type>
+			   <!-- true - optimistic lock enabled, otherwise false -->
+			   <versioned>true</versioned>
+	           <!-- maximum object timeout (ms~) for entries in cache -->
+	           <max-object-timeout>300000</max-object-timeout>
+	           <!--number of retries to find the master space-->
+	           <retry-connections>3</retry-connections>
+	           <!-- delay between retries in ms -->
+			   <delay-between-retries>5000</delay-between-retries>
+	   		   <!-- eviction strategy -->
+			   <eviction-strategy>com.j_spaces.map.eviction.FIFOEvictionStrategy</eviction-strategy>
+			   <!-- true - use multicast as network layer for cache update notification, default: false -->
+			   <multicast-notify>false</multicast-notify>
+			   <!-- true - save the first put to cache, otherwise false -->
+			   <put-first>true</put-first>
+			   <!-- NONE = 0 , ZIP = 1, default: 0 -->
+			   <compression>0</compression>
+			   <events>
+			   		<!-- default value: true (enabled)-->
+			   		<enabled>true</enabled>
+			   		<!-- default value: 60000L (60sec)-->
+			   		<lease>60000</lease>
+			   		<batch>
+			   			<!-- default value: 100 -->
+			   			<size>1000</size>
+			   			<!-- default value: 100 -->
+			   			<timeout>100</timeout>
+			   		</batch>
+			   		<lease-renew>
+			   			<!-- default value: Lease.FOREVER -->
+			   			<expiration>9223372036854775807</expiration>
+			   			<!-- default value: 60000L (60sec)-->
+			   			<duration>60000</duration>
+			   			<!-- default value: 10000L (10sec)-->
+			   			<round-trip-time>10000</round-trip-time>
+			   		</lease-renew>
+			   </events>
+	       </dist-cache>
+</space-config>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

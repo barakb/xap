@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:os-sla="http://www.openspaces.org/schema/sla"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:os-core="http://www.openspaces.org/schema/core"
+	xmlns:os-events="http://www.openspaces.org/schema/events"
+	xmlns:os-archive="http://www.openspaces.org/schema/archive"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd 
+	                    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd 
+	                    http://www.openspaces.org/schema/core http://www.openspaces.org/schema/11.0/core/openspaces-core.xsd
+	                    http://www.openspaces.org/schema/events http://www.openspaces.org/schema/11.0/events/openspaces-events.xsd">
+
+	<context:annotation-config />
+
+	<bean id="cfNameConverter" class="org.openspaces.persistency.cassandra.meta.conversion.DefaultColumnFamilyNameConverter"></bean>
+	<bean id="flattenedPropertiesFilter" class="org.openspaces.persistency.cassandra.meta.mapping.filter.DefaultFlattenedPropertiesFilter"></bean>
+	<bean id="propertySerializer" class="org.openspaces.itest.persistency.cassandra.spring.MockPropertySerializer"></bean>
+
+	<bean id="cassandraDataSource" class="org.apache.cassandra.cql.jdbc.CassandraDataSource">
+		<constructor-arg value="${cassandra.hosts}" />
+		<constructor-arg value="${cassandra.port}" />
+		<constructor-arg value="${cassandra.keyspace}" />
+		<constructor-arg value="${cassandra.user}" />
+		<constructor-arg value="${cassandra.password}" />
+		<constructor-arg value="2.0.0" />
+	</bean>
+
+	<bean id="dataSourceHectorClient" class="org.openspaces.persistency.cassandra.HectorCassandraClientFactoryBean">
+		<property name="hosts" value="${cassandra.hosts}"></property>
+		<property name="port" value="${cassandra.port}"></property>
+		<property name="keyspaceName" value="${cassandra.keyspace}"></property>
+		<property name="clusterName" value="${cassandra.ds.cluster}"></property>
+		<property name="columnFamilyGcGraceSeconds" value="${cassandra.hector.gcgrace}"></property>
+		<property name="readConsistencyLevel" value="${cassandra.hector.read.consistency.level}"></property>
+		<property name="writeConsistencyLevel" value="${cassandra.hector.write.consistency.level}"></property>
+	</bean>
+
+	<bean id="syncEndpointHectorClient" class="org.openspaces.persistency.cassandra.HectorCassandraClientFactoryBean">
+		<property name="hosts" value="${cassandra.hosts}"></property>
+		<property name="port" value="${cassandra.port}"></property>
+		<property name="keyspaceName" value="${cassandra.keyspace}"></property>
+		<property name="clusterName" value="${cassandra.sync.cluster}"></property>
+		<property name="columnFamilyGcGraceSeconds" value="${cassandra.hector.gcgrace}"></property>
+		<property name="readConsistencyLevel" value="${cassandra.hector.read.consistency.level}"></property>
+		<property name="writeConsistencyLevel" value="${cassandra.hector.write.consistency.level}"></property>
+	</bean>
+	
+	<bean id="cassandraSpaceDataSource" class="org.openspaces.persistency.cassandra.CassandraSpaceDataSourceFactoryBean">
+		<property name="cassandraDataSource" ref="cassandraDataSource" ></property>
+		<property name="hectorClient" ref="dataSourceHectorClient" ></property>
+		<property name="minimumNumberOfConnections" value="${cassandra.ds.minconnections}" ></property>
+		<property name="maximumNumberOfConnections" value="${cassandra.ds.maxconnections}" ></property>
+		<property name="batchLimit" value="${cassandra.ds.batchlimit}" ></property>
+		<property name="fixedPropertyValueSerializer" ref="propertySerializer"></property>
+		<property name="dynamicPropertyValueSerializer" ref="propertySerializer"></property>
+	</bean>
+
+	<bean id="cassandraSpaceSyncEndpoint" class="org.openspaces.persistency.cassandra.CassandraSpaceSynchronizationEndpointFactoryBean">
+		<property name="hectorClient" ref="syncEndpointHectorClient" ></property>
+		<property name="flattenedPropertiesFilter" ref="flattenedPropertiesFilter"></property>
+		<property name="columnFamilyNameConverter" ref="cfNameConverter"></property>
+		<property name="fixedPropertyValueSerializer" ref="propertySerializer"></property>
+		<property name="dynamicPropertyValueSerializer" ref="propertySerializer"></property>
+	</bean>
+
+</beans>

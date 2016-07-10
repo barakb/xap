@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2008-2016, GigaSpaces Technologies, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+package com.gigaspaces.annotation.pojo;
+
+import com.gigaspaces.client.IPojoSpace;
+import com.gigaspaces.datasource.DataProvider;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+/**
+ * Indicates the property that holds the entity lease expiration. The Dynamic method must have a
+ * return value long as method signature.
+ *
+ * e.g. <code> class MyPojo{ private long lease;
+ *
+ * &amp;#064SpaceLeaseExpiration public long getLease(){ return lease; }
+ *
+ * public void setLease(long lease){ this.lease = lease; } } </code>
+ *
+ * Notice: The property value is ignored when set before a space operation, e.g. {@link
+ * IPojoSpace#write(Object, net.jini.core.transaction.Transaction, long)}. The value is only honored
+ * when set on External Data Source read, e.g. {@link DataProvider#iterator(Object)}.
+ *
+ * @author Guy Korland
+ * @since 7.0
+ */
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface SpaceLeaseExpiration {
+
+}

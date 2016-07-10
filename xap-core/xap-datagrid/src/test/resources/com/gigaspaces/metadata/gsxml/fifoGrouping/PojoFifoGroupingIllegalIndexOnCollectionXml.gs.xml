@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gigaspaces-mapping>
+	<class name="com.gigaspaces.metadata.gsxml.fifoGrouping.PojoFifoGroupingIllegalIndexOnCollectionXml">
+				
+		<fifo-grouping-property name="symbol" />
+		<property name="reporters">
+			<fifo-grouping-index path="[*]" />
+		</property>
+	
+	</class>
+</gigaspaces-mapping>

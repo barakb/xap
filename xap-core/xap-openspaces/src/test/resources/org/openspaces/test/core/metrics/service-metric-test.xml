@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:os-core="http://www.openspaces.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+       http://www.openspaces.org/schema/core http://www.openspaces.org/schema/11.0/core/openspaces-core.xsd">
+
+    <os-core:annotation-support/>
+
+    <bean id="metricRegistrator" class="org.openspaces.test.core.metrics.MockMetricRegistrator"/>
+    <bean id="puConfig" class="org.openspaces.pu.container.ProcessingUnitContainerConfig">
+        <property name="metricRegistrator" ref="metricRegistrator"/>
+    </bean>
+    <bean id="puContext" class="org.openspaces.pu.container.ProcessingUnitContainerContext">
+        <constructor-arg ref="puConfig"/>
+    </bean>
+
+    <bean id="metricsPostProcessor" class="org.openspaces.pu.container.ProcessingUnitContainerContextBeanPostProcessor">
+        <constructor-arg ref="puContext"/>
+    </bean>
+
+    <bean id="myBean" class="org.openspaces.test.core.metrics.MetricsBean"/>
+    <bean id="myBean2" class="org.openspaces.test.core.metrics.MetricsBean2"/>
+
+</beans>

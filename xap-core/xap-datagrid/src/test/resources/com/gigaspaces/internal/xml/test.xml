@@ -1,0 +1,10 @@
+<foo>
+    <bars>
+        <bar1 name="one">
+            <property key="1" value="one"/>
+            <property key="2" value="two"/>
+        </bar1>
+        <bar2 name="two"></bar2>
+        <bar2 name="three"></bar2>
+    </bars>
+</foo>

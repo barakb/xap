@@ -1,0 +1,78 @@
+<metrics-configuration>
+    <!-- This file determines the settings for monitoring and metrics. For more information see: -->
+    <!-- http://docs.gigaspaces.com/xap110adm/web-management-monitoring.html -->
+    <!-- http://docs.gigaspaces.com/xap110adm/metrics-overview.html -->
+
+    <!-- Configure which reporter(s) will be used to collect data from the system -->
+    <reporters>
+        <!-- Create an InfluxDB reporter (packaged with the product) -->
+        <!-- These settings match InfluxDB's default settings - port and database -->
+        <!--
+        <reporter name="influxdb">
+            <property name="host" value="localhost"/>
+            <property name="database" value="mydb"/>
+        </reporter>
+        -->
+        <!-- Additional optional properties:
+            Sets which communication protocol to use (default is http):
+            <property name="protocol" value="http|udp"/>
+            Sets the communication port (default is 8086 for http, 4444 for udp):
+            <property name="port" value="8086"/>
+            Sets the maximum report length used for batching (default is 65507, i.e. max UDP packet size)
+            <property name="max-report-length" value="65507"/>
+
+            The following properties are supported only by the http reporter:
+            When authentication is enabled, you must authenticate as a user with write permissions to the target database
+            <property name="username" value=""/>
+            <property name="password" value=""/>
+            Sets the target retention policy for the write. (default is none, i.e. the default retention policy of the database)
+            <property name="retention-policy" value=""/>
+            Sets the precision of the reported metrics (default is ms)
+            <property name="precision" value="n|u|ms|s|m|h"/>
+            Set the number of nodes that must confirm the write.
+            <property name="consistency" value="one|quorum|all|any"/>
+        -->
+    </reporters>
+
+    <!-- Configuration for the Monitoring tab in the Web Management Console (web-ui) -->
+    <!-- These settings match Grafana's default settings - port, username and password -->
+    <!--
+    <grafana url="http://localhost:3000" api-key="" user="admin" password="admin">
+        <datasources>
+            <datasource name="xap">
+                <property name="type" value="influxdb"/>
+                <property name="isDefault" value="true"/>
+                <property name="url" value="http://localhost:8086"/>
+                <property name="database" value="mydb"/>
+                <property name="access" value="proxy"/>
+            </datasource>
+        </datasources>
+    </grafana>
+    -->
+
+    <!-- define which sampling rates can be assigned to a metric -->
+    <samplers>
+        <!-- 'default' is configured to sample (and report) its metrics every 5 seconds -->
+        <sampler name="default" sample-rate="5s" />
+        <!-- 'high' is configured to sample its metrics every second, and report in batch every 5 seconds -->
+        <sampler name="high" sample-rate="1s" report-rate="5s" />
+        <!-- 'low' is configured to sample (and report) its metrics every minute -->
+        <sampler name="low" sample-rate="1m" />
+        <!-- 'off' is configured to never sample (and report) its metrics -->
+        <sampler name="off" sample-rate="0" />
+    </samplers>
+
+    <!-- Define how metrics are assigned to samplers. -->
+    <metrics>
+        <!-- By default, all metrics are assigned to the 'default' sampler.
+        A metric (or a group of metrics) can be assigned to a different sampler. For example, suppose:
+        1. we want most os metrics to use the `low` sampler, but...
+        2. we want os_memory metrics to use the `high` sampler, and...
+        3. we don't want os_cpu metrics at all
+
+        <metric prefix="os"        sampler="low"/>
+        <metric prefix="os_memory" sampler="high"/>
+        <metric prefix="os_cpu"    sampler="off"/>
+        -->
+    </metrics>
+</metrics-configuration>

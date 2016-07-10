@@ -1,0 +1,456 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="cluster-config">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="cluster-name" type="xsd:string"/>
+				<xsd:element ref="dist-cache" minOccurs="0"/>
+				<xsd:element ref="jms" minOccurs="0"/>
+				<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="notify-recovery" type="xsd:boolean" default="true" minOccurs="0"/>
+				<xsd:element ref="cache-loader" minOccurs="0"/>
+				<xsd:element ref="mirror-service" minOccurs="0"/>
+				<xsd:element ref="cluster-members"/>
+				<xsd:element ref="groups"/>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="dist-cache">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="config-name" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="jms">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="config-name" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="notify-recovery" type="xsd:boolean"/>
+	<xsd:element name="cache-loader">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="external-data-source" type="xsd:string"/>
+				<xsd:element name="central-data-source" type="xsd:string"/>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="mirror-service">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="enabled" type="xsd:boolean"/>
+				<xsd:element name="url" type="xsd:string"/>
+				<xsd:element name="bulk-size" type="xsd:int"/>
+				<xsd:element name="interval-millis" type="xsd:long"/>
+				<xsd:element name="interval-opers" type="xsd:int"/>
+				<xsd:element name="on-redo-log-capacity-exceeded" type="RedoLogCapacityExceededPolicy" minOccurs="0"/>
+				<xsd:element name="redo-log-capacity" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="supports-partial-update" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="change-support" type="xsd:string" minOccurs="0"/>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="cluster-members">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="member" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="member-name" type="xsd:string"/>
+							<xsd:element name="member-url" type="xsd:string"/>
+							<xsd:element ref="param" minOccurs="0" maxOccurs="unbounded"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="backup-container" type="xsd:string" use="optional"/>
+			<xsd:attribute name="jini-groups" type="xsd:string" use="optional"/>
+			<xsd:attribute name="member-prefix" type="xsd:string" use="optional"/>
+			<xsd:attribute name="number-backups" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="param">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="param-name" type="xsd:string"/>
+				<xsd:element name="param-value" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="groups">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="group" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:annotation>
+							<xsd:documentation>
+                        		Replication modes
+                        	</xsd:documentation>
+						</xsd:annotation>
+						<xsd:sequence>
+							<xsd:element name="group-name" type="xsd:string"/>
+							<xsd:element name="group-members">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="member" minOccurs="1" maxOccurs="unbounded">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="member-name" type="xsd:string"/>
+													<xsd:element name="member-url" type="xsd:string" minOccurs="0"/>
+													<xsd:element name="repl-transmission-policy" minOccurs="0" maxOccurs="unbounded">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="disable-transmission" type="xsd:boolean"/>
+																<xsd:element name="target-member" type="xsd:string"/>
+																<xsd:element name="transmission-operations" type="xsd:string"/>
+																<xsd:element name="sync-on-commit" type="xsd:boolean"/>
+																<xsd:element name="replication-mode" type="ReplMode" minOccurs="0" maxOccurs="unbounded"/>
+																<xsd:element name="communication-mode" type="SyncCommunicationMode" minOccurs="0" maxOccurs="unbounded"/>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="repl-filters" minOccurs="0">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="input-filter-className" type="xsd:string" minOccurs="0"/>
+																<xsd:element name="input-filter-paramUrl" type="xsd:string" minOccurs="0"/>
+																<xsd:element name="output-filter-className" type="xsd:string" minOccurs="0"/>
+																<xsd:element name="output-filter-paramUrl" type="xsd:string" minOccurs="0"/>
+																<xsd:element name="active-when-backup" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+																<xsd:element name="shutdown-space-on-init-failure" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="repl-recovery" minOccurs="0">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="enabled" type="xsd:boolean"/>
+																<xsd:element name="source-member-name" type="xsd:string" minOccurs="0"/>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element ref="repl-policy" minOccurs="0"/>
+							<xsd:element ref="load-bal-policy" minOccurs="0"/>
+							<xsd:element ref="fail-over-policy" minOccurs="0"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- Replication Tag -->
+	<xsd:element name="repl-policy">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="replication-mode" type="ReplMode"/>
+				<xsd:element name="permitted-operations" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="policy-type" type="ReplPolicyType"/>
+				<xsd:element name="recovery" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="replicate-notify-templates" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="trigger-notify-templates" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="replicate-lease-expirations" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="repl-find-timeout" type="xsd:nonNegativeInteger" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>
+                    		Replication Finder timeout in milisec
+                    	</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="repl-find-report-interval" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="repl-original-state" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="repl-full-take" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="repl-one-phase-commit" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="communication-mode" type="SyncCommunicationMode" minOccurs="0"/>
+				<xsd:element name="redo-log-capacity" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="redo-log-recovery-capacity" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="redo-log-memory-capacity" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="redo-log-local-view-capacity" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="redo-log-local-view-recovery-capacity" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="local-view-max-disconnection-time" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="redo-log-durable-notification-capacity" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="durable-notification-max-disconnection-time" type="xsd:long" minOccurs="0"/>
+				<xsd:element name="swap-redo-log" minOccurs="0">
+					<xsd:complexType>
+						<xsd:all>
+							<xsd:element name="flush-buffer-packet-count" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="fetch-buffer-packet-count" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="segment-size" type="xsd:long" minOccurs="0"/>
+							<xsd:element name="max-scan-length" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="max-open-cursors" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="writer-buffer-size" type="xsd:integer" minOccurs="0"/>
+						</xsd:all>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="on-redo-log-capacity-exceeded" type="RedoLogCapacityExceededPolicy" minOccurs="0"/>
+				<xsd:element name="on-missing-packets" type="MissingPacketsPolicy" minOccurs="0"/>
+				<xsd:element name="on-conflicting-packets" type="ConflictingPacketsPolicy" minOccurs="0"/>
+				<xsd:element name="recovery-chunk-size" type="xsd:integer" minOccurs="0"/>
+				<xsd:element name="recovery-thread-pool-size" type="xsd:integer" minOccurs="0"/>
+                <xsd:element name="connection-monitor-thread-pool-size" type="xsd:integer" minOccurs="0"/>
+                <xsd:element name="processing-type" type="ProcessingType" minOccurs="0"/>
+				<xsd:element name="multi-bucket-processing" minOccurs="0">
+					<xsd:complexType>
+						<xsd:all>
+							<xsd:element name="bucket-count" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="batch-parallel-threshold" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="batch-parallel-factor" type="xsd:string" minOccurs="0"/>
+						</xsd:all>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="async-replication" minOccurs="0">
+					<xsd:complexType>
+						<xsd:all>
+							<xsd:element name="repl-original-state" type="xsd:boolean" minOccurs="0"/>
+							<xsd:element name="sync-on-commit" type="xsd:boolean" minOccurs="0"/>
+							<xsd:element name="sync-on-commit-timeout" type="xsd:long" minOccurs="0"/>
+							<xsd:element name="repl-chunk-size" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="repl-interval-millis" type="xsd:long" minOccurs="0"/>
+							<xsd:element name="repl-interval-opers" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="async-channel-shutdown-timeout" type="xsd:long" minOccurs="0"/>
+							
+							<xsd:element name="reliable" type="xsd:boolean" minOccurs="0"/>
+							<xsd:element name="reliable-async-completion-notifier-interval" type="xsd:long" minOccurs="0"/>
+							<xsd:element name="reliable-async-completion-notifier-packets-threshold" type="xsd:long" minOccurs="0"/>
+							<!-- this tag is depricated and moved on top level to support sync replication,
+			            keep here for backward compatibility -->
+						</xsd:all>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="sync-replication" minOccurs="0">
+					<xsd:complexType>
+						<xsd:all>
+							<xsd:element name="consistency-level" type="ConsistencyLevel" minOccurs="0"/>						    
+							<xsd:element name="todo-queue-timeout" type="xsd:long" minOccurs="0"/>
+							<xsd:element name="target-consume-timeout" type="xsd:long" minOccurs="0"/>
+							<xsd:element name="hold-txn-lock" type="xsd:boolean" minOccurs="0"/>
+							<xsd:element name="multiple-opers-chunk-size" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="throttle-when-inactive" type="xsd:boolean" minOccurs="0"/>
+							<xsd:element name="max-throttle-tp-when-inactive" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="min-throttle-tp-when-active" type="xsd:integer" minOccurs="0"/>
+							<xsd:element name="unicast" minOccurs="0">
+								<xsd:complexType>
+									<xsd:all>
+										<xsd:element name="min-work-threads" type="xsd:integer" minOccurs="0"/>
+										<xsd:element name="max-work-threads" type="xsd:integer" minOccurs="0"/>
+									</xsd:all>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="multicast" minOccurs="0">
+								<xsd:complexType>
+									<xsd:all>
+										<xsd:element name="adaptive" type="xsd:boolean" minOccurs="0"/>
+										<xsd:element name="ip-group" type="xsd:string" minOccurs="0"/>
+										<xsd:element name="port" type="xsd:integer" minOccurs="0"/>
+										<xsd:element name="ttl" type="xsd:integer" minOccurs="0"/>
+										<xsd:element name="min-work-threads" type="xsd:integer" minOccurs="0"/>
+										<xsd:element name="max-work-threads" type="xsd:integer" minOccurs="0"/>
+									</xsd:all>
+								</xsd:complexType>
+							</xsd:element>
+							<!-- Synchronize Unicast configuration Tag -->
+							<!-- Synchronize Multicast configuration Tag -->
+						</xsd:all>
+					</xsd:complexType>
+				</xsd:element>
+				<!-- Asynchronize Replication Tag -->
+				<!-- Synchronize Replication Tag -->
+				<!-- sync-replication Tag -->
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- repl-policy Tag -->
+	<!-- Replication Policy Type -->
+	<xsd:simpleType name="ReplPolicyType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="full-replication"/>
+			<xsd:enumeration value="partial-replication"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Replication Mode ASync/Sync -->
+	<xsd:simpleType name="ReplMode">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="sync"/>
+			<xsd:enumeration value="async"/>
+			<xsd:enumeration value="sync-rec-ack"/>
+			<xsd:enumeration value="async-rec-ack"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RedoLogCapacityExceededPolicy">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="block-operations"/>
+			<xsd:enumeration value="drop-oldest"/>
+		</xsd:restriction>		
+	</xsd:simpleType>
+	<xsd:simpleType name="ConsistencyLevel">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="any"/>
+			<xsd:enumeration value="quorom"/>
+			<xsd:enumeration value="all"/>
+		</xsd:restriction>		
+	</xsd:simpleType>
+	<xsd:simpleType name="MissingPacketsPolicy">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="recover"/>
+			<xsd:enumeration value="ignore"/>
+		</xsd:restriction>		
+	</xsd:simpleType>
+	<xsd:simpleType name="ConflictingPacketsPolicy">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="override"/>
+			<xsd:enumeration value="ignore"/>
+		</xsd:restriction>              
+	</xsd:simpleType>
+	<xsd:simpleType name="ProcessingType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="global-order"/>
+			<xsd:enumeration value="multi-bucket"/>
+			<xsd:enumeration value="multi-source"/>
+		</xsd:restriction>
+	</xsd:simpleType>	
+	<!-- Replication permitted-operations -->
+	<!-->xsd:simpleType name="PermittedOperations">
+		<xsd:annotation>
+			<xsd:documentation>
+				Allows you to control replication at the operation level
+				without having to write code. specify a comma-separated
+				list of the operations you want to be replicated to all
+				spaces.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:list itemType="xsd:string">
+			<xsd:enumeration value="write"></xsd:enumeration>
+			<xsd:enumeration value="take"></xsd:enumeration>
+			<xsd:enumeration value="extend_lease"></xsd:enumeration>
+			<xsd:enumeration value="update"></xsd:enumeration>
+			<xsd:enumeration value="expire_lease"></xsd:enumeration>
+			<xsd:enumeration value="notify_registration"></xsd:enumeration>
+		</xsd:list>
+	</xsd:simpleType-->
+	<!-- SyncReplication communication mode Unicast/Multicast  -->
+	<xsd:simpleType name="SyncCommunicationMode">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="unicast"/>
+			<xsd:enumeration value="multicast"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- LoadBalancing Tag -->
+	<xsd:element name="load-bal-policy">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="load-bal-impl-class" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="apply-ownership" type="xsd:boolean" default="false" minOccurs="0"/>
+				<xsd:element name="disable-parallel-scattering" type="xsd:boolean" default="false" minOccurs="0"/>
+				<xsd:element name="proxy-broadcast-threadpool-min-size" type="xsd:integer" minOccurs="0"/>
+				<xsd:element name="proxy-broadcast-threadpool-max-size" type="xsd:integer" minOccurs="0"/>
+				<xsd:element name="write" type="LoadBalPolicyTypes" minOccurs="0"/>
+				<xsd:element name="read" type="LoadBalPolicyTypes" minOccurs="0"/>
+				<xsd:element name="take" type="LoadBalPolicyTypes" minOccurs="0"/>
+				<xsd:element name="notify" type="LoadBalPolicyTypes" minOccurs="0"/>
+				<xsd:element name="default" type="LoadBalPolicyTypes" minOccurs="0"/>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- LoadBalancing Policy Types -->
+	<xsd:complexType name="LoadBalPolicyTypes">
+		<xsd:sequence>
+			<xsd:element name="policy-type">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="round-robin"/>
+						<xsd:enumeration value="hash-based"/>
+						<xsd:enumeration value="local-space"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element ref="param" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="broadcast-condition" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="broadcast-if-null-values"/>
+						<xsd:enumeration value="unconditional"/>
+						<xsd:enumeration value="broadcast-disabled"/>
+						<xsd:enumeration value="routing-index-is-null"/>
+						<xsd:enumeration value="always"/>
+						<xsd:enumeration value="never"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- FailOver Policy Description -->
+	<xsd:complexType name="FailPolicyDescription">
+		<xsd:all>
+			<xsd:element name="policy-type">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="fail-to-backup"/>
+						<xsd:enumeration value="fail-in-group"/>					
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>			
+			<xsd:element name="backup-members" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="member" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="source-member" type="xsd:string"/>
+									<xsd:element name="backup-member" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="backup-members-only" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="backup-member-only" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+	<!-- Fail Over Tag -->
+	<xsd:element name="fail-over-policy">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="fail-back" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="fail-over-find-timeout" type="xsd:integer" minOccurs="0"/>
+				<xsd:element name="write" type="FailPolicyDescription" minOccurs="0"/>
+				<xsd:element name="read" type="FailPolicyDescription" minOccurs="0"/>
+				<xsd:element name="take" type="FailPolicyDescription" minOccurs="0"/>
+				<xsd:element name="notify" type="FailPolicyDescription" minOccurs="0"/>
+				<xsd:element name="default" type="FailPolicyDescription" minOccurs="0"/>
+				
+				<xsd:element name="active-election" minOccurs="0">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="connection-retries" type="xsd:int" minOccurs="0"/>
+							<xsd:element name="yield-time" type="xsd:long" minOccurs="0"/>
+							<xsd:element name="resolution-timeout" type="xsd:long" minOccurs="0"/>
+							<xsd:element name="fault-detector" minOccurs="0">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="invocation-delay" type="xsd:long" minOccurs="0"/>
+										<xsd:element name="retry-count" type="xsd:int" minOccurs="0"/>
+										<xsd:element name="retry-timeout" type="xsd:long" minOccurs="0"/>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

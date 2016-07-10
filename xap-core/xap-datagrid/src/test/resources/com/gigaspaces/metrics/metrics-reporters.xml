@@ -1,0 +1,8 @@
+<metrics-configuration>
+    <reporters>
+        <reporter name="console"/>
+        <reporter name="foo" factory-class="com.gigaspaces.metrics.MyCustomReporterFactory">
+            <property name="bar" value="test"/>
+        </reporter>
+    </reporters>
+</metrics-configuration>

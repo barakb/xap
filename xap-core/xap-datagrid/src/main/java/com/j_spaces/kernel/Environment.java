@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2008-2016, GigaSpaces Technologies, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.j_spaces.kernel;
+
+import com.gigaspaces.start.SystemInfo;
+import com.j_spaces.core.Constants;
+
+import java.io.File;
+
+@com.gigaspaces.api.InternalApi
+public class Environment {
+    public static String createSchemasFolderIfNotExists() {
+        String schemasFolderPath = SystemInfo.singleton().locations().config() + File.separator +
+                File.separator + Constants.Schemas.SCHEMAS_FOLDER;
+
+        //check if "schemas" or "config" folder exists, if not then create it
+        File schemasFolder = new File(schemasFolderPath);
+        if (!schemasFolder.exists())
+            schemasFolder.mkdirs();
+
+        return schemasFolderPath;
+    }
+}

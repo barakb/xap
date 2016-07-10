@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gigaspaces-mapping>
+	<class name="com.gigaspaces.metadata.gsxml.fifoGrouping.PojoIllegalFifoGroupingDuplicateXml">
+				
+		<fifo-grouping-property name="symbol" />
+		<fifo-grouping-property name="reporter" />
+	
+	</class>
+</gigaspaces-mapping>

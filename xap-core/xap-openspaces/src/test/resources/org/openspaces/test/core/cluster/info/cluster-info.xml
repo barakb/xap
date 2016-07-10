@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:os-core="http://www.openspaces.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+       http://www.openspaces.org/schema/core http://www.openspaces.org/schema/11.0/core/openspaces-core.xsd">
+
+    <os-core:annotation-support/>
+    
+    <bean id="clusterInfo" class="org.openspaces.core.cluster.ClusterInfo">
+    	<property name="schema" value="a"/>
+    	<property name="instanceId" value="1"/>
+    	<property name="numberOfInstances" value="1"/>
+    	<property name="numberOfBackups" value="0"/>
+    	<property name="name" value="b"/>
+    </bean>
+    
+    <bean id="clusterInfoPostProcessor" class="org.openspaces.core.cluster.ClusterInfoBeanPostProcessor">
+    	<constructor-arg ref="clusterInfo"/>
+    </bean>
+    
+    <bean id="clusterInfoBean" class="org.openspaces.test.core.cluster.info.ClusterInfoBean"/>
+    
+</beans>

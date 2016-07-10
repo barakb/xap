@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<MBean	type="JavaSpaceExt" description="Provides extended settings for JavaSpace.">
+
+	<!-- Attribute: * - Required, other is optional
+		*name - The name of the attribute.
+		*type - The type or class name of the attribute.
+		description - A human readable description of the attribute.
+		isReadable - True if the attribute has a getter method, false otherwise.
+		isWritable - True if the attribute has a setter method, false otherwise.
+		isIs - True if this attribute has an "is" getter, false otherwise.
+	-->
+
+	<attribute name="QueryProcessor.space_read_lease_time" type="java.lang.Integer" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.space_write_lease" type="java.lang.Integer" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.transaction_timeout" type="java.lang.Integer" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.init_jmx" type="java.lang.Boolean" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.trace_exec_time" type="java.lang.Boolean" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.debug_mode" type="java.lang.Boolean" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.parser_case_sensetivity" type="java.lang.Boolean" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.auto_commit" type="java.lang.Boolean" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.date_format" type="java.lang.String" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.datetime_format" type="java.lang.String" isReadable="true" description=""/>
+	<attribute name="QueryProcessor.time_format" type="java.lang.String" isReadable="true" description=""/>
+	
+	
+	
+	<attribute name="engine.extended-match.enabled-classes" type="java.lang.Integer" isReadable="true" description=""/>
+	<attribute name="engine.extended-match.min_ext_index_activation_size" type="java.lang.Integer" isReadable="true" description=""/>
+	<attribute name="engine.extended-match.regular-expressions-cache-size" type="java.lang.Integer" isReadable="true" description=""/>
+	
+	<attribute name="engine.initial_load" type="java.lang.Integer" isReadable="true" description=""/>
+	<attribute name="engine.dirty_read" type="java.lang.Boolean" isReadable="true" description=""/>
+
+
+	<attribute name="engine.memory_usage.enabled" type="java.lang.Boolean" isReadable="true" isWritable="true" description=""/>
+	<attribute name="engine.memory_usage.high_watermark_percentage" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+	<attribute name="engine.memory_usage.write_only_block_percentage" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+	<attribute name="engine.memory_usage.write_only_check_percentage" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+	<attribute name="engine.memory_usage.low_watermark_percentage" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+	<attribute name="engine.memory_usage.eviction_batch_size" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+	<attribute name="engine.memory_usage.retry_count" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+	<attribute name="engine.memory_usage.retry_yield_time" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+	<attribute name="engine.memory_usage.explicit-gc" type="java.lang.Boolean" isReadable="true" isWritable="true" description=""/>
+	
+	
+	
+	<attribute name="jms.administrated-destinations.queues.queue-names" type="java.lang.String" isReadable="true" isWritable="true" description=""/>
+	<attribute name="jms.administrated-destinations.topics.topic-names" type="java.lang.String" isReadable="true" isWritable="true" description=""/>
+	<attribute name="jms.connections.rmi-port" type="java.lang.String" isReadable="true" isWritable="true" description=""/>
+	<attribute name="max_sa_connections" type="java.lang.Integer" isReadable="true" isWritable="true" description=""/>
+	<attribute name="sa_reset_on_failure" type="java.lang.Boolean" isReadable="true" isWritable="true" description=""/>
+
+	<attribute name="lrmi-stub-handler.worker-threads-queue-size" type="java.lang.Integer" isReadable="true" description=""/>	
+	<attribute name="lrmi-stub-handler.slowconsumer.throughput" type="java.lang.Integer" isReadable="true" description=""/>
+	<attribute name="lrmi-stub-handler.slowconsumer.latency" type="java.lang.Integer" isReadable="true" description=""/>
+	<attribute name="lrmi-stub-handler.slowconsumer.retries" type="java.lang.Integer" isReadable="true" description=""/>
+
+	
+
+	<!-- Operation: * - Required, other is optional
+		*name - The name of the method.
+		*type - The type of the method's return value.
+		*impact - The impact of the method, one of INFO, ACTION, ACTION_INFO, UNKNOWN.
+		description - A human readable description of the operation.
+		signature - MBeanParameterInfo objects describing the parameters(arguments) of the method.
+
+		Signature: the list of parameters info
+		Parameter: * - Required, other is optional
+		*name - The name of the data
+		*type - The type or class name of the data
+		description - A human readable description of the data.
+	-->
+
+	<!--constructor name="JMXSpace">
+		<signature>
+			<parameter name="" type="" description=""/>
+			...
+		</signature>
+	</constructor-->
+
+	<!--notifier name="" description="">
+		<types>type1,type2,...</types>
+	</notifier-->
+</MBean>
