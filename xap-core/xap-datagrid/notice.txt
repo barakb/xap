@@ -1,4 +1,4 @@
-# GIGASPACES XAP SOFTWARE � OPEN SOURCE AND THIRD PARTY COMPONENTS
+# GIGASPACES XAP SOFTWARE - OPEN SOURCE AND THIRD PARTY COMPONENTS
 
 ## Mandatory Core Dependencies (XAP_HOME/lib/required)
 ======================================================================================
@@ -21,7 +21,7 @@ http://jakarta.apache.org/commons/logging/
 http://www.apache.org/licenses/LICENSE-2.0.html
 ======================================================================================
 
-Copyright � 2010 The Apache Software Foundation
+Copyright (c) 2010 The Apache Software Foundation
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
 
@@ -66,7 +66,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 ======================================================================================
 ## Optional - Core enhancements dependencies
 ======================================================================================
-###	ASM (under �BSD Style� license)
+###	ASM (under "BSD-style" license)
 http://asm.objectweb.org/doc/tutorial.html
 ASM - http://asm.objectweb.org/doc/tutorial.html
 ======================================================================================
@@ -135,7 +135,7 @@ http://commons.apache.org/lang/license.html
 http://commons.apache.org/lang/
 ======================================================================================
 
-Copyright � 2001-2011 The Apache Software Foundation. All Rights Reserved
+Copyright (c) 2001-2011 The Apache Software Foundation. All Rights Reserved
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
 
