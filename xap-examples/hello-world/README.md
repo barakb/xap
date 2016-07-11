@@ -35,7 +35,7 @@ read - ['Hello', 'World!']
 
 ![helloworld-1](https://cloud.githubusercontent.com/assets/8696298/16544698/be661c64-4118-11e6-8e5b-d031bb6b40ea.png)
 
-## Running the Example - Remote (single instance)
+## Running the Example - Remote
 
 To connect to a *remote* data-grid, first use the `space-instance.{sh,bat}` script to launch a data-grid.
 
@@ -46,6 +46,16 @@ From the ${XAP_HOME}/bin directory, run:
 Import the maven `xap-hello-world` example into your IDE of choice as a maven project.
 Launch the `HelloWorld` main (arguments: `-name` myDataGrid `-mode` remote)
 > use `myDataGrid` same as the `-name` argument passed to `space-instance.{sh.bat}`
+
+### output
+```
+Connected to remote data-grid: myDataGrid
+write - 'Hello'
+write - 'World!'
+read - ['Hello', 'World!']
+```
+
+![helloworld-1r](https://cloud.githubusercontent.com/assets/8696298/16724700/b695f4ce-475c-11e6-9617-00df8b561a52.png)
 
 ## Running the Example - Remote (with 2 partitions)
 
