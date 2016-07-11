@@ -30,8 +30,6 @@ if not defined XAP_NIC_ADDRESS set XAP_NIC_ADDRESS=%COMPUTERNAME%
 if not defined XAP_SECURITY_POLICY set XAP_SECURITY_POLICY="%XAP_HOME%\policy\policy.all"
 if not defined XAP_LOGS_CONFIG_FILE set XAP_LOGS_CONFIG_FILE=%XAP_HOME%\config\gs_logging.properties
 
-if not defined XAP_CLI_OPTIONS set XAP_CLI_OPTIONS=-Xmx512m
-
 set XAP_OPTIONS=-Djava.util.logging.config.file="%XAP_LOGS_CONFIG_FILE%" -Djava.rmi.server.hostname="%XAP_NIC_ADDRESS%" -Dcom.gs.home="%XAP_HOME%"
 
 if not defined JAVA_OPTIONS (
