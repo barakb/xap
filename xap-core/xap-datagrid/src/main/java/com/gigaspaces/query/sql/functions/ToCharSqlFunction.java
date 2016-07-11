@@ -22,12 +22,21 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by Tamir on 2/21/16.
+ * Built in conversion sql function to convert Date or Number types to chars.
  *
- * @since 11.0.0s
+ * @author Tamir Schwarz
+ * @since 11.0.0
  */
 @com.gigaspaces.api.InternalApi
 public class ToCharSqlFunction extends SqlFunction {
+    /**
+     * @param context which contains a argument of type Number or Date and can have an additional
+     *                format argument. A Number argument should be used with {@link DecimalFormat},
+     *                a Date argument should be used with {@link SimpleDateFormat}. please notice:
+     *                time zone will always evaluated as GMT.
+     * @return a char set of context.getArgument(0) in default format, or in context.getArgument(1)
+     * format if specified.
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         Object arg = context.getArgument(0);
@@ -35,15 +44,15 @@ public class ToCharSqlFunction extends SqlFunction {
         if (context.getNumberOfArguments() >= 2) {
             format = context.getArgument(1);
         }
-        if (arg instanceof Number) { //number
-            if (format != null) { // must be java- DecimalFormat
+        if (arg instanceof Number) {
+            if (format != null) {
                 DecimalFormat decimalFormat = new DecimalFormat(String.valueOf(format));
                 return decimalFormat.format(arg);
             } else {
                 return arg;
             }
-        } else if (arg instanceof Date) { // Note - the Time zone will always evaluated as GMT
-            if (format != null) { // must be java- SimpleDateFormat
+        } else if (arg instanceof Date) {
+            if (format != null) {
                 SimpleDateFormat sdf = new SimpleDateFormat(String.valueOf(format));
                 sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
                 return sdf.format(arg);

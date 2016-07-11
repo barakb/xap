@@ -17,13 +17,21 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Tamir on 2/21/16.
+ * Built in string sql function to get the position of the first occurrence of a substring in a
+ * string.
  *
+ * @author Tamir Schwarz
  * @since 11.0.0
  */
 @com.gigaspaces.api.InternalApi
 public class InStrSqlFunction extends SqlFunction {
-    // Note - inStr is Sql convention (Not as Java), E.g - first index is 1 (not 0), if not a substring return value is 0
+    /**
+     * inStr is an SQL convention (Not Java's), in the sense that the first index is 1 and not 0.
+     *
+     * @param context contains two arguments of type string.
+     * @return the index of the first occurrence of context.getArgument(1) in
+     * context.getArgument(0). If not a substring, return value of 0.
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         assertNumberOfArguments(2, context);

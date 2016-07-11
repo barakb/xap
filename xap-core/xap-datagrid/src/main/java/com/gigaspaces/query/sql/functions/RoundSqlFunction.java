@@ -17,12 +17,25 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Tamir on 2/21/16.
+ * Built in mathematical sql function to round the argument to nearest Integer.
  *
+ * @author Tamir Schwarz
  * @since 11.0.0
  */
 @com.gigaspaces.api.InternalApi
 public class RoundSqlFunction extends SqlFunction {
+    /**
+     * Rounds the first argument context.getArgument(0) to the number of decimal places specified by
+     * context.getArgument(1). <ul> <li>ROUND(1.298, 1) = 1.3</li> <li>ROUND(1.298, 0) = 1</li>
+     * <li>ROUND(23.298, -1) = 20</li> </ul>
+     *
+     * @param context contains one or two arguments of type Number.
+     * @return the value of the rounded argument context.getArgument(0) to context.getArgument(1)
+     * decimal places. The rounding algorithm depends on the data type of context.getArgument(0),
+     * context.getArgument(1) defaults to 0 if not specified. context.getArgument(1) can be negative
+     * to cause context.getArgument(1) digits left of the decimal point of the value
+     * context.getArgument(0) to become zero.
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         Object arg = context.getArgument(0);

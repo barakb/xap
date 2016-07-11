@@ -17,12 +17,18 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Tamir on 2/21/16.
+ * Built in string sql function to calculate the length of the string, measured in characters.
  *
+ * @author Tamir Schwarz
  * @since 11.0.0
  */
+
 @com.gigaspaces.api.InternalApi
 public class CharLengthSqlFunction extends SqlFunction {
+    /**
+     * @param context contains one argument of type String/char[].
+     * @return the length of the string/char[], context.getArgument(0), measured in characters.
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         assertNumberOfArguments(1, context);

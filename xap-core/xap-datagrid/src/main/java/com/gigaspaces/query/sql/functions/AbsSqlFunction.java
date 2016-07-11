@@ -17,10 +17,17 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Tamir on 2/21/16.
+ * Built in mathematical sql function to get absolute value of a parameter.
+ *
+ * @author Tamir Schwarz
+ * @since 11.0.0
  */
 @com.gigaspaces.api.InternalApi
 public class AbsSqlFunction extends SqlFunction {
+    /**
+     * @param context contains one parameter of type Number.
+     * @return the absolute value of context.getArgument(0), cast to context.getArgument(0).getClass().
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         assertNumberOfArguments(1, context);

@@ -17,12 +17,17 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Tamir on 2/21/16.
+ * Built in mathematical sql function to perform modulo operation.
  *
+ * @author Tamir Schwarz
  * @since 11.0.0
  */
 @com.gigaspaces.api.InternalApi
 public class ModSqlFunction extends SqlFunction {
+    /**
+     * @param context contains two arguments of either Long/Integer/Double.
+     * @return the remainder of context.getArgument(0) divided by context.getArgument(1).
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         assertNumberOfArguments(2, context);

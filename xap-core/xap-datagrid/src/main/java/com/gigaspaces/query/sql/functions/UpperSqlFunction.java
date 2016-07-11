@@ -17,12 +17,17 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Tamir on 2/21/16.
+ * Built in string sql function to change all characters of a given string to uppercase.
  *
+ * @author Tamir Schwarz
  * @since 11.0.0
  */
 @com.gigaspaces.api.InternalApi
 public class UpperSqlFunction extends SqlFunction {
+    /**
+     * @param context which contains one argument of type string.
+     * @return Returns the string context.getArgument(0) with all characters changed to uppercase.
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         assertNumberOfArguments(1, context);

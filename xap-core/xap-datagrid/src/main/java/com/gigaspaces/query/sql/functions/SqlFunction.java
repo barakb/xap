@@ -17,13 +17,29 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Barak Bar Orion on 1/20/16.
+ * Defines a routine, to be use in SQLQuery context, that accepts arguments and performs an action
+ * on the stored object, such as a complex calculation.
  *
+ * @author Barak Bar Orion
  * @since 11.0
  */
 public abstract class SqlFunction {
+    /**
+     * Defines the action to be performed on the stored object.
+     *
+     * @param context contains the arguments, {@link com.gigaspaces.query.sql.functions.SqlFunctionExecutionContext}
+     * @return The Stored object after applying the action
+     * @throws RuntimeException if wrong input arguments were supplied
+     */
     public abstract Object apply(SqlFunctionExecutionContext context);
 
+    /**
+     * Validate the number of arguments a function receives.
+     *
+     * @param expected number of arguments, according to every function inner logic.
+     * @param context  the actual received arguments, which are contained in the context.
+     * @throws RuntimeException if expected doesn't match actual number of arguments in context
+     */
     protected void assertNumberOfArguments(int expected, SqlFunctionExecutionContext context) {
         if (context.getNumberOfArguments() != expected) {
             throw new RuntimeException("wrong number of arguments - expected: " + expected + " ,but actual number of arguments is: " + context.getNumberOfArguments());

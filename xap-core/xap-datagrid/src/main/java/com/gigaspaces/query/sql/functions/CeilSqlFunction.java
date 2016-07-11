@@ -17,12 +17,19 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Tamir Schwarz on 2/21/16.
+ * Built in mathematical sql function to calculate the smallest integer value not less than the
+ * given argument.
  *
+ * @author Tamir Schwarz
  * @since 11.0.0
  */
 @com.gigaspaces.api.InternalApi
 public class CeilSqlFunction extends SqlFunction {
+    /**
+     * @param context contains one argument of type Number.
+     * @return the {@link Math#ceil(double)} of context.getArgument(0), cast to
+     * context.getArgument(0).getClass().
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         assertNumberOfArguments(1, context);

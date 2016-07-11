@@ -19,12 +19,19 @@ package com.gigaspaces.query.sql.functions;
 import java.text.DecimalFormat;
 
 /**
- * Created by Tamir on 2/21/16.
+ * Built in conversion sql function to convert string type to Number.
  *
+ * @author Tamir Schwarz
  * @since 11.0.0
  */
 @com.gigaspaces.api.InternalApi
 public class ToNumberSqlFunction extends SqlFunction {
+    /**
+     * @param context which contains an argument of type string and can have an additional format
+     *                argument.
+     * @return Number with corresponding value to context.getArgument(0), in format
+     * context.getArgument(1) if exists.
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         Object arg = context.getArgument(0);

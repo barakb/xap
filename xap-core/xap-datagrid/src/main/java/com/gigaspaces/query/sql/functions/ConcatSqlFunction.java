@@ -17,12 +17,17 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Tamir on 2/21/16.
+ * Built in string sql function to concatenate any number of given string arguments.
  *
+ * @author Tamir Schwarz
  * @since 11.0.0
  */
 @com.gigaspaces.api.InternalApi
 public class ConcatSqlFunction extends SqlFunction {
+    /**
+     * @param context contains the string arguments to concat.
+     * @return the string that results from concatenating all the arguments contained in context.
+     */
     @Override
     public Object apply(SqlFunctionExecutionContext context) {
         StringBuilder sb = new StringBuilder();

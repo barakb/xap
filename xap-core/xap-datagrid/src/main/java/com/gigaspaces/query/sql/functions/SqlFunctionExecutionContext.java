@@ -17,14 +17,24 @@
 package com.gigaspaces.query.sql.functions;
 
 /**
- * Created by Tamir on 2/16/16.
+ * Defines the arguments to be passed to an SqlFunction, generated for sqlFunction invocations.
  *
+ * @author Tamir Schwarz
  * @since 11.0.0
  */
 public interface SqlFunctionExecutionContext {
-
+    /**
+     * @return the number of arguments stored in the context
+     */
     int getNumberOfArguments();
 
+    /**
+     * Provides mapping between stored arguments and the argument index to be passed to the
+     * function
+     *
+     * @param index the index of the argument requested
+     * @return the value of argument at 'index'
+     */
     Object getArgument(int index);
 
 }
