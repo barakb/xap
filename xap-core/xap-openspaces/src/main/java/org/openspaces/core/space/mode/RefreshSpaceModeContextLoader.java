@@ -54,7 +54,7 @@ public class RefreshSpaceModeContextLoader extends SpaceModeContextLoader implem
             childAppContextClassLoader = new URLClassLoader(urlClassLoader.getURLs(), urlClassLoader.getParent());
         } else if (classLoader instanceof ServiceClassLoader) {
             ServiceClassLoader serviceClassLoader = (ServiceClassLoader) classLoader;
-            String name = serviceClassLoader.getName();
+            String name = serviceClassLoader.getLogName();
             if (beanName != null) {
                 name = name + "/" + beanName;
             } else {

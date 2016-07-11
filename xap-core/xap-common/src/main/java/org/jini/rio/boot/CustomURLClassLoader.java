@@ -7,19 +7,14 @@
  *******************************************************************************/
 package org.jini.rio.boot;
 
-import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.List;
 
 /**
  * @author Niv Ingberg
  * @since 10.1
  */
-public abstract class CustomURLClassLoader extends URLClassLoader {
-
-    private static final char SEPARATOR = File.pathSeparatorChar;
-    private static final String NEW_LINE = System.getProperty("line.separator");
+public abstract class CustomURLClassLoader extends URLClassLoader implements LoggableClassLoader {
 
     private final String name;
 
@@ -28,49 +23,13 @@ public abstract class CustomURLClassLoader extends URLClassLoader {
         this.name = name;
     }
 
-    /**
-     * Returns a String representation of this class loader.
-     **/
+    @Override
     public String toString() {
-        return (super.toString() + " Name : [" + name + "]");
+        return (super.toString() + " [name=" + name + "]");
     }
 
-    public String getName() {
+    @Override
+    public String getLogName() {
         return this.name;
-    }
-
-    public void dump(StringBuilder sb) {
-        sb.append(super.toString());
-        dumpDetails(sb);
-    }
-
-    protected void dumpDetails(StringBuilder sb) {
-        sb.append(" name=").append(getName());
-        sb.append(" URLs:" + NEW_LINE);
-        for (URL url : getURLs()) {
-            sb.append(url + NEW_LINE);
-        }
-        sb.append("*** End of URLs ***" + NEW_LINE);
-    }
-
-    public static void append(StringBuilder sb, URL url) {
-        final File file = new File(url.getFile());
-        sb.append(file.getAbsolutePath());
-        if (!file.exists())
-            sb.append("(not exists)");
-    }
-
-    public static void append(StringBuilder sb, URL[] urls) {
-        for (final URL url : urls) {
-            append(sb, url);
-            sb.append(SEPARATOR);
-        }
-    }
-
-    public static void append(StringBuilder sb, List<URL> urls) {
-        for (final URL url : urls) {
-            append(sb, url);
-            sb.append(SEPARATOR);
-        }
     }
 }

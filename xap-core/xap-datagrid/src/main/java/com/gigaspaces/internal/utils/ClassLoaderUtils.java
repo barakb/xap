@@ -17,37 +17,47 @@
 package com.gigaspaces.internal.utils;
 
 import org.jini.rio.boot.CustomURLClassLoader;
+import org.jini.rio.boot.LoggableClassLoader;
 
 import java.net.URL;
 import java.net.URLClassLoader;
 
 @com.gigaspaces.api.InternalApi
 public class ClassLoaderUtils {
-    public static String getCurrentClassPathString() {
-        return getClassPathString(Thread.currentThread().getContextClassLoader());
+    public static String getCurrentClassPathString(String prefix) {
+        return getClassPathString(Thread.currentThread().getContextClassLoader(), prefix);
     }
 
-    public static String getClassPathString(ClassLoader classLoader) {
+    public static String getClassPathString(ClassLoader classLoader, String prefix) {
         StringBuilder classpath = new StringBuilder();
-        while (classLoader != null) {
-            classpath.append('{');
-            if (classLoader instanceof CustomURLClassLoader) {
-                ((CustomURLClassLoader) classLoader).dump(classpath);
-            } else {
-                classpath.append(classLoader);
-                if (classLoader instanceof URLClassLoader) {
-                    final URLClassLoader ucl = (URLClassLoader) classLoader;
-                    classpath.append(" URLs:" + StringUtils.NEW_LINE);
-                    for (URL url : ucl.getURLs()) {
-                        classpath.append(url + StringUtils.NEW_LINE);
-                    }
-                    classpath.append("*** End of URLs ***");
-                }
-            }
-            classpath.append('}');
-            classLoader = classLoader == ClassLoader.getSystemClassLoader() ? null : classLoader.getParent();
-        }
+        appendClassLoader(classLoader, classpath, prefix);
         return classpath.toString();
+    }
+
+    private static void appendClassLoader(ClassLoader classLoader, StringBuilder classpath, String prefix) {
+        if (classLoader == null)
+            return;
+
+        classpath.append(prefix + ": " + getClassLoaderName(classLoader));
+        if (classLoader instanceof URLClassLoader) {
+            final URL[] urls = ((URLClassLoader) classLoader).getURLs();
+            classpath.append(", Urls: " + urls.length  + StringUtils.NEW_LINE);
+            for (URL url : urls) {
+                classpath.append("    " + url + StringUtils.NEW_LINE);
+            }
+        }
+        if (classLoader != ClassLoader.getSystemClassLoader())
+            appendClassLoader(classLoader.getParent(), classpath, "Parent Class Loader");
+    }
+
+    private static String getClassLoaderName(ClassLoader classLoader) {
+        if (classLoader instanceof LoggableClassLoader) {
+            return ((LoggableClassLoader)classLoader).getLogName();
+        }
+        if (ClassLoader.getSystemClassLoader().equals(classLoader)) {
+            return "System class Loader";
+        }
+        return classLoader.toString();
     }
 
     public static boolean isClassLoaderProblem(Throwable t) {

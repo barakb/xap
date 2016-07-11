@@ -30,8 +30,7 @@ import java.util.List;
  * specific location(s) are returned appropriately
  */
 @com.gigaspaces.api.InternalApi
-public class ServiceClassLoader extends CustomURLClassLoader
-        implements LoggableClassLoader, ClassAnnotation {
+public class ServiceClassLoader extends CustomURLClassLoader implements ClassAnnotation {
     /**
      * URLs that this class loader will to search for and load classes
      */
@@ -61,11 +60,6 @@ public class ServiceClassLoader extends CustomURLClassLoader
         this.annotator = annotator;
         this.searchPath = Collections.unmodifiableList(
                 searchPath != null ? Arrays.asList(searchPath) : new ArrayList<URL>());
-    }
-
-    @Override
-    public String getLogName() {
-        return getName();
     }
 
     /**
@@ -247,17 +241,5 @@ public class ServiceClassLoader extends CustomURLClassLoader
             }
         }
         throw new ClassNotFoundException(name);
-    }
-
-    @Override
-    protected void dumpDetails(StringBuilder sb) {
-        super.dumpDetails(sb);
-        sb.append(" searchPath=[");
-        append(sb, getSearchPath());
-        sb.append("] slashPath=");
-        append(sb, getSlashPath());
-        sb.append(" libPath=[");
-        append(sb, getLibPath());
-        sb.append("]");
     }
 }
