@@ -1,7 +1,7 @@
 <metrics-configuration>
     <!-- This file determines the settings for monitoring and metrics. For more information see: -->
-    <!-- http://docs.gigaspaces.com/xap110adm/web-management-monitoring.html -->
-    <!-- http://docs.gigaspaces.com/xap110adm/metrics-overview.html -->
+    <!-- http://docs.gigaspaces.com/xap120adm/web-management-monitoring.html -->
+    <!-- http://docs.gigaspaces.com/xap120adm/metrics-overview.html -->
 
     <!-- Configure which reporter(s) will be used to collect data from the system -->
     <reporters>
