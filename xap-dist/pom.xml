@@ -293,10 +293,10 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <headerHtmlFile>${basedir}/../xap-hello-world/html/header.html</headerHtmlFile>
-                            <footerHtmlFile>${basedir}/../xap-hello-world/html/footer.html</footerHtmlFile>
-                            <inputDirectory>${basedir}/../xap-hello-world</inputDirectory>
-                            <outputDirectory>${basedir}/../xap-hello-world</outputDirectory>
+                            <headerHtmlFile>${basedir}/../xap-examples/hello-world/html/header.html</headerHtmlFile>
+                            <footerHtmlFile>${basedir}/../xap-examples/hello-world/html/footer.html</footerHtmlFile>
+                            <inputDirectory>${basedir}/../xap-examples/hello-world</inputDirectory>
+                            <outputDirectory>${basedir}/../xap-examples/hello-world</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
