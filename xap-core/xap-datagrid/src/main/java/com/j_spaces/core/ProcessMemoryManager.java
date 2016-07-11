@@ -16,6 +16,14 @@
 
 package com.j_spaces.core;
 
+import com.gigaspaces.internal.utils.concurrent.GSThreadFactory;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+
 /**
  * @author idan
  * @since 9.5
@@ -26,10 +34,14 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
 
     private static final long _totalMemory = (_runtime.totalMemory() == _runtime.maxMemory()) ? _runtime.totalMemory() : -1;
     private static final long _maximumMemory = _runtime.maxMemory();
+    private ExecutorService executorService;
+    private FutureTask<Long> inProcess;
 
     public static final IProcessMemoryManager INSTANCE = new ProcessMemoryManager();
 
     private ProcessMemoryManager() {
+        executorService = Executors.newSingleThreadExecutor(new GSThreadFactory("ProcessMemoryManager", true));
+        inProcess = null;
     }
 
     public void performGC() {
@@ -50,7 +62,33 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
     }
 
     public long getFreeMemory() {
-        return _runtime.freeMemory();
+        FutureTask<Long> futureTask = new FutureTask<Long>(new Callable<Long>() {
+            @Override
+            public Long call() throws Exception {
+                try {
+                    return _runtime.freeMemory();
+                }finally{
+                    synchronized (ProcessMemoryManager.this){
+                        inProcess = null;
+                    }
+                }
+            }
+        });
+        try {
+            return getRunningFreeMemoryProb(futureTask).get();
+        }catch (Exception e){
+            return _totalMemory == -1 ? _runtime.totalMemory() : _totalMemory;
+        }
+    }
+
+    private synchronized Future<Long> getRunningFreeMemoryProb(FutureTask<Long> futureTask) {
+        if(inProcess != null){
+            return inProcess;
+        }else{
+            inProcess = futureTask;
+            executorService.submit(futureTask);
+            return futureTask;
+        }
     }
 
 }
