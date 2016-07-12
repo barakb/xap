@@ -114,11 +114,10 @@ public class IntegratedProcessingUnitContainer extends ApplicationContextProcess
      */
     public static void main(String[] args) throws Exception {
         GSLogConfigLoader.getLoader();
+
+        //when calling with space-instance script, and no arguments were passed, we concatenate --help
+        //IntegratedProcessingUnitContainer can also run without arguments and load pu.xml
         showUsageOptionsOnHelpCommand(args);
-        if (args.length == 0) {
-            printUsage();
-            System.exit(1);
-        }
 
         logger.info("Starting with args: " + Arrays.toString(args) + "\n" + RuntimeInfo.getEnvironmentInfoIfFirstTime());
         try {
@@ -194,7 +193,8 @@ public class IntegratedProcessingUnitContainer extends ApplicationContextProcess
         System.out.println();
         System.out.println("    --help                                   : Shows this usage options menu");
         System.out.println();
-        System.out.println("    -name [data grid name]        (required) : Specify the data grid name");
+        System.out.println("    <no parameters>                          : by default uses classpath*:/META-INF/spring/pu.xml");
+        System.out.println("    -name [data grid name]                   : Specify the data grid name (required if pu.xml not found)");
         System.out.println("    -cluster [cluster properties]            : Allows to specify cluster parameters");
         System.out.println("             schema=partitioned              : The cluster schema to use (default is partitioned)");
         System.out.println("             total_members=1,1               : The number of instances and number of backups to use");

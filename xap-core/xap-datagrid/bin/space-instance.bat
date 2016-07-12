@@ -30,6 +30,10 @@ rem setlocal
 set SPACE_INSTANCE_ARGS=%*
 echo Running with the following arguments: %SPACE_INSTANCE_ARGS%
 
+if "%~1"=="" (
+  set SPACE_INSTANCE_ARGS="--help"
+)
+
 set TITLE="Space Instance ["%SPACE_URL%"] started on [%computername%]"
 @title %TITLE%
 

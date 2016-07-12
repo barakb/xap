@@ -35,6 +35,10 @@ export CPS
 SPACE_ARGS="$*"
 echo Running with the following arguments: [${SPACE_ARGS}]
 
+if [ "$1" = "" ] ; then
+  SPACE_ARGS="--help"
+fi
+
 COMMAND_LINE="${JAVACMD} ${JAVA_OPTIONS} ${XAP_COMPONENT_OPTIONS} ${XAP_OPTIONS} -classpath "${PRE_CLASSPATH}:${XAP_HOME}/deploy/templates/datagrid:${GS_JARS}:${POST_CLASSPATH}" org.openspaces.pu.container.integrated.IntegratedProcessingUnitContainer "${SPACE_ARGS}""
 
 echo
