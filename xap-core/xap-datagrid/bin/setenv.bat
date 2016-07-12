@@ -38,7 +38,7 @@ if not defined JAVA_OPTIONS (
 	popd
 )
 
-set GS_JARS="%XAP_HOME%\lib\platform\ext\*";"%XAP_HOME%";"%XAP_HOME%\lib\required\*";"%XAP_HOME%\lib\optional\pu-common\*";
+set GS_JARS="%XAP_HOME%\lib\platform\ext\*";"%XAP_HOME%";"%XAP_HOME%\lib\required\*";"%XAP_HOME%\lib\optional\pu-common\*";"%XAP_CLASSPATH_EXT%"
 set COMMONS_JARS="%XAP_HOME%\lib\platform\commons\*;"
 set JDBC_JARS="%XAP_HOME%\lib\optional\jdbc\*;"
 set SIGAR_JARS="%XAP_HOME%\lib\optional\sigar\*;"

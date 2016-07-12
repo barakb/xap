@@ -41,7 +41,7 @@ if [ -z "${JAVA_OPTIONS}" ]; then
 fi
 export JAVA_OPTIONS
 
-export GS_JARS="${XAP_HOME}"/lib/platform/ext/*:${XAP_HOME}:"${XAP_HOME}"/lib/required/*:"${XAP_HOME}"/lib/optional/pu-common/*
+export GS_JARS="${XAP_HOME}"/lib/platform/ext/*:${XAP_HOME}:"${XAP_HOME}"/lib/required/*:"${XAP_HOME}"/lib/optional/pu-common/*:"${XAP_CLASSPATH_EXT}"
 export COMMONS_JARS="${XAP_HOME}"/lib/platform/commons/*
 export JDBC_JARS="${XAP_HOME}"/lib/optional/jdbc/*
 export SIGAR_JARS="${XAP_HOME}"/lib/optional/sigar/*
