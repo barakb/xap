@@ -154,56 +154,6 @@
     </dependencySets>
 
     <fileSets>
-        <!-- poms -->
-        <fileSet>
-            <directory>${project.basedir}/../xap-extensions/xap-jms</directory>
-            <outputDirectory>${poms.dir}/xap-extensions/xap-jms</outputDirectory>
-            <includes>
-                <include>pom.xml</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.basedir}/../xap-extensions/xap-jetty-8</directory>
-            <outputDirectory>${poms.dir}/xap-extensions/xap-jetty-8</outputDirectory>
-            <includes>
-                <include>pom.xml</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.basedir}/../xap-extensions/xap-jetty-9</directory>
-            <outputDirectory>${poms.dir}/xap-extensions/xap-jetty-9</outputDirectory>
-            <includes>
-                <include>pom.xml</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.basedir}/../xap-extensions/xap-map</directory>
-            <outputDirectory>${poms.dir}/xap-extensions/xap-map</outputDirectory>
-            <includes>
-                <include>pom.xml</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.basedir}/../xap-extensions/xap-map-spring</directory>
-            <outputDirectory>${poms.dir}/xap-extensions/xap-map-spring</outputDirectory>
-            <includes>
-                <include>pom.xml</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.basedir}/../xap-extensions/xap-mongodb</directory>
-            <outputDirectory>${poms.dir}/xap-extensions/xap-mongodb</outputDirectory>
-            <includes>
-                <include>pom.xml</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.basedir}/../xap-extensions/xap-spatial</directory>
-            <outputDirectory>${poms.dir}/xap-extensions/xap-spatial</outputDirectory>
-            <includes>
-                <include>pom.xml</include>
-            </includes>
-        </fileSet>
 
         <!--jetty8-->
         <fileSet>

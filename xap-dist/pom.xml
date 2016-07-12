@@ -14,7 +14,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <poms.dir>product/tools/maven/poms/xap-datagrid</poms.dir>
     </properties>
 
     <repositories>
