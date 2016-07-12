@@ -1,12 +1,13 @@
 # GIGASPACES XAP SOFTWARE - OPEN SOURCE AND THIRD PARTY COMPONENTS
 
-## Mandatory Core Dependencies (XAP_HOME/lib/required)
-======================================================================================
+## Mandatory Core Dependencies
+
+Located at XAP_HOME/lib/required
+
 ### Spring (under the Apache License, Version 2.0)
 
-http://www.springframework.org/about
-http://www.apache.org/licenses/LICENSE-2.0.html
-======================================================================================
+    http://www.springframework.org/about
+    http://www.apache.org/licenses/LICENSE-2.0.html
 
 Copyright 2010, www.springsource.org
 
@@ -14,12 +15,10 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-======================================================================================
 ###	Commons Logging (under the Apache License, Version 2.0)
 
-http://jakarta.apache.org/commons/logging/
-http://www.apache.org/licenses/LICENSE-2.0.html
-======================================================================================
+    http://jakarta.apache.org/commons/logging/
+    http://www.apache.org/licenses/LICENSE-2.0.html
 
 Copyright (c) 2010 The Apache Software Foundation
 
@@ -27,12 +26,10 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-======================================================================================
 ###	Jini (under the Apache License, Version 2.0)
 
-http://www.sun.com/software/jini/
-http://www.apache.org/licenses/LICENSE-2.0.html
-======================================================================================
+    http://www.sun.com/software/jini/
+    http://www.apache.org/licenses/LICENSE-2.0.html
 
 Copyright 2005 Sun Microsystems, Inc.
 
@@ -48,28 +45,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-======================================================================================
 ###	Rio (under the Apache License, Version 2.0)
 
-http://community.java.net/jini/
-http://www.apache.org/licenses/LICENSE-2.0.html
-======================================================================================
+    http://community.java.net/jini/
+    http://www.apache.org/licenses/LICENSE-2.0.html
 
 Copyright 2005 Sun Microsystems, Inc.
-
-
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-======================================================================================
 ## Optional - Core enhancements dependencies
-======================================================================================
+
 ###	ASM (under "BSD-style" license)
-http://asm.objectweb.org/doc/tutorial.html
-ASM - http://asm.objectweb.org/doc/tutorial.html
-======================================================================================
+
+    http://asm.objectweb.org/doc/tutorial.html
+    ASM - http://asm.objectweb.org/doc/tutorial.html
 
 Copyright (c) 2000-2005 INRIA, France Telecom
 All rights reserved.
@@ -84,12 +76,10 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-======================================================================================
 ###	Trove (under GNU Lesser General Public License)
 
-http://trove4j.sourceforge.net/
-http://trove4j.sourceforge.net/html/license.html
-======================================================================================
+    http://trove4j.sourceforge.net/
+    http://trove4j.sourceforge.net/html/license.html
 
 Copyright (c) 2001, Eric D. Friedman All Rights Reserved.
 
@@ -115,12 +105,10 @@ You may also contact GigaSpaces for more information at this address: 317 Madiso
 Two classes (HashFunctions and PrimeFinder) included in Trove are licensed under the following terms:
 Copyright (c) 1999 CERN - European Organization for Nuclear Research. Permission to use, copy, modify, distribute and sell this software and its documentation for any purpose is hereby granted without fee, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation. CERN makes no representations about the suitability of this software for any purpose. It is provided "as is" without expressed or implied warranty.
 
-======================================================================================
 ###	Sigar (under the Apache License, Version 2.0)
 
-http://support.hyperic.com/display/SIGAR/Home
-http://support.hyperic.com/display/SIGAR/Home#Home-license
-======================================================================================
+    http://support.hyperic.com/display/SIGAR/Home
+    http://support.hyperic.com/display/SIGAR/Home#Home-license
 
 SIGAR is licensed under the Apache License, Version 2.0
 
@@ -128,12 +116,10 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-======================================================================================
 ###	Commons Lang (under the Apache License, Version 2.0)
 
-http://commons.apache.org/lang/license.html
-http://commons.apache.org/lang/
-======================================================================================
+    http://commons.apache.org/lang/license.html
+    http://commons.apache.org/lang/
 
 Copyright (c) 2001-2011 The Apache Software Foundation. All Rights Reserved
 
@@ -141,14 +127,14 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-======================================================================================
-## Optional - JMS integration dependencies (XAP_HOME/lib/optional/jms)
-======================================================================================
+## Optional - JMS integration dependencies
+
+Located at XAP_HOME/lib/optional/jms
+
 ###	JMS (under Sun Public License Version 1.0)
 
-http://java.sun.com/products/jms/
-http://www.opensource.org/licenses/sunpublic.php
-======================================================================================
+    http://java.sun.com/products/jms/
+    http://www.opensource.org/licenses/sunpublic.php
 
 The source code of the JMS software is available under the terms Sun Public License Version 1.0 http://www.opensource.org/licenses/sunpublic.php.
 
@@ -156,14 +142,14 @@ Notice: the GigaSpaces license agreement does not attempt to limit or alter the 
 rights in the JMS's source code version from the rights set forth in the Sun Public License Version 1.0. Any terms in the Sun Public License Version 1.0 which differ from the Sun Public License Version 1.0 are offered by GigaSpaces alone, not by the initial
 developer or any contributor of the JMS software.
 
-======================================================================================
-## Optional - JDBC integration dependencies (XAP_HOME/lib/optional/jdbc)
-======================================================================================
+## Optional - JDBC integration dependencies
+
+Located at XAP_HOME/lib/optional/jdbc
+
 ###	HyperSonic SQL (based under BSD license)
 
-http://www.hsqldb.org
-http://www.hsqldb.org/web/hsqlLicense.html
-======================================================================================
+    http://www.hsqldb.org
+    http://www.hsqldb.org/web/hsqlLicense.html
 
 For work developed by the HSQL Development Group:
 Copyright (c) 2001-2010, The HSQL Development Group
@@ -196,26 +182,27 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON A
 This software consists of voluntary contributions made by many individuals on behalf of the
 Hypersonic SQL Group.
 
-======================================================================================
 ###	H2 (dual licensed and available under a modified version of the MPL 1.1 (Mozilla Public License) or under the (unmodified) EPL 1.0 (Eclipse Public License).)
 
-http://www.h2database.com/
-http://www.h2database.com/html/license.html
-======================================================================================
+    http://www.h2database.com/
+    http://www.h2database.com/html/license.html
 
 THE H2 PROGRAM IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Each recipient of the H2 program is solely responsible for determining the appropriateness of using and distributing the H2 program and assumes all risks associated with its exercise of rights under the Eclipse Public license agreement which is available at http://eclipse.org/legal/epl-v10.html, including but not limited to the risks and costs of program errors, compliance with applicable laws, damage to or loss of data, programs or equipment, and unavailability or interruption of operations. Any provision which is differs from the Eclipse Public License is offered by the contributor alone and not by any other party.
 EXCEPT AS EXPRESSLY SET FORTH IN THE ECLIPSE PUBLIC LICENSE AGREEMENT, NEITHER RECIPIENT NOR ANY CONTRIBUTORS SHALL HAVE ANY LIABILITY FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING WITHOUT LIMITATION LOST PROFITS), HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OR DISTRIBUTION OF THE ASPECTJWEAVER PROGRAM OR THE EXERCISE OF ANY RIGHTS GRANTED HEREUNDER, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 The source code for the H2 program is available from:
 http://code.google.com/p/h2database/source/checkout
 
-======================================================================================
-## Optional - Jetty integration dependencies (XAP_HOME/lib/optional/jetty, XAP_HOME/lib/optional/jetty-9)
-======================================================================================
+## Optional - Jetty integration dependencies
+
+Located at:
+
+* XAP_HOME/lib/optional/jetty
+* XAP_HOME/lib/optional/jetty-9
+
 ###	Jetty (under dual licensed under the Apache License 2.0 and Eclipse Public License 1.0)
 
-http://www.mortbay.org/jetty/
-http://www.eclipse.org/jetty/licenses.php
-======================================================================================
+    http://www.mortbay.org/jetty/
+    http://www.eclipse.org/jetty/licenses.php
 
 Jetty Web Container
  Copyright 1995-2009 Mort Bay Consulting Pty Ltd
@@ -232,13 +219,13 @@ The javax.servlet package used was sourced from the Apache Software Foundation a
 
 The UnixCrypt.java code implements the one way cryptography used by Unix systems for simple password protection.  Copyright 1996 Aki Yoshida, modified April 2001 by Iris Van den Broeke, Daniel Deville. Permission to use, copy, modify and distribute UnixCrypt for non-commercial or commercial purposes and without fee is granted provided that the copyright notice appears in all copies.
 
-======================================================================================
-## Optional - Spatial API dependencies (XAP_HOME/lib/optional/spatial)
-======================================================================================
+## Optional - Spatial API dependencies
+
+Located at XAP_HOME/lib/optional/spatial
+
 ###	Apache Lucene
 
-http://www.apache.org/licenses/LICENSE-2.0
-======================================================================================
+    http://www.apache.org/licenses/LICENSE-2.0
 
 Project is licensed under Apache License 2.0 (http://www.apache.org/licenses/LICENSE-2.0.txt).
 
@@ -252,12 +239,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-======================================================================================
+
 ###	JTS (under GNU Lesser General Public License)
 
-http://www.vividsolutions.com/jts/JTSHome.htm
-http://www.gnu.org/copyleft/lesser.html
-======================================================================================
+    http://www.vividsolutions.com/jts/JTSHome.htm
+    http://www.gnu.org/copyleft/lesser.html
 
 JTS library is published under the OSI approved GNU LESSER GENERAL PUBLIC LICENSE.
 
@@ -274,5 +260,3 @@ This library is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 You may also contact GigaSpaces for more information at this address: 317 Madison Ave, Suite 823, New York, NY 10017, USA and via email at info@gigaspaces.com.
-
-======================================================================================
