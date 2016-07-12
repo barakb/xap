@@ -18,11 +18,7 @@ package com.j_spaces.core;
 
 import com.gigaspaces.internal.utils.concurrent.GSThreadFactory;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 /**
  * @author idan
@@ -34,14 +30,24 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
 
     private static final long _totalMemory = (_runtime.totalMemory() == _runtime.maxMemory()) ? _runtime.totalMemory() : -1;
     private static final long _maximumMemory = _runtime.maxMemory();
-    private ExecutorService executorService;
-    private FutureTask<Long> inProcess;
+    private static final boolean _asyncMemorySamplerEnabled = Boolean.getBoolean("com.gs.asyncMemorySampler");
+    private final ExecutorService executorService;
+    private final MemorySampler _asyncMemorySampler;
+    private static boolean _samplerThreadShouldRun = false;
+    private static long _freeMemory = _runtime.freeMemory();
 
     public static final IProcessMemoryManager INSTANCE = new ProcessMemoryManager();
 
     private ProcessMemoryManager() {
-        executorService = Executors.newSingleThreadExecutor(new GSThreadFactory("ProcessMemoryManager", true));
-        inProcess = null;
+        if (_asyncMemorySamplerEnabled) {
+            _asyncMemorySampler = new MemorySampler();
+            executorService = Executors.newSingleThreadExecutor(new GSThreadFactory("ProcessMemoryManager", true));
+            executorService.submit(_asyncMemorySampler);
+        } else {
+            executorService = null;
+            _asyncMemorySampler = null;
+        }
+        System.out.println("com.gs.asyncMemorySampler="+ _asyncMemorySamplerEnabled);
     }
 
     public void performGC() {
@@ -49,12 +55,21 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
     }
 
     public double getMemoryUsagePercentage() {
-        return (getMemoryUsage() * 100.0) / getMaximumMemory();
+        return getMemoryUsagePercentage(false);
+    }
+
+    @Override
+    public double getMemoryUsagePercentage(boolean directCheck) {
+        return (getMemoryUsage(directCheck) * 100.0) / getMaximumMemory();
     }
 
     public long getMemoryUsage() {
+        return getMemoryUsage(false);
+    }
+
+    public long getMemoryUsage(boolean directCheck) {
         long totalMemory = _totalMemory == -1 ? _runtime.totalMemory() : _totalMemory;
-        return totalMemory - getFreeMemory();
+        return totalMemory - getFreeMemory(directCheck);
     }
 
     public long getMaximumMemory() {
@@ -62,32 +77,39 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
     }
 
     public long getFreeMemory() {
-        FutureTask<Long> futureTask = new FutureTask<Long>(new Callable<Long>() {
-            @Override
-            public Long call() throws Exception {
-                try {
-                    return _runtime.freeMemory();
-                }finally{
-                    synchronized (ProcessMemoryManager.this){
-                        inProcess = null;
-                    }
-                }
-            }
-        });
-        try {
-            return getRunningFreeMemoryProb(futureTask).get();
-        }catch (Exception e){
-            return _totalMemory == -1 ? _runtime.totalMemory() : _totalMemory;
+        return getFreeMemory(false);
+    }
+
+    public long getFreeMemory(boolean directCheck) {
+        if (_asyncMemorySamplerEnabled && !directCheck) {
+            _samplerThreadShouldRun = true;
+            return _freeMemory;
+        } else {
+            return _runtime.freeMemory();
         }
     }
 
-    private synchronized Future<Long> getRunningFreeMemoryProb(FutureTask<Long> futureTask) {
-        if(inProcess != null){
-            return inProcess;
-        }else{
-            inProcess = futureTask;
-            executorService.submit(futureTask);
-            return futureTask;
+    public class MemorySampler implements Runnable {
+        @Override
+        public void run() {
+            while(true) {
+                while (!_samplerThreadShouldRun) {
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException e) {
+                        System.out.println("Sleep interrupted1");
+                    }
+                }
+                while(_samplerThreadShouldRun) {
+                    _freeMemory = _runtime.freeMemory();
+                    _samplerThreadShouldRun = false;
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException e) {
+                        System.out.println("Sleep interrupted2");
+                    }
+                }
+            }
         }
     }
 

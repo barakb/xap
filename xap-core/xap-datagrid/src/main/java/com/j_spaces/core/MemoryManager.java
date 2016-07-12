@@ -374,12 +374,15 @@ public class MemoryManager implements Closeable {
             if (_gcBeforeShortage)
                 rate = getMemoryUsageRate(true); // rechek rate and force GC
             if (shouldBlock(rate, writeOperation)) {
-                if (_logger.isLoggable(Level.FINE)) {
-                    _logger.fine("Memory shortage in cache: " + _spaceName);
-                }
+                rate = _processMemoryManager.getMemoryUsagePercentage(true);
+                if (shouldBlock(rate, writeOperation)) {
+                    if (_logger.isLoggable(Level.FINE)) {
+                        _logger.fine("Memory shortage in cache: " + _spaceName);
+                    }
 
-                long usage = (long) ((rate * _processMemoryManager.getMaximumMemory()) / 100.0); // convert rate to usage from % to bytes
-                return new MemoryShortageException(_spaceName, _containerName, SystemInfo.singleton().network().getHostId(), usage, _processMemoryManager.getMaximumMemory());
+                    long usage = (long) ((rate * _processMemoryManager.getMaximumMemory()) / 100.0); // convert rate to usage from % to bytes
+                    return new MemoryShortageException(_spaceName, _containerName, SystemInfo.singleton().network().getHostId(), usage, _processMemoryManager.getMaximumMemory());
+                }
             }
         }
         return null;

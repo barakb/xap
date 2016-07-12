@@ -27,6 +27,8 @@ public interface IProcessMemoryManager {
 
     double getMemoryUsagePercentage();
 
+    double getMemoryUsagePercentage(boolean directCheck);
+
     long getMemoryUsage();
 
     long getMaximumMemory();
