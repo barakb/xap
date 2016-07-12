@@ -16,6 +16,14 @@
                 <include>commons-collections:commons-collections</include>
             </includes>
         </dependencySet>
+
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>product/deploy/templates/memcached/lib</outputDirectory>
+            <includes>
+                <include>io.netty:netty</include>
+            </includes>
+        </dependencySet>
     </dependencySets>
     <fileSets>
         <!--  non lib directories -->
