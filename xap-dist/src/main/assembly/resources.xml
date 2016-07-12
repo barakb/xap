@@ -108,9 +108,15 @@
 		</fileSet>
 
 		<fileSet>
+			<directory>${project.basedir}/..</directory>
+			<includes>
+				<include>NOTICE.md</include>
+			</includes>
+			<outputDirectory>product</outputDirectory>
+		</fileSet>
+		<fileSet>
 			<directory>${project.basedir}/../xap-core/xap-datagrid</directory>
 			<includes>
-				<include>notice.txt</include>
 				<include>START_HERE.htm</include>
 			</includes>
 			<outputDirectory>product</outputDirectory>
