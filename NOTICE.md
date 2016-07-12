@@ -1,5 +1,11 @@
 # GIGASPACES XAP SOFTWARE - OPEN SOURCE AND THIRD PARTY COMPONENTS
 
+GigaSpaces XAP dependencies can be categorized as follows:
+
+* Mandatory Core Dependencies - Dependencies which are essential for XAP core, and cannot be removed without harming XAP.
+* Optional Core Dependencies - Dependencies which enhance XAP core, but can be removed if needed.
+* Optional Extensions - Dependencies which are required for XAP various extensions. Each such dependency is listed in the content of the relevant extension. If the extension is not required, the dependency can be removed.
+
 ## Mandatory Core Dependencies
 
 Located at XAP_HOME/lib/required
@@ -60,6 +66,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 ###	ASM (under "BSD-style" license)
 
+Provides reflections enhancements, essentially making XAP run faster. Located at XAP_HOME/lib/required/xap-asm.jar
+
     http://asm.objectweb.org/doc/tutorial.html
     ASM - http://asm.objectweb.org/doc/tutorial.html
 
@@ -77,6 +85,8 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ###	Trove (under GNU Lesser General Public License)
+
+Provides alternative collections framework which is more efficient is some scenarios (mostly for primitives), essentially making XAP run faster. Located at XAP_HOME/lib/required/xap-trove.jar
 
     http://trove4j.sourceforge.net/
     http://trove4j.sourceforge.net/html/license.html
@@ -107,6 +117,8 @@ Copyright (c) 1999 CERN - European Organization for Nuclear Research. Permission
 
 ###	Sigar (under the Apache License, Version 2.0)
 
+Provides Operating system information and metrics which are not available out of the box with Java. Usee by XAP for enhanced monitoring capabilities. Located at XAP_HOME/lib/optional/sigar
+
     http://support.hyperic.com/display/SIGAR/Home
     http://support.hyperic.com/display/SIGAR/Home#Home-license
 
@@ -129,7 +141,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 ## Optional - JMS integration dependencies
 
-Located at XAP_HOME/lib/optional/jms
+xap-jms extension provides JMS integration. Located at XAP_HOME/lib/optional/jms
 
 ###	JMS (under Sun Public License Version 1.0)
 
@@ -194,7 +206,7 @@ http://code.google.com/p/h2database/source/checkout
 
 ## Optional - Jetty integration dependencies
 
-Located at:
+XAP provides integration with Jetty, mainly in the form of a web processing unit. Located at:
 
 * XAP_HOME/lib/optional/jetty
 * XAP_HOME/lib/optional/jetty-9
@@ -221,7 +233,7 @@ The UnixCrypt.java code implements the one way cryptography used by Unix systems
 
 ## Optional - Spatial API dependencies
 
-Located at XAP_HOME/lib/optional/spatial
+XAP provides geospatial capabilities via integration with Lucene. Located at XAP_HOME/lib/optional/spatial
 
 ###	Apache Lucene
 
