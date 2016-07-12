@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:os-core="http://www.openspaces.org/schema/core"
+       xmlns:os-events="http://www.openspaces.org/schema/events"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+       http://www.openspaces.org/schema/core http://www.openspaces.org/schema/12.0/core/openspaces-core.xsd
+       http://www.openspaces.org/schema/events http://www.openspaces.org/schema/12.0/events/openspaces-events.xsd">
+
+    <!-- Spring property configurer which allows us to use system properties (such as user.name). -->
+
+    <bean id="propertiesConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
+
+    <!-- Enables the usage of @GigaSpaceContext annotation based injection. -->
+
+    <os-core:giga-space-context/>
+
+    <!-- A bean representing the data-grid -->
+
+    <os-core:embedded-space id="space" name="dataGrid"/>
+
+    <!-- Define the GigaSpace instance that the application will use to access the space  -->
+
+    <os-core:giga-space id="gigaSpace" space="space"/>
+
+    <!-- Enable support for @EventDriven and @Polling annotation -->
+    <os-events:annotation-support />
+
+    <bean id="polling-container" class="EnglishToSpanishTranslator"/>
+
+</beans>
