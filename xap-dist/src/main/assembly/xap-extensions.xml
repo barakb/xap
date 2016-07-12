@@ -259,15 +259,6 @@
             </excludes>
         </fileSet>
 
-        <!--mule-->
-        <fileSet>
-            <directory>${project.basedir}/../xap-mule/mule-latest/target/classes</directory>
-            <outputDirectory>product/lib/optional/openspaces/schema</outputDirectory>
-            <includes>
-                <include>**/*.xsd</include>
-            </includes>
-        </fileSet>
-
         <!--scala-->
         <fileSet>
             <directory>${project.basedir}/../xap-extensions/xap-scala/xap-scala-core/target</directory>

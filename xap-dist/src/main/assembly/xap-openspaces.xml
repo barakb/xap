@@ -47,13 +47,6 @@
 
         <!--  lib optional directory  -->
         <fileSet>
-            <directory>${project.basedir}/../xap-core/xap-openspaces/src/main/resources/</directory>
-            <outputDirectory>product/lib/optional/openspaces/schema</outputDirectory>
-            <includes>
-                <include>**/openspaces-*.xsd</include>
-            </includes>
-        </fileSet>
-        <fileSet>
             <directory>${project.basedir}/../xap-core/xap-openspaces/target/dependency</directory>
             <outputDirectory>product/lib/optional/spring</outputDirectory>
             <includes>
