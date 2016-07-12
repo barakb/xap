@@ -64,7 +64,7 @@ public class UnsafeLevelLogger
     @Override
     public boolean isLoggable(Level level) {
         //The optimization is only relevant if set level was explicitly called, we do call it
-        //explicit due to our gs_logging file. if it is not called we cannot know the actual log level
+        //explicit due to our xap_logging file. if it is not called we cannot know the actual log level
         //due to internal logger logic
         if (!_levelOverriden)
             return _logger.isLoggable(level);

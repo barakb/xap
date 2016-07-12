@@ -32,7 +32,7 @@ public class CommonSystemProperties {
     public static final String MULTICAST_ENABLED_PROPERTY = "com.gs.multicast.enabled";
 
     /**
-     * If true the default gs_logging.properties file will not be loaded and none of the GS log
+     * If true the default xap_logging.properties file will not be loaded and none of the GS log
      * handlers will be set to the LogManager.
      */
     public final static String GS_LOGGING_DISABLED = "com.gs.logging.disabled";
@@ -51,14 +51,14 @@ public class CommonSystemProperties {
     public final static String CREATE_JMX_CONNECTOR_PROP = "com.gs.jmx.createJmxConnetor";
 
     /**
-     * If true the process of loading the default gs_logging.properties file will be printed out for
+     * If true the process of loading the default xap_logging.properties file will be printed out for
      * troubleshooting purpose.
      */
     public final static String GS_LOGGING_DEBUG = "com.gs.logging.debug";
 
     public final static String JAVA_LOGGING_CONFIG_FILE = "java.util.logging.config.file";
-    public final static String GS_LOGGING_CONFIG_FILE_PATH = "config/gs_logging.properties";
-    public final static String GS_EXT_LOGGING_CONFIG_FILE_PATH = "config/gs_ext_logging.properties";
+    public final static String GS_LOGGING_CONFIG_FILE_PATH = "config/log/xap_logging.properties";
+    public final static String GS_EXT_LOGGING_CONFIG_FILE_PATH = "config/log/xap_logging_ext.properties";
 
     /**
      * System property set when SystemConfig starts an RMI Registry

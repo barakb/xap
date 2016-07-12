@@ -87,7 +87,7 @@ public class LogManagerTests {
         final String logger2Name = "com.gigaspaces.start";
         final Level logger2Level = Level.FINEST;
 
-        File ext = new File("./gs_ext_logging.properties");
+        File ext = new File("./log/xap_logging_ext.properties");
         System.setProperty("java.util.logging.config.file", ext.getAbsolutePath());
         try {
             FileWriter fw = new FileWriter(ext);

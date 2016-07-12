@@ -99,6 +99,13 @@
 			</includes>
 			<outputDirectory>product/config</outputDirectory>
 		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/../xap-core/xap-datagrid/src/main/resources/config/log</directory>
+			<includes>
+				<include>*.properties</include>
+			</includes>
+			<outputDirectory>product/config/log</outputDirectory>
+		</fileSet>
 
 		<fileSet>
 			<directory>${project.basedir}/../xap-core/xap-datagrid</directory>

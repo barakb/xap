@@ -81,7 +81,7 @@ public class GSLogConfigLoader {
 
     /**
      * Find in classpath the GS logging config file. This file is used for the setting GS logging
-     * configuration. This file is searched under /config/gs_logging.properties
+     * configuration. This file is searched under /config/log/xap_logging.properties
      *
      * User can set system property: -Djava.util.logging.config.file to use his own java logging
      * configuration. GS logger will not overwrite it.
@@ -94,7 +94,7 @@ public class GSLogConfigLoader {
 
     /**
      * Find in classpath the GS logging config file. This file is used for the setting GS logging
-     * configuration. This file is searched under /config/gs_logging.properties
+     * configuration. This file is searched under /config/log/xap_logging.properties
      *
      * User can set system property: -Djava.util.logging.config.file to use his own java logging
      * configuration. GS logger will not overwrite it.
@@ -113,7 +113,7 @@ public class GSLogConfigLoader {
 
     /**
      * Find in classpath the GS logging config file. This file is used for the setting GS logging
-     * configuration. This file is searched under /config/gs_logging.properties
+     * configuration. This file is searched under /config/log/xap_logging.properties
      *
      * User can set system property: -Djava.util.logging.config.file to use his own java logging
      * configuration. GS logger will not overwrite it.
@@ -191,14 +191,14 @@ public class GSLogConfigLoader {
     }
 
     /**
-     * look for config/gs_logging.properties in classpath
+     * look for config/log/xap_logging.properties in classpath
      */
     private boolean loadGsLoggingPropertiesFileFromClasspath() {
         return loadLoggingFileFromClasspath(CommonSystemProperties.GS_LOGGING_CONFIG_FILE_PATH);
     }
 
     /**
-     * look for config/gs_ext_logging.properties in classpath
+     * look for config/log/xap_logging_ext.properties in classpath
      */
     private boolean loadGsExtLoggingPropertiesFileFromClasspath() {
         return loadLoggingFileFromClasspath(CommonSystemProperties.GS_EXT_LOGGING_CONFIG_FILE_PATH);
@@ -241,7 +241,7 @@ public class GSLogConfigLoader {
         }
     }
 
-    //locate "gs_logging.properties" file under GigaSpaces root
+    //locate "xap_logging.properties" file under GigaSpaces root
     private boolean loadGsLoggingPropertiesFileFromComGsHomePath() {
         return loadGsLoggingPropertiesFileFromFullPath(SystemInfo.singleton().getXapHome() + File.separator + CommonSystemProperties.GS_LOGGING_CONFIG_FILE_PATH);
     }
