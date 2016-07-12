@@ -17,9 +17,7 @@
 package com.gigaspaces.internal.version;
 
 import java.io.InputStream;
-import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 import java.util.logging.ErrorManager;
 
 @com.gigaspaces.api.InternalApi
@@ -36,7 +34,7 @@ public class PlatformVersion {
     private final byte spVersion;
     private final int shortBuildNumber;
     private final int subBuildNumber;
-    private final Map<String, String> revisions;
+    private final String revision;
     private final String productHelpUrl;
 
     private PlatformVersion() {
@@ -44,10 +42,10 @@ public class PlatformVersion {
         version = properties.getProperty("xap.version", "12.0.0");
         milestone = properties.getProperty("xap.milestone", "m1");
         buildNumber = properties.getProperty("xap.build.number", "15000");
-        revisions = loadRevisions(properties);
+        revision = properties.getProperty("xap.git.sha", "unspecified");
 
         shortOfficialVersion = "XAP " + version + " " + milestone.toUpperCase();
-        officialVersion = "GigaSpaces " + shortOfficialVersion + " (build " + buildNumber + formatRevisions() + ")";
+        officialVersion = "GigaSpaces " + shortOfficialVersion + " (build " + buildNumber + ", revision " + revision + ")";
 
         String[] versionTokens = version.split("\\.");
         majorVersion = Byte.parseByte(versionTokens[0]);
@@ -59,34 +57,6 @@ public class PlatformVersion {
         subBuildNumber = buildNumberTokens.length == 1 ? 0 : Integer.parseInt(buildNumberTokens[1]);
 
         productHelpUrl = "http://docs.gigaspaces.com/xap" + String.valueOf(majorVersion) + String.valueOf(minorVersion);
-    }
-
-    private static Map<String, String> loadRevisions(Properties properties) {
-        final String REVISION_PREFIX = "xap.git.sha";
-        // Using treemap to gain alphabetical sort automatically.
-        final Map<String, String> revisions = new TreeMap<String, String>();
-        for (String property : properties.stringPropertyNames()) {
-            if (property.startsWith(REVISION_PREFIX)) {
-                String name = property.equals(REVISION_PREFIX) ? "xap" : "xap-" + property.substring(REVISION_PREFIX.length() + 1);
-                revisions.put(name, properties.getProperty(property));
-            }
-        }
-        return revisions;
-    }
-
-    private String formatRevisions() {
-        if (revisions.isEmpty())
-            return "";
-        if (revisions.size() == 1)
-            return ", revision " + revisions.values().iterator().next();
-
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : revisions.entrySet()) {
-            if (sb.length() != 0)
-                sb.append(' ');
-            sb.append(entry.getKey()).append('=').append(entry.getValue());
-        }
-        return ", revisions: " + sb.toString();
     }
 
     public static PlatformVersion getInstance() {
@@ -151,6 +121,14 @@ public class PlatformVersion {
      */
     public static String getVersion() {
         return instance.version;
+    }
+
+    /**
+     * Gets the git revision (sha/tag)
+     * @return
+     */
+    public static String getRevision() {
+        return instance.revision;
     }
 
     /**
