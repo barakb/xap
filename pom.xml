@@ -22,8 +22,8 @@
     </properties>
 
     <scm>
-        <connection>scm:git:git@github.com:Gigaspaces/xap-open.git</connection>
-        <developerConnection>scm:git:git@github.com:Gigaspaces/xap-open.git</developerConnection>
+        <connection>scm:git:git@github.com:xap/xap.git</connection>
+        <developerConnection>scm:git:git@github.com:xap/xap.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
