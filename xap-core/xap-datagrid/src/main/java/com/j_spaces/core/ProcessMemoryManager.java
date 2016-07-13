@@ -16,6 +16,8 @@
 
 package com.j_spaces.core;
 
+import com.gigaspaces.internal.utils.concurrent.GSThread;
+
 /**
  * @author idan
  * @since 9.5
@@ -26,31 +28,78 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
 
     private static final long _totalMemory = (_runtime.totalMemory() == _runtime.maxMemory()) ? _runtime.totalMemory() : -1;
     private static final long _maximumMemory = _runtime.maxMemory();
+    private static final boolean _asyncMemorySamplerEnabled = Boolean.getBoolean("com.gs.asyncMemorySampler");
+    private static final long _samplerThreadSleepDurationInMs = Long.getLong("com.gs.asyncMemorySampler.interval", 10);
+    private static volatile boolean _samplerThreadShouldRun = false;
+    private static volatile long _freeMemory = _runtime.freeMemory();
 
     public static final IProcessMemoryManager INSTANCE = new ProcessMemoryManager();
 
     private ProcessMemoryManager() {
+        if (_asyncMemorySamplerEnabled) {
+            Thread samplerThread = new GSThread(new MemorySampler(), "ProcessMemoryManager");
+            samplerThread.setDaemon(true);
+            samplerThread.start();
+        }
+        System.out.println("11com.gs.asyncMemorySampler=" + _asyncMemorySamplerEnabled);
     }
 
     public void performGC() {
         _runtime.gc();
     }
 
-    public double getMemoryUsagePercentage() {
-        return (getMemoryUsage() * 100.0) / getMaximumMemory();
+
+    public double getMemoryUsagePercentage(boolean asyncCheckIfEnabled) {
+        return (getMemoryUsage(asyncCheckIfEnabled) * 100.0) / getMaximumMemory();
     }
 
     public long getMemoryUsage() {
+        return getMemoryUsage(true);
+    }
+
+    public long getMemoryUsage(boolean asyncCheckIfEnabled) {
         long totalMemory = _totalMemory == -1 ? _runtime.totalMemory() : _totalMemory;
-        return totalMemory - getFreeMemory();
+        return totalMemory - getFreeMemory(asyncCheckIfEnabled);
     }
 
     public long getMaximumMemory() {
         return _maximumMemory;
     }
-
     public long getFreeMemory() {
-        return _runtime.freeMemory();
+        return getFreeMemory(true);
+    }
+
+    @Override
+    public boolean isAsyncCheckEnabled() {
+        return _asyncMemorySamplerEnabled;
+    }
+
+    public long getFreeMemory(boolean asyncCheckIfEnabled) {
+        if (_asyncMemorySamplerEnabled && asyncCheckIfEnabled) {
+            _samplerThreadShouldRun = true;
+            return _freeMemory;
+        } else {
+            _freeMemory = _runtime.freeMemory();
+            return _freeMemory;
+        }
+    }
+
+    public class MemorySampler implements Runnable {
+        @Override
+        public void run() {
+            while(true) {
+                while (!_samplerThreadShouldRun) {
+                    try {
+                        Thread.sleep(_samplerThreadSleepDurationInMs);
+                    } catch (InterruptedException e) {
+                    }
+                }
+                while(_samplerThreadShouldRun) {
+                    _samplerThreadShouldRun = false;
+                    _freeMemory = _runtime.freeMemory();
+                }
+            }
+        }
     }
 
 }
