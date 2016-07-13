@@ -31,7 +31,7 @@ public class EnglishToSpanishTranslator {
         if (englishToSpanishTranslation != null) {
             phrase.setSpanishPhrase(englishToSpanishTranslation);
         } else {
-            phrase.setSpanishPhrase("unkown <-> desconocido");
+            phrase.setSpanishPhrase("unknown <-> desconocido");
         }
 
         System.out.println("translated - " + phrase.getEnglishPhrase() + " to " + phrase.getSpanishPhrase());
