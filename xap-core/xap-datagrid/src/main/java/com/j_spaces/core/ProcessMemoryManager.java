@@ -16,9 +16,7 @@
 
 package com.j_spaces.core;
 
-import com.gigaspaces.internal.utils.concurrent.GSThreadFactory;
-
-import java.util.concurrent.*;
+import com.gigaspaces.internal.utils.concurrent.GSThread;
 
 /**
  * @author idan
@@ -31,34 +29,26 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
     private static final long _totalMemory = (_runtime.totalMemory() == _runtime.maxMemory()) ? _runtime.totalMemory() : -1;
     private static final long _maximumMemory = _runtime.maxMemory();
     private static final boolean _asyncMemorySamplerEnabled = Boolean.getBoolean("com.gs.asyncMemorySampler");
-    private final ExecutorService executorService;
-    private final MemorySampler _asyncMemorySampler;
-    private static boolean _samplerThreadShouldRun = false;
-    private static long _freeMemory = _runtime.freeMemory();
+    private static final long _samplerThreadSleepDurationInMs = Long.getLong("com.gs.asyncMemorySampler.interval", 10);
+    private static volatile boolean _samplerThreadShouldRun = false;
+    private static volatile long _freeMemory = _runtime.freeMemory();
 
     public static final IProcessMemoryManager INSTANCE = new ProcessMemoryManager();
 
     private ProcessMemoryManager() {
         if (_asyncMemorySamplerEnabled) {
-            _asyncMemorySampler = new MemorySampler();
-            executorService = Executors.newSingleThreadExecutor(new GSThreadFactory("ProcessMemoryManager", true));
-            executorService.submit(_asyncMemorySampler);
-        } else {
-            executorService = null;
-            _asyncMemorySampler = null;
+            Thread samplerThread = new GSThread(new MemorySampler(), "ProcessMemoryManager");
+            samplerThread.setDaemon(true);
+            samplerThread.start();
         }
-        System.out.println("com.gs.asyncMemorySampler="+ _asyncMemorySamplerEnabled);
+        System.out.println("com.gs.asyncMemorySampler=" + _asyncMemorySamplerEnabled);
     }
 
     public void performGC() {
         _runtime.gc();
     }
 
-    public double getMemoryUsagePercentage() {
-        return getMemoryUsagePercentage(false);
-    }
 
-    @Override
     public double getMemoryUsagePercentage(boolean directCheck) {
         return (getMemoryUsage(directCheck) * 100.0) / getMaximumMemory();
     }
@@ -75,9 +65,13 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
     public long getMaximumMemory() {
         return _maximumMemory;
     }
-
     public long getFreeMemory() {
         return getFreeMemory(false);
+    }
+
+    @Override
+    public boolean isAsyncCheckEnabled() {
+        return _asyncMemorySamplerEnabled;
     }
 
     public long getFreeMemory(boolean directCheck) {
@@ -85,7 +79,8 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
             _samplerThreadShouldRun = true;
             return _freeMemory;
         } else {
-            return _runtime.freeMemory();
+            _freeMemory = _runtime.freeMemory();
+            return _freeMemory;
         }
     }
 
@@ -95,19 +90,13 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
             while(true) {
                 while (!_samplerThreadShouldRun) {
                     try {
-                        Thread.sleep(250);
+                        Thread.sleep(_samplerThreadSleepDurationInMs);
                     } catch (InterruptedException e) {
-                        System.out.println("Sleep interrupted1");
                     }
                 }
                 while(_samplerThreadShouldRun) {
-                    _freeMemory = _runtime.freeMemory();
                     _samplerThreadShouldRun = false;
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        System.out.println("Sleep interrupted2");
-                    }
+                    _freeMemory = _runtime.freeMemory();
                 }
             }
         }

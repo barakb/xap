@@ -25,13 +25,13 @@ package com.j_spaces.core;
 public interface IProcessMemoryManager {
     void performGC();
 
-    double getMemoryUsagePercentage();
-
-    double getMemoryUsagePercentage(boolean directCheck);
+    double getMemoryUsagePercentage(boolean asyncCheckIfEnabled);
 
     long getMemoryUsage();
 
     long getMaximumMemory();
 
     long getFreeMemory();
+
+    boolean isAsyncCheckEnabled();
 }

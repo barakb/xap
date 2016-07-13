@@ -297,13 +297,25 @@ public class MemoryManager implements Closeable {
         if (_monitorOnlyWriteOps && !isWriteTypeOperation && !_cacheManager.isOffHeapCachePolicy())
             return MemoryEvictionDecision.NO_EVICTION;
 
-        double rate = getMemoryUsageRate(false);
+        double rate = getMemoryUsageRate(false, true);
 
         // set _monitorOnlyWriteOps flag for next call:
         // Monitor only write-type ops' if the prev' level was LE _memoryWriteOnlyCheck
         boolean monitorOnlyWriteOps = rate <= _memoryWriteOnlyCheck;
-        if (monitorOnlyWriteOps != _monitorOnlyWriteOps)
+        if (monitorOnlyWriteOps != _monitorOnlyWriteOps) {
+            if (_processMemoryManager.isAsyncCheckEnabled() && _logger.isLoggable(Level.INFO)) {
+                if (monitorOnlyWriteOps) { // below
+                    _logger.info("Current memory usage rate ["+rate+"] is below write_only_check_percentage threshold [" + _memoryWriteOnlyCheck + "], moving to async measurement of memory usage rate");
+                } else {
+                    _logger.info("Current memory usage rate ["+rate+"] is above write_only_check_percentage threshold [" + _memoryWriteOnlyCheck + "], moving to sync measurement of memory usage rate");
+                }
+            }
             _monitorOnlyWriteOps = monitorOnlyWriteOps;
+        }
+
+        if (!monitorOnlyWriteOps) {
+            rate = getMemoryUsageRate(false, false);
+        }
 
         // if level is under the _memoryWriteOnlyBlock threshold, allow all operations
         if (rate < _memoryWriteOnlyBlock)
@@ -316,7 +328,7 @@ public class MemoryManager implements Closeable {
 
         if (_cacheManager.isResidentEntriesCachePolicy()) {
             if (_gcBeforeShortage)
-                rate = getMemoryUsageRate(true);
+                rate = getMemoryUsageRate(true, false);
             MemoryShortageException ex = shortageCheck(rate, isWriteTypeOperation);
             if (ex != null)
                 throw ex;
@@ -339,7 +351,7 @@ public class MemoryManager implements Closeable {
     /**
      * get JVM rate.
      */
-    private double getMemoryUsageRate(boolean forceGC) {
+    private double getMemoryUsageRate(boolean forceGC, boolean asyncCheckIfEnabled) {
         if (forceGC) {
             if (_forceLeaseReaper && _leaseManager != null) {
                 if (_logger.isLoggable(Level.FINE))
@@ -356,7 +368,7 @@ public class MemoryManager implements Closeable {
             _processMemoryManager.performGC();
         }
 
-        return _processMemoryManager.getMemoryUsagePercentage();
+        return _processMemoryManager.getMemoryUsagePercentage(asyncCheckIfEnabled);
     }
 
     /**
@@ -372,17 +384,14 @@ public class MemoryManager implements Closeable {
         // operation, then throw a MemoryShortageException
         if (shouldBlock(rate, writeOperation)) {
             if (_gcBeforeShortage)
-                rate = getMemoryUsageRate(true); // rechek rate and force GC
+                rate = getMemoryUsageRate(true, false); // rechek rate and force GC
             if (shouldBlock(rate, writeOperation)) {
-                rate = _processMemoryManager.getMemoryUsagePercentage(true);
-                if (shouldBlock(rate, writeOperation)) {
-                    if (_logger.isLoggable(Level.FINE)) {
-                        _logger.fine("Memory shortage in cache: " + _spaceName);
-                    }
-
-                    long usage = (long) ((rate * _processMemoryManager.getMaximumMemory()) / 100.0); // convert rate to usage from % to bytes
-                    return new MemoryShortageException(_spaceName, _containerName, SystemInfo.singleton().network().getHostId(), usage, _processMemoryManager.getMaximumMemory());
+                if (_logger.isLoggable(Level.FINE)) {
+                    _logger.fine("Memory shortage in cache: " + _spaceName);
                 }
+
+                long usage = (long) ((rate * _processMemoryManager.getMaximumMemory()) / 100.0); // convert rate to usage from % to bytes
+                return new MemoryShortageException(_spaceName, _containerName, SystemInfo.singleton().network().getHostId(), usage, _processMemoryManager.getMaximumMemory());
             }
         }
         return null;
@@ -395,7 +404,7 @@ public class MemoryManager implements Closeable {
         // operation, then throw a MemoryShortageException
         if (shouldBlock(rate, true) || shouldBlock(rate, false)) {
             if (_gcBeforeShortage)
-                rate = getMemoryUsageRate(true); // rechek rate and force GC
+                rate = getMemoryUsageRate(true, false); // rechek rate and force GC
             if (shouldBlock(rate, true) || shouldBlock(rate, false)) {
                 if (_logger.isLoggable(Level.FINE)) {
                     _logger.fine("Memory shortage in cache: " + _spaceName);
@@ -548,7 +557,7 @@ public class MemoryManager implements Closeable {
 
             //NOTE- synchronized method, no use in M.T. trying to fight over eviction
             private synchronized void doEvict() throws MemoryShortageException {
-                double rate = getMemoryUsageRate(_callGC);
+                double rate = getMemoryUsageRate(_callGC, false);
 
                 if (_logger.isLoggable(Level.FINE))
                     _logger.fine("Evictor started to evict, rate=" + rate + " free-memory=" + _processMemoryManager.getFreeMemory() + " max-memory=" + _processMemoryManager.getMaximumMemory());
@@ -572,7 +581,7 @@ public class MemoryManager implements Closeable {
                             if (evicted == 0) //nothing to evict
                                 break;
 
-                            rate = getMemoryUsageRate(_callGC);
+                            rate = getMemoryUsageRate(_callGC, false);
 
                             if (_logger.isLoggable(Level.FINE))
                                 _logger.fine("rate=" + rate + " free-memory=" + _processMemoryManager.getFreeMemory() + " max-memory=" + _processMemoryManager.getMaximumMemory());
@@ -599,7 +608,7 @@ public class MemoryManager implements Closeable {
                                 break;
                             }
                             // if this is the last try call GC anyway
-                            rate = getMemoryUsageRate(_callGC);
+                            rate = getMemoryUsageRate(_callGC, false);
                         }// end for loop of retries
 
                         if (_logger.isLoggable(Level.FINE))
@@ -607,7 +616,7 @@ public class MemoryManager implements Closeable {
 
                     }// if m_CacheManager.m_CachePolicy == CacheManager.CACHE_POLICY_LRU
                 } finally {
-                    rate = getMemoryUsageRate(false);
+                    rate = getMemoryUsageRate(false, false);
                     MemoryShortageException[] res = shortageChecks(rate);
                     if (res == null) {
                         _readTypeMemoryException = null;
