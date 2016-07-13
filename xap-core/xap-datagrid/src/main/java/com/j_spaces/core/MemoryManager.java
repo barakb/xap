@@ -305,9 +305,9 @@ public class MemoryManager implements Closeable {
         if (monitorOnlyWriteOps != _monitorOnlyWriteOps) {
             if (_processMemoryManager.isAsyncCheckEnabled() && _logger.isLoggable(Level.INFO)) {
                 if (monitorOnlyWriteOps) { // below
-                    _logger.info("Current memory usage rate ["+rate+"] is below write_only_check_percentage threshold [" + _memoryWriteOnlyCheck + "], moving to async measurement of memory usage rate");
+                    _logger.info("Current memory usage rate [" + rate + "] is below write_only_check_percentage threshold [" + _memoryWriteOnlyCheck + "], moving to async measurement of memory usage rate");
                 } else {
-                    _logger.info("Current memory usage rate ["+rate+"] is above write_only_check_percentage threshold [" + _memoryWriteOnlyCheck + "], moving to sync measurement of memory usage rate");
+                    _logger.info("Current memory usage rate [" + rate + "] is above write_only_check_percentage threshold [" + _memoryWriteOnlyCheck + "], moving to sync measurement of memory usage rate");
                 }
             }
             _monitorOnlyWriteOps = monitorOnlyWriteOps;

@@ -65,6 +65,7 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
     public long getMaximumMemory() {
         return _maximumMemory;
     }
+
     public long getFreeMemory() {
         return getFreeMemory(true);
     }
@@ -87,14 +88,14 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
     public class MemorySampler implements Runnable {
         @Override
         public void run() {
-            while(true) {
+            while (true) {
                 while (!_samplerThreadShouldRun) {
                     try {
                         Thread.sleep(_samplerThreadSleepDurationInMs);
                     } catch (InterruptedException e) {
                     }
                 }
-                while(_samplerThreadShouldRun) {
+                while (_samplerThreadShouldRun) {
                     _samplerThreadShouldRun = false;
                     _freeMemory = _runtime.freeMemory();
                 }
