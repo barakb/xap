@@ -86,7 +86,7 @@ translated - Hello to Hola
 translated - World! to Mundo!
 ```
 
-![holla-mundo-single](https://cloud.githubusercontent.com/assets/8696298/16797278/76d582ca-48ef-11e6-8389-0b2fcd339f79.png)
+![holla-mundo-single](images/embedded.png)
 
 ### Running with a partitioned data-grid (2 instances)
 
@@ -110,7 +110,7 @@ translated - Hello to Hola
 translated - World! to Mundo!
 ```
 
-![holla-mundo-partition2](https://cloud.githubusercontent.com/assets/8696298/16797283/7fad67b4-48ef-11e6-8feb-63c9a1090eb9.png)
+![holla-mundo-partition2](images/partitioned.png)
 
 
 To simulate this better, each instance can be loaded seperately (two JVMs)

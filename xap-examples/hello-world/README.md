@@ -33,7 +33,7 @@ write - 'World!'
 read - ['Hello', 'World!']
 ```
 
-![helloworld-1](https://cloud.githubusercontent.com/assets/8696298/16544698/be661c64-4118-11e6-8e5b-d031bb6b40ea.png)
+![helloworld-1](images/embedded.png)
 
 ## Running the Example - Remote
 
@@ -55,7 +55,7 @@ write - 'World!'
 read - ['Hello', 'World!']
 ```
 
-![helloworld-1r](https://cloud.githubusercontent.com/assets/8696298/16724700/b695f4ce-475c-11e6-9617-00df8b561a52.png)
+![helloworld-1r](images/remote.png)
 
 ## Running the Example - Remote (with 2 partitions)
 
@@ -82,7 +82,7 @@ write - 'World!'
 read - ['Hello', 'World!']
 ```
 
-![helloworld-2](https://cloud.githubusercontent.com/assets/8696298/16428814/4508afd4-3d7c-11e6-9ed2-5de2b12ebb4e.png)
+![helloworld-2](images/partitioned.png)
 
 ## Running the Example - Remote (with backups for each partition)
 
@@ -112,4 +112,4 @@ write - 'World!'
 read - ['Hello', 'World!']
 ```
 
-![helloworld-3](https://cloud.githubusercontent.com/assets/8696298/16428817/48ba0650-3d7c-11e6-83f9-69c0598610eb.png)
+![helloworld-3](images/partitioned-with-backup.png)
