@@ -12,6 +12,7 @@
     </parent>
 
     <build>
+        <finalName>hola-mundo-common</finalName>
         <resources>
             <resource>
                 <directory>src/main/java</directory>

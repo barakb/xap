@@ -17,5 +17,15 @@
                 <exclude>**/pom.xml.releaseBackup</exclude>
             </excludes>
         </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/../xap-examples/hola-mundo/</directory>
+            <outputDirectory>product/examples/hola-mundo</outputDirectory>
+            <excludes>
+                <exclude>**/target/**</exclude>
+                <exclude>**/html/**</exclude>
+                <exclude>**/*.iml</exclude>
+                <exclude>**/pom.xml.releaseBackup</exclude>
+            </excludes>
+        </fileSet>
     </fileSets>
 </assembly>
