@@ -30,6 +30,6 @@
     <!--
         The Data feeder bean, writing new Data objects to the space in a constant interval.
     -->
-    <bean id="phraseFeeder" class="Feeder" depends-on="gigaSpace" />
+    <bean id="phraseFeeder" class="PhraseFeeder" depends-on="gigaSpace" />
     
 </beans>

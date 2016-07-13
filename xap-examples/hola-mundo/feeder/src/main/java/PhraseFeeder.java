@@ -9,7 +9,7 @@ import org.springframework.beans.factory.InitializingBean;
 import java.util.Arrays;
 
 
-public class Feeder implements InitializingBean, DisposableBean {
+public class PhraseFeeder implements InitializingBean, DisposableBean {
 
 
     @GigaSpaceContext
