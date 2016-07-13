@@ -297,7 +297,7 @@ public class MemoryManager implements Closeable {
         if (_monitorOnlyWriteOps && !isWriteTypeOperation && !_cacheManager.isOffHeapCachePolicy())
             return MemoryEvictionDecision.NO_EVICTION;
 
-        double rate = getMemoryUsageRate(false, true);
+        double rate = getMemoryUsageRate(false, !_cacheManager.isEvictableCachePolicy());
 
         // set _monitorOnlyWriteOps flag for next call:
         // Monitor only write-type ops' if the prev' level was LE _memoryWriteOnlyCheck
