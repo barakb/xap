@@ -144,7 +144,7 @@ This will create the processing unit jars that can be referenced by `pu-instance
 From the ${XAP_HOME}/bin directory, run:
 
 - ./pu-instance.sh -path ../examples/hola-mundo/translator/target/hola-mundo-translator.jar
-- ./pu-instance.sh -path ../examples/feeder/target/hola-mundo-feeder.jar
+- ./pu-instance.sh -path ../examples/hola-mundo/feeder/target/hola-mundo-feeder.jar
 
 This will run the translator (as a single data-grid) and the feeder.
 
