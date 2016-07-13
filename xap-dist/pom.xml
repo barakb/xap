@@ -307,6 +307,19 @@
                             <outputDirectory>${basedir}/../xap-examples/hello-world</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <id>processing-example-html</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <headerHtmlFile>${basedir}/../xap-examples/hola-mundo/html/header.html</headerHtmlFile>
+                            <footerHtmlFile>${basedir}/../xap-examples/hola-mundo/html/footer.html</footerHtmlFile>
+                            <inputDirectory>${basedir}/../xap-examples/hola-mundo</inputDirectory>
+                            <outputDirectory>${basedir}/../xap-examples/hola-mundo</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <!--end generate html from markdown-->
