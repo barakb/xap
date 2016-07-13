@@ -41,7 +41,6 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
             samplerThread.setDaemon(true);
             samplerThread.start();
         }
-        System.out.println("11com.gs.asyncMemorySampler=" + _asyncMemorySamplerEnabled);
     }
 
     public void performGC() {
