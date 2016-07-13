@@ -295,12 +295,12 @@ public class MultiSourceSingleFileReliableAsyncTargetProcessLog extends Abstract
         if (!_processLogConfig.isMonitorPendingOperationsMemory())
             return;
 
-        if (_pendingPacketsQueue.size() >= _processLogConfig.getPendingPacketsQueueSizeThreshold() && _processMemoryManager.getMemoryUsagePercentage() >= _processLogConfig.getHighMemoryUsagePercentage()) {
+        if (_pendingPacketsQueue.size() >= _processLogConfig.getPendingPacketsQueueSizeThreshold() && _processMemoryManager.getMemoryUsagePercentage(false) >= _processLogConfig.getHighMemoryUsagePercentage()) {
             // Perform GC 5 times (lucky number?)
             for (int i = 0; i < 5; i++)
                 _processMemoryManager.performGC();
 
-            if (_processMemoryManager.getMemoryUsagePercentage() >= _processLogConfig.getHighMemoryUsagePercentage()) {
+            if (_processMemoryManager.getMemoryUsagePercentage(false) >= _processLogConfig.getHighMemoryUsagePercentage()) {
                 if (_specificLogger.isLoggable(Level.WARNING))
                     _specificLogger.warning("Memory shortage in multi source reliable async process log [groupName="
                             + getGroupName()
@@ -309,7 +309,7 @@ public class MultiSourceSingleFileReliableAsyncTargetProcessLog extends Abstract
                             + ", memoryUsage="
                             + _processMemoryManager.getMemoryUsage()
                             + ", memoryUsagePercentage="
-                            + _processMemoryManager.getMemoryUsagePercentage()
+                            + _processMemoryManager.getMemoryUsagePercentage(true)
                             + ", maximumMemory="
                             + _processMemoryManager.getMaximumMemory() + "]");
                 throw new MemoryShortageException(getGroupName(),
