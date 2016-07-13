@@ -41,7 +41,7 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
             samplerThread.setDaemon(true);
             samplerThread.start();
         }
-        System.out.println("com.gs.asyncMemorySampler=" + _asyncMemorySamplerEnabled);
+        System.out.println("11com.gs.asyncMemorySampler=" + _asyncMemorySamplerEnabled);
     }
 
     public void performGC() {
@@ -49,24 +49,24 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
     }
 
 
-    public double getMemoryUsagePercentage(boolean directCheck) {
-        return (getMemoryUsage(directCheck) * 100.0) / getMaximumMemory();
+    public double getMemoryUsagePercentage(boolean asyncCheckIfEnabled) {
+        return (getMemoryUsage(asyncCheckIfEnabled) * 100.0) / getMaximumMemory();
     }
 
     public long getMemoryUsage() {
-        return getMemoryUsage(false);
+        return getMemoryUsage(true);
     }
 
-    public long getMemoryUsage(boolean directCheck) {
+    public long getMemoryUsage(boolean asyncCheckIfEnabled) {
         long totalMemory = _totalMemory == -1 ? _runtime.totalMemory() : _totalMemory;
-        return totalMemory - getFreeMemory(directCheck);
+        return totalMemory - getFreeMemory(asyncCheckIfEnabled);
     }
 
     public long getMaximumMemory() {
         return _maximumMemory;
     }
     public long getFreeMemory() {
-        return getFreeMemory(false);
+        return getFreeMemory(true);
     }
 
     @Override
@@ -74,8 +74,8 @@ public class ProcessMemoryManager implements IProcessMemoryManager {
         return _asyncMemorySamplerEnabled;
     }
 
-    public long getFreeMemory(boolean directCheck) {
-        if (_asyncMemorySamplerEnabled && !directCheck) {
+    public long getFreeMemory(boolean asyncCheckIfEnabled) {
+        if (_asyncMemorySamplerEnabled && asyncCheckIfEnabled) {
             _samplerThreadShouldRun = true;
             return _freeMemory;
         } else {
