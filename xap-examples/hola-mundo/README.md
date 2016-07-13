@@ -137,16 +137,17 @@ Each partition instance can be assigned a backup, as follows:
 
 ## Running the example from the command line
 
-The example root directory includes a build.{sh,bat} script.
-Available commands are:
+Use Maven to compile and package the example (e.g. `mvn clean package`).
 
-- clean                       - Cleans all output dirs
-- compile                     - Builds all (don't create JARs)
-- package                     - Builds the distribution jars
-- run-translator              - Starts the translator (single data-grid)
-- run-feeder                  - Starts the phrase feeder
-- run-partitioned-translator  - Starts a partitioned translator (data-grid of 2 partitions)
-- intellij                    - Copies run configuration into existing .idea IntelliJ IDE folder
+This will create the processing unit jars that can be referenced by `pu-instance.{sh,bat}`
 
-**note:** IntelliJ command assumes that the new IntelliJ project is under the examples root directory, 
-e.g. the .idea hidden folder is at this location.
+From the ${XAP_HOME}/bin directory, run:
+
+- ./pu-instance.sh -path ../examples/hola-mundo/translator/target/hola-mundo-translator.jar
+- ./pu-instance.sh -path ../examples/feeder/target/hola-mundo-feeder.jar
+
+This will run the translator (as a single data-grid) and the feeder.
+
+To start a partitioned translator (data-grid of 2 partitions), add the -cluster arguments: 
+
+- ./pu-instance.sh -path ../examples/hola-mundo/translator/target/hola-mundo-translator.jar -cluster schema=partitioned total_members=2,0
