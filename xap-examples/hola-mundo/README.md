@@ -60,17 +60,17 @@ The `runConfigurations` folder consists of IntelliJ runtime configurations, whic
 to the `.idea/runConfigurations` directory under the IDE project structure (`.idea` is a hidden directory). 
 In IntelliJ, these configurations will appear in the "Edit Configurations..." section.
 
-A configurations consists of a Main class to run, and a module classpath to use.
+A configuration consists of a Main class to run, and a module classpath to use.
 The main class uses `org.openspaces.pu.container.integrated.IntegratedProcessingUnitContainer` - a 
 built in container used to run a Processing Unit.
 
 
 ### Running with a single data-grid (1 instance)
 
-- Run the translator (run confguration)
+- Run the translator (run confguration) -
   This will start an embedded data-grid, with a translator bean
   
-- Run the feeder (run configuration)
+- Run the feeder (run configuration) -
   This will write "Hello" and "World!" and read the translated Phrase entities.
 
 #### output (feeder)
