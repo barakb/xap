@@ -6,7 +6,7 @@ The `HelloWorld` main accepts the following arguments: `-name` {data-grid name} 
 ## Message.java
 
 A Plain Old Java Object (POJO) is the entity behind the updates to the data-grid. 
-It constitutes of getters and setters for the 'msg' field, and a `@SpaceId` for uniqueness (similar to a Map key).
+It consists of getters and setters for the 'msg' field, and a `@SpaceId` for uniqueness (similar to a Map key).
 
 ### Annotations
 
@@ -20,7 +20,7 @@ Additional annotations may be applied - here are a couple:
 This main class acts as the client. It can either start a single data-grid instance (embedded) in it's JVM, or connect to an existing (remote) data-grid (by it's name).
 
 ## Running the Example - Embedded
-Import Maven `examples/hello-world/pom.xml` example into your IDE of choice as a maven project.
+Import Maven `examples/hello-world/pom.xml` into your IDE of choice as a maven project.
 Launch the `HelloWorld` main (arguments: `-name` myDataGrid `-mode` embedded)
 
 This will start an embedded data-grid followed by write and read of Message entities.
@@ -71,7 +71,7 @@ From the ${XAP_HOME}/bin directory, run:
 
 This will simulate a data-grid of 2 partitioned instances (without backups).
 
-Import Maven `examples/hello-world/pom.xml` example into your IDE of choice as a maven project.
+Import Maven `examples/hello-world/pom.xml` into your IDE of choice as a maven project.
 Launch the `HelloWorld` main (arguments: `-name` myDataGrid `-mode` remote)
 
 ### output

@@ -20,7 +20,7 @@ public class EnglishToSpanishTranslator {
     }
 
     @EventTemplate
-    SQLQuery<Phrase> untranslatedMessage() {
+    SQLQuery<Phrase> untranslated() {
         return new SQLQuery<Phrase>(Phrase.class, "spanishPhrase is null");
     }
 

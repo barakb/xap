@@ -20,7 +20,7 @@
     <modules>
         <module>common</module>
         <module>translator</module>
-        <module>phrase-feeder</module>
+        <module>feeder</module>
     </modules>
 
     <dependencies>
