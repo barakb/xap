@@ -1,7 +1,7 @@
 # Hola Mundo Example
 
 This example builds on the simple `hello-world` example by presenting Processing Unit concepts.
-Please make sure to familiarize yourself with the `hello-world` example.
+Please make sure to first familiarize yourself with the `hello-world` example.
 
 This example consists of two processing units, one called `translator` and the other `feeder`.
 A `processing unit` is a Spring based unit of packaging. There are two types - stateless and stateful.
@@ -44,11 +44,13 @@ data-grid (behind the scenes).
 
 ## Processing Unit XML - pu.xml
 
-- The `translator/src/main/resources/META-INF/spring/pu.xml` is a Spring context XML configuration of 
-an embedded data-grid, a translator bean, and annotation support.
+The pu.xml is a Spring context XML configuration of the processing unit.
 
-- The `feeder/src/main/resources/META-INF/spring/pu.xml` is a Spring context XML configuration 
-of the feeder bean loaded. 
+- The `translator/src/main/resources/META-INF/spring/pu.xml` - configures an embedded data-grid, 
+the translator bean, and declares annotation support.
+
+- The `feeder/src/main/resources/META-INF/spring/pu.xml` - configures the connection to the remote 
+data-grid used by the feeder bean.
 
 ## Running the example from the IDE
 
@@ -67,7 +69,7 @@ built in container used to run a Processing Unit.
 
 ### Running with a single data-grid (1 instance)
 
-- Run the translator (run confguration) -
+- Run the translator (run configuration) -
   This will start an embedded data-grid, with a translator bean
   
 - Run the feeder (run configuration) -
@@ -113,7 +115,7 @@ translated - World! to Mundo!
 ![holla-mundo-partition2](images/partitioned.png)
 
 
-To simulate this better, each instance can be loaded seperately (two JVMs)
+To simulate this better, each instance can be loaded separately (two JVMs)
 
 - First instance (id=1)  : `-cluster schema=partitioned total_members=2,0 id=1`
 - Second instance (id=2) : `-cluster schema=partitioned total_members=2,0 id=2`
