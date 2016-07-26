@@ -735,7 +735,6 @@ public class ReplicationNode
     // Package visible used from admin
     void closeSourceGroups(ReplicationNodeMode nodeMode) {
         _groupsHolder.closeSourceGroups(nodeMode);
-        metricRegister.clear();
     }
 
     // Package visible used from admin
