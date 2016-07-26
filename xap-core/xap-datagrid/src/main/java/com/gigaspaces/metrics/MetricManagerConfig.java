@@ -71,12 +71,25 @@ public class MetricManagerConfig {
     }
 
     public static MetricManagerConfig loadFromXml(String fileName) {
-        if (logger.isLoggable(Level.CONFIG))
-            logger.log(Level.CONFIG, "Loading metrics configuration from " + fileName);
         final MetricManagerConfig config = new MetricManagerConfig();
         final File file = new File(fileName);
-        if (file.exists() && file.canRead())
-            config.loadXml(fileName);
+
+        if (file.exists()) {
+            if (file.canRead()) {
+                if (logger.isLoggable(Level.CONFIG)) {
+                    logger.log(Level.CONFIG, "Loading metrics configuration from " + file.getAbsolutePath());
+                }
+                config.loadXml(fileName);
+            } else {
+                if (logger.isLoggable(Level.CONFIG)) {
+                    logger.log(Level.CONFIG, "Unable to read metrics configuration from " + file.getAbsolutePath());
+                }
+            }
+        } else {
+            if (logger.isLoggable(Level.CONFIG)) {
+                logger.log(Level.CONFIG, "Metrics configuration file " + file.getAbsolutePath() + " does not exist");
+            }
+        }
         return config;
     }
 
