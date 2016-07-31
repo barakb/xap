@@ -4446,7 +4446,7 @@ public class CacheManager extends AbstractCacheManager
                         break; //evaluate
                 }//switch
             } // for
-            if (ProtectiveMode.isQueryWithoutIndexProtectionEnabled() && !indexUsed) {
+            if (ProtectiveMode.isQueryWithoutIndexProtectionEnabled() && !indexUsed && !ignoreOrderedIndexes) {
                 throw new ProtectiveModeException("Cannot perform operation: The request references only unindexed fields!\n" +
                         "(you can disable this protection, though it is not recommended, by setting the following system property: " + ProtectiveMode.QUERY_WITHOUT_INDEX + "=false)");
             }
