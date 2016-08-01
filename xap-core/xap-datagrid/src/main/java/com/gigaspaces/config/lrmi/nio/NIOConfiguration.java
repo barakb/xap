@@ -27,6 +27,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * This class provides configuration object of NIO communication transport protocol.
@@ -38,6 +41,7 @@ import java.io.ObjectOutput;
 
 public class NIOConfiguration implements ITransportConfig, Cloneable, Externalizable {
     private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(NIOConfiguration.class.getName());
 
     private static final int DEFAULT_MIN_THREADS = 1;
     private static final int DEFAULT_MAX_THREADS = 128;
@@ -389,7 +393,7 @@ public class NIOConfiguration implements ITransportConfig, Cloneable, Externaliz
         int customMaxThreads = Integer.parseInt(System.getProperty("com.gs.transport_protocol.lrmi.custom.threadpool.max-threads", String.valueOf(SystemProperties.LRMI_CUSTOM_MAX_THREADS_DEFAULT)));
         boolean protocolValidationEnabled = !Boolean.getBoolean(SystemProperties.LRMI_PROTOCOL_VALIDATION_DISABLED);
 
-        return new com.gigaspaces.config.lrmi.nio.NIOConfiguration(minThreads, /* min executors threads */
+        NIOConfiguration nioConfiguration = new NIOConfiguration(minThreads, /* min executors threads */
                 maxThreads, /* max executors threads */
                 maxConnPool, /* maxConnPool */
                 bindHost, /*  if null resolves to the localhost IP address */
@@ -415,6 +419,11 @@ public class NIOConfiguration implements ITransportConfig, Cloneable, Externaliz
                 customMaxThreads,
                 protocolValidationEnabled
         );
+
+        if (logger.isLoggable(Level.CONFIG)) {
+            logger.config(String.valueOf(nioConfiguration));
+        }
+        return nioConfiguration;
     }
 
     /**
@@ -717,39 +726,41 @@ public class NIOConfiguration implements ITransportConfig, Cloneable, Externaliz
         return _protocolValidationEnabled;
     }
 
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("\n NIO Transport Protocol Configuration:");
-        sb.append("\n minThreads: ").append(_minThreads);
-        sb.append("\n maxThreads: ").append(_maxThreads);
-        sb.append("\n maxConnPool: ").append(_maxConnPool);
-        sb.append("\n bindPort: ").append(_bindPort);
+
         final String bindHostNameStr = _bindHostName != null ? _bindHostName
                 : "*Undefined* - resolves to the localhost IP address or '-Djava.rmi.server.hostname' system property if exists";
-        sb.append("\n bindHostName: ").append(bindHostNameStr);
-        sb.append("\n threadsQueueSize: ").append(_threadsQueueSize);
-        sb.append("\n slowConsumerLatency: ").append(_slowConsumerLatency);
-        sb.append("\n slowConsumerThroughput: ").append(_slowConsumerThroughput);
-        sb.append("\n slowConsumerRetries: ").append(_slowConsumerRetries);
-        sb.append("\n slowConsumerReadTimeout: ").append(_slowConsumerReadTimeout);
-        sb.append("\n isBlockingConnection: ").append(_blockingConnection);
-        sb.append("\n readSelectorThreads: ").append(_readSelectorThreads);
-        sb.append("\n watchdogRequestTimeout: ").append(_watchdogRequestTimeout);
-        sb.append("\n watchdogListeningTimeout: ").append(_watchdogListeningTimeout);
-        sb.append("\n watchdogIdleConnectionTimeout: ").append(_watchdogIdleConnectionTimeout);
-        sb.append("\n threadPoolIdleTimeout: ").append(_threadPoolIdleTimeout);
-        sb.append("\n socketConnectTimeout: ").append(_socketConnectTimeout);
 
-        sb.append("\n _systemPriorityQueueCapacity: ").append(_systemPriorityQueueCapacity);
-        sb.append("\n _systemPriorityThreadIdleTimeout: ").append(_systemPriorityThreadIdleTimeout);
-        sb.append("\n _systemPriorityMaxThreads: ").append(_systemPriorityMaxThreads);
-        sb.append("\n _customQueueCapacity: ").append(_customQueueCapacity);
-        sb.append("\n _customThreadIdleTimeout: ").append(_customThreadIdleTimeout);
-        sb.append("\n _customMinThreads: ").append(_customMinThreads);
-        sb.append("\n _customMaxThreads: ").append(_customMaxThreads);
-        sb.append("\n _customMaxThreads: ").append(_customMaxThreads);
-        sb.append("\n protocolValidationEnabled: ").append(_protocolValidationEnabled);
-
+        final StringBuilder sb = new StringBuilder("NIOConfiguration{");
+        sb.append("_minThreads=").append(_minThreads);
+        sb.append(", _maxThreads=").append(_maxThreads);
+        sb.append(", _threadsQueueSize=").append(_threadsQueueSize);
+        sb.append(", _maxConnPool=").append(_maxConnPool);
+        sb.append(", _bindPort='").append(_bindPort).append('\'');
+        sb.append(", _bindHostName='").append(bindHostNameStr).append('\'');
+        sb.append(", _blockingConnection=").append(_blockingConnection);
+        sb.append(", _slowConsumerLatency=").append(_slowConsumerLatency);
+        sb.append(", _slowConsumerThroughput=").append(_slowConsumerThroughput);
+        sb.append(", _slowConsumerRetries=").append(_slowConsumerRetries);
+        sb.append(", _slowConsumerReadTimeout=").append(_slowConsumerReadTimeout);
+        sb.append(", _readSelectorThreads=").append(_readSelectorThreads);
+        sb.append(", _watchdogRequestTimeout=").append(_watchdogRequestTimeout);
+        sb.append(", _watchdogListeningTimeout=").append(_watchdogListeningTimeout);
+        sb.append(", _watchdogIdleConnectionTimeout=").append(_watchdogIdleConnectionTimeout);
+        sb.append(", _threadPoolIdleTimeout=").append(_threadPoolIdleTimeout);
+        sb.append(", _socketConnectTimeout=").append(_socketConnectTimeout);
+        sb.append(", _systemPriorityQueueCapacity=").append(_systemPriorityQueueCapacity);
+        sb.append(", _systemPriorityThreadIdleTimeout=").append(_systemPriorityThreadIdleTimeout);
+        sb.append(", _systemPriorityMinThreads=").append(_systemPriorityMinThreads);
+        sb.append(", _systemPriorityMaxThreads=").append(_systemPriorityMaxThreads);
+        sb.append(", _customQueueCapacity=").append(_customQueueCapacity);
+        sb.append(", _customThreadIdleTimeout=").append(_customThreadIdleTimeout);
+        sb.append(", _customMinThreads=").append(_customMinThreads);
+        sb.append(", _customMaxThreads=").append(_customMaxThreads);
+        sb.append(", _protocolValidationEnabled=").append(_protocolValidationEnabled);
+        sb.append('}');
         return sb.toString();
     }
 }
