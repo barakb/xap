@@ -1320,6 +1320,27 @@ public class JSpaceUtilities {
         return mergedLocators;
     }
 
+    public static LookupLocator createLookupLocator( String loookupLocatorStr ){
+        int port = -1;
+        int portIndex = loookupLocatorStr.indexOf(":");
+        if (portIndex == -1) {
+            port = net.jini.discovery.Constants.getDiscoveryPort();
+        }
+        String host = (portIndex == -1 ? loookupLocatorStr : loookupLocatorStr.substring(0, portIndex));
+        if (portIndex != -1) {
+            String p = loookupLocatorStr.substring(portIndex + 1, loookupLocatorStr.length());
+            try {
+                port = new Integer(p).intValue();
+            }
+            catch (Throwable t) {
+                //error
+                port = net.jini.discovery.Constants.getDiscoveryPort();
+            }
+        }
+
+        return new LookupLocator(host, port);
+    }
+
     public static String getZonesStringRepresentation(String[] zones) {
         String mergedZones = "";
 
