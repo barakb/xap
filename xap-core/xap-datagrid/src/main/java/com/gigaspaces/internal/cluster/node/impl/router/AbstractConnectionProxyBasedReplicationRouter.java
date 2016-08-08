@@ -199,9 +199,9 @@ public abstract class AbstractConnectionProxyBasedReplicationRouter<T, L>
     }
 
     private void pingIfPossible(RouterStubHolder routerStubHolder) {
-        if (routerStubHolder.getStub() instanceof IPingableStub) {
+        if (routerStubHolder.getStub() instanceof CallbackVerifier) {
             try {
-                ((IPingableStub) routerStubHolder.getStub()).ping();
+                ((CallbackVerifier) routerStubHolder.getStub()).verify();
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -393,7 +393,7 @@ public abstract class AbstractConnectionProxyBasedReplicationRouter<T, L>
     }
 
     public class ConnectionEndpoint
-            implements IReplicationConnectionProxy, ILRMIService, IPingableStub {
+            implements IReplicationConnectionProxy, ILRMIService, CallbackVerifier {
 
         public ConnectionEndpoint() {
         }
@@ -422,7 +422,7 @@ public abstract class AbstractConnectionProxyBasedReplicationRouter<T, L>
         }
 
         @Override
-        public void ping() throws RemoteException {
+        public void verify() throws RemoteException {
 
         }
     }

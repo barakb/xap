@@ -20,6 +20,6 @@ package com.gigaspaces.internal.cluster.node.impl.router;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface IPingableStub extends Remote {
-    void ping() throws RemoteException;
+public interface CallbackVerifier extends Remote {
+    void verify() throws RemoteException;
 }
