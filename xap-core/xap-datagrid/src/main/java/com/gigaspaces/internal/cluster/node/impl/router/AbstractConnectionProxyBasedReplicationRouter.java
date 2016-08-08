@@ -190,8 +190,22 @@ public abstract class AbstractConnectionProxyBasedReplicationRouter<T, L>
     protected abstract AbstractProxyBasedReplicationMonitoredConnection<T, L> createNewMemberConnection(
             String lookupName, boolean connectSynchronously);
 
-    public synchronized void addRemoteRouterStub(RouterStubHolder routerStubHolder) {
-        _directStubs.put(routerStubHolder.getMyEndpointDetails().getLookupName(), routerStubHolder);
+    public void addRemoteRouterStub(RouterStubHolder routerStubHolder) {
+        pingIfPossible(routerStubHolder);
+        // we don't synchronize the whole method to prevent blocking on remote ping
+        synchronized (this) {
+            _directStubs.put(routerStubHolder.getMyEndpointDetails().getLookupName(), routerStubHolder);
+        }
+    }
+
+    private void pingIfPossible(RouterStubHolder routerStubHolder) {
+        if (routerStubHolder.getStub() instanceof IPingableStub) {
+            try {
+                ((IPingableStub) routerStubHolder.getStub()).ping();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
@@ -379,7 +393,7 @@ public abstract class AbstractConnectionProxyBasedReplicationRouter<T, L>
     }
 
     public class ConnectionEndpoint
-            implements IReplicationConnectionProxy, ILRMIService {
+            implements IReplicationConnectionProxy, ILRMIService, IPingableStub {
 
         public ConnectionEndpoint() {
         }
@@ -405,6 +419,11 @@ public abstract class AbstractConnectionProxyBasedReplicationRouter<T, L>
         @Override
         public String getServiceName() {
             return _myLookupName;
+        }
+
+        @Override
+        public void ping() throws RemoteException {
+
         }
     }
 
