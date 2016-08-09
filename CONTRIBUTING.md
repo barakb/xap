@@ -2,8 +2,8 @@
 
 ## Issue Reports
 
-Issues are reported and tracked via JIRA. We're currently working on making our existing Jira repository available to the public, and once we're done we'll publish the URL here.
+Issues are reported and tracked via JIRA - https://xap-issues.atlassian.net
 
 ## Pull Requests
 
-We're setting up a Contributor License Agreement, we'll publish it here when it's ready.
+Make sure you submit a [Contributor License Agreement](https://xap.github.io/XAP_CLA.pdf) before you submit your first pull request.
