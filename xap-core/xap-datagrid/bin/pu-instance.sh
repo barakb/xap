@@ -5,7 +5,7 @@
 
 echo Starting a Processing Unit Instance
 
-COMMAND_LINE="${JAVACMD} ${JAVA_OPTIONS} ${XAP_OPTIONS} -Djava.security.policy=${XAP_SECURITY_POLICY} -classpath "${PRE_CLASSPATH}:${GS_JARS}:${SPRING_JARS}:${POST_CLASSPATH}" org.openspaces.pu.container.standalone.StandaloneProcessingUnitContainer $*"
+COMMAND_LINE="${JAVACMD} ${JAVA_OPTIONS} ${XAP_OPTIONS} -classpath "${PRE_CLASSPATH}:${GS_JARS}:${SPRING_JARS}:${POST_CLASSPATH}" org.openspaces.pu.container.standalone.StandaloneProcessingUnitContainer $*"
 
 echo
 echo

@@ -16,6 +16,7 @@
  */
 package org.jini.rio.resources.util;
 
+import java.io.File;
 import java.net.URL;
 import java.rmi.RMISecurityManager;
 import java.security.AllPermission;
@@ -55,12 +56,20 @@ public class SecurityPolicyLoader {
             System.setSecurityManager(new RMISecurityManager());
         }
         try {
-            URL policy = clazz.getResource(policyName);
-            if (policy == null) {
-                System.err.println("Warning: can't find [" + clazz.getPackage() + "." + policyName + "] resource");
-                // not a fatal error, but a SecurityException is probable.
+            String policyProperty = System.getProperty("java.security.policy",System.getenv("XAP_SECURITY_POLICY"));
+            if (policyProperty != null ) {
+                if (! new File(policyProperty).exists()){
+                    throw new SecurityException("Security policy file: " + policyProperty + " doesn't exist");
+                }
+                System.setProperty("java.security.policy", policyProperty);
             } else {
-                System.setProperty("java.security.policy", policy.toString());
+                URL policy = clazz.getResource(policyName);
+                if (policy == null) {
+                    System.err.println("Warning: can't find [" + clazz.getPackage() + "." + policyName + "] resource");
+                    // not a fatal error, but a SecurityException is probable.
+                } else {
+                    System.setProperty("java.security.policy", policy.toString());
+                }
             }
             System.getSecurityManager().checkPermission(new RuntimePermission("getClassLoader"));
         } catch (SecurityException uh_oh) {

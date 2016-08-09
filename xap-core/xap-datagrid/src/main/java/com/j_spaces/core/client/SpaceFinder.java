@@ -28,6 +28,7 @@ import com.gigaspaces.security.SecurityException;
 import com.gigaspaces.security.directory.CredentialsProvider;
 import com.gigaspaces.security.directory.CredentialsProviderHelper;
 import com.gigaspaces.security.directory.DefaultCredentialsProvider;
+import com.gigaspaces.start.SystemBoot;
 import com.gigaspaces.start.SystemInfo;
 import com.j_spaces.core.Constants;
 import com.j_spaces.core.JSpaceContainerImpl;
@@ -35,7 +36,7 @@ import com.j_spaces.core.NoSuchNameException;
 import com.j_spaces.core.service.Service;
 import com.j_spaces.kernel.JSpaceUtilities;
 import com.j_spaces.kernel.ResourceLoader;
-import com.j_spaces.kernel.SecurityPolicyLoader;
+import org.jini.rio.resources.util.SecurityPolicyLoader;
 import com.j_spaces.kernel.SystemProperties;
 import com.j_spaces.kernel.log.JProperties;
 import com.sun.jini.proxy.DefaultProxyPivot;
@@ -376,7 +377,7 @@ public class SpaceFinder {
             if (securityManagerEnabled) {
 
                 if (System.getProperty("java.security.policy") == null)
-                    SecurityPolicyLoader.loadPolicy(Constants.System.SYSTEM_GS_POLICY);
+                    SecurityPolicyLoader.load(SystemBoot.class, Constants.System.SYSTEM_GS_POLICY);
 
                 /** Set specified security manager only if defined securitymanger=true in SpaceFinder URL.
                  * Ignores any occurred exception, Warning message will be displayed. */
