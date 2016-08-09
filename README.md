@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/xap/xap.svg?branch=master)](https://travis-ci.org/xap/xap)
+
 # Welcome to XAP
 
 XAP is a distributed, highly-scalable, In Memory Data Grid.
