@@ -3,7 +3,7 @@
     <artifactId>xap-jetty-8</artifactId>
 
     <properties>
-        <jettyVersion>8.1.8.v20121106</jettyVersion>
+        <jettyVersion>12.0.12</jettyVersion>
         <junitVersion>4.11</junitVersion>
         <skipTests>true</skipTests>
     </properties>
