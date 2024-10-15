@@ -3,7 +3,7 @@
     <artifactId>xap-jetty-9</artifactId>
 
     <properties>
-        <jettyVersion>9.1.2.v20140210</jettyVersion>
+        <jettyVersion>9.4.54.v20240208</jettyVersion>
         <junitVersion>4.11</junitVersion>
         <skipTests>true</skipTests>
     </properties>
