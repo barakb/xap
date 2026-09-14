@@ -162,7 +162,7 @@
             <dependency>
                 <groupId>org.hyperic</groupId>
                 <artifactId>sigar</artifactId>
-                <version>1.6.5</version>
+                <version>1.6.5.132-6</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
